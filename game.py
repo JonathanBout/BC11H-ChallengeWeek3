@@ -10,6 +10,7 @@ SCREEN_CENTER_X = SCREEN_X_SIZE / 2
 PLAYER_WIDTH = 50
 HALF_PLAYER_WIDTH = PLAYER_WIDTH / 2
 
+
 class Game:
     def __init__(self) -> None:
         pygame.init()
@@ -57,11 +58,3 @@ class Game:
         # TODO: make a fancy menu
 
         self.game_loop()
-
-
-def main():
-    Game()
-
-
-if __name__ == "__main__":
-    main()
