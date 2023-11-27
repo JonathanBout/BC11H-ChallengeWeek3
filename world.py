@@ -1,5 +1,5 @@
 class World:
-    config = None
+    config = "None"
     name = "name_placeholder"
     description = "description_placeholder"
     position = [0, 0]
@@ -9,3 +9,10 @@ class World:
         self.name = name
         self.description = description
         self.position = position
+
+    def print_config(self):
+        if self.config is None:
+            print("Config is None")
+            return False
+        else:
+            print(self.config)

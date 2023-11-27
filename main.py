@@ -5,10 +5,16 @@ import config
 
 
 def main():
-    config.PLAYER_MIN_SPEED = 0
+    # Object creation
     world = World(config, config.WORLD_NAME, config.WORLD_DESCRIPTION, config.WORLD_POSITION)
-    raceTrack = Map()
-    raceTrack.print_config()
+    race_track = Map(config, config.MAP_NAME, config.MAP_DESCRIPTION, config.MAP_POSITION)
+
+    # Set config
+    config.PLAYER_MIN_SPEED = 0
+
+    # Call methods
+    race_track.print_config()
+    world.print_config()
 
 
 if __name__ == "__main__":
