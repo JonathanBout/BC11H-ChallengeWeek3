@@ -2,11 +2,13 @@ import pygame
 from pygame.time import Clock
 from pygame.surface import Surface
 
-SCREEN_X_SIZE = 250
-SCREEN_Y_SIZE = 250
+
+SCREEN_X_SIZE = 500
+SCREEN_Y_SIZE = 500
 SCREEN_CENTER_Y = SCREEN_Y_SIZE / 2
 SCREEN_CENTER_X = SCREEN_X_SIZE / 2
-
+PLAYER_WIDTH = 50
+HALF_PLAYER_WIDTH = PLAYER_WIDTH / 2
 
 class Game:
     def __init__(self) -> None:
@@ -23,13 +25,18 @@ class Game:
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             self.player_x += 250 / self.clock.get_fps()
 
+        if self.player_x > SCREEN_X_SIZE - HALF_PLAYER_WIDTH:
+            self.player_x = SCREEN_X_SIZE - HALF_PLAYER_WIDTH
+        elif self.player_x < HALF_PLAYER_WIDTH:
+            self.player_x = HALF_PLAYER_WIDTH
+
     def loop_frame(self):
         self.screen.fill("white")
 
         # game logic
         self.do_movement()
         print(self.player_x)
-        pygame.draw.circle(self.screen, "red", (self.player_x, SCREEN_CENTER_Y), 50)
+        pygame.draw.circle(self.screen, "red", (self.player_x, SCREEN_CENTER_Y), HALF_PLAYER_WIDTH)
 
         # render everything
         pygame.display.flip()
