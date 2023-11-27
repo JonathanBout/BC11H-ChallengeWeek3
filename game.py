@@ -2,13 +2,18 @@ import pygame
 from pygame.time import Clock
 from pygame.surface import Surface
 
+SCREEN_X_SIZE = 250
+SCREEN_Y_SIZE = 250
+SCREEN_CENTER_Y = SCREEN_Y_SIZE / 2
+SCREEN_CENTER_X = SCREEN_X_SIZE / 2
+
 
 class Game:
     def __init__(self) -> None:
         pygame.init()
-        self.screen = pygame.display.set_mode((500, 500))
+        self.screen = pygame.display.set_mode((SCREEN_X_SIZE, SCREEN_Y_SIZE))
         self.clock = pygame.time.Clock()
-        self.player_x = 250
+        self.player_x = SCREEN_CENTER_X
         self.main_menu()
 
     def do_movement(self):
@@ -24,7 +29,7 @@ class Game:
         # game logic
         self.do_movement()
         print(self.player_x)
-        pygame.draw.circle(self.screen, "red", (self.player_x, 250), 50)
+        pygame.draw.circle(self.screen, "red", (self.player_x, SCREEN_CENTER_Y), 50)
 
         # render everything
         pygame.display.flip()
