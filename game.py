@@ -35,9 +35,9 @@ class Game:
 
     def update(self):
         # Refresh the screen
-        self.refresh_screen()
 
         while True:
+            self.refresh_screen()
             # traversing through every event
             for event in pygame.event.get():
                 # if the event type is QUIT then exit thwe program
@@ -53,7 +53,7 @@ class Game:
             self.player1 = self.player.move(self.screen, self.dt)
             # Print the current frame of the player
             # print(f"Current frame: {c.PLAYER_CURRENT_FRAME}")
-            print(f"Current position: {c.PLAYER_CURRENT_POSITION}")
+            #print(f"Current position: {c.PLAYER_CURRENT_POSITION}")
             # Update the frame counter
             self.frame_counter += 1
 

@@ -24,7 +24,7 @@ class ImageSprite(Sprite):
 
         self.rect = pygame.Rect(left, top, width, height)
 
-        def is_clicked(self):
-            return pygame.mouse.get_pressed()[0] and self.rect.collidepoint(
-                pygame.mouse.get_pos()
-            )
+    def is_clicked(self):
+        return pygame.mouse.get_pressed()[0] and self.rect.collidepoint(
+            pygame.mouse.get_pos()
+        )

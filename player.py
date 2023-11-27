@@ -33,7 +33,7 @@ class Player(World):
         # print("Player prepared")
         return sprites[frame]
 
-    def move(self, screen, dt):
+    def move(self, screen: pygame.Surface, dt):
         # Initialize player speed and acceleration
         player_speed = 0
         player_acceleration = 800  # Adjust this acceleration parameter for more gradual movement
@@ -41,7 +41,7 @@ class Player(World):
         # Get the state of all keyboard buttons
         keys = pygame.key.get_pressed()
 
-        player_pos = pygame.Vector2(config.SCREEN_CENTER_X, config.SCREEN_CENTER_Y)
+        player_pos = pygame.Vector2(config.PLAYER_CURRENT_POSITION[0], config.PLAYER_CURRENT_POSITION[1])
 
         frame_idle = (self.num_sprites // 2)
         config.PLAYER_CURRENT_FRAME = frame_idle
@@ -66,6 +66,8 @@ class Player(World):
             player_pos.x += player_speed
             config.PLAYER_CURRENT_FRAME = min(config.PLAYER_CURRENT_FRAME + frame_delta, self.num_sprites - 4)
 
+        #print(player_speed, player_pos)
+
         # Set idle frame if no movement keys are pressed
         if not any([keys[pygame.K_w], keys[pygame.K_s], keys[pygame.K_a], keys[pygame.K_d]]):
             config.PLAYER_CURRENT_FRAME = frame_idle
@@ -73,6 +75,8 @@ class Player(World):
         # Update player position in the config
         config.PLAYER_CURRENT_POSITION[0] = player_pos.x
         config.PLAYER_CURRENT_POSITION[1] = player_pos.y
+
+        print(config.PLAYER_CURRENT_POSITION)
 
         # Draw character at new position and update the display
         screen.blit(self.prepare(config.PLAYER_CURRENT_FRAME), config.PLAYER_CURRENT_POSITION)
