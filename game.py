@@ -15,6 +15,7 @@ class Game:
         self.screen = pygame.display.set_mode((c.SCREEN_WIDTH, c.SCREEN_HEIGHT))
         self.clock = pygame.time.Clock()
         self.frame_counter = 0  # add counter for frames
+        self.dt = 0  # add delta time
 
         # Initialize frame_update_interval using config variable
         self.frame_update_interval = c.PLAYER_FRAME_UPDATE_INTERVAL
@@ -36,53 +37,30 @@ class Game:
         # Refresh the screen
         self.refresh_screen()
 
-        num_frames = 10  # total number of frames in the animation
-
         while True:
             # traversing through every event
             for event in pygame.event.get():
-                # if the event type is QUIT then exit the program
+                # if the event type is QUIT then exit thwe program
                 if event.type == pygame.QUIT:
                     exit()
+            pygame.time.wait(10)
 
-            # Calculate the current frame
-
-            #         # Keydown events
-            # if event.type == pygame.KEYDOWN:
-            #     if event.key == pygame.K_UP:
-            #         print("Up key pressed.")
-            #     elif event.key == pygame.K_DOWN:
-            #         print("Down key pressed.")
-            #     elif event.key == pygame.K_LEFT:
-            #         print("Left key pressed.")
-            #         self.flip_player = True
-            #     elif event.key == pygame.K_RIGHT:
-            #         print("Right key pressed.")
-            #         self.flip_player = False
-            #     self.flip_player = not self.flip_player
-
-            current_frame = (self.frame_counter // self.frame_update_interval) % num_frames
-            c.PLAYER_CURRENT_FRAME = current_frame
-
-            self.player1 = self.player.prepare(c.PLAYER_CURRENT_FRAME)
-
-            # Check if the player image should be flipped
-            if self.flip_player:
-                self.player1 = pygame.transform.flip(self.player1, True,
-                                                     False)  # Flip the image horizontally, not vertically
-
+            # Update the player1 after refreshing the screen
+            if c.CURRENT_FPS == 0:
+                print("CURRENT_FPS value is Zero! Please, check the value.")
+            else:
+                self.dt = 1.0 / c.CURRENT_FPS
+            self.player1 = self.player.move(self.screen, self.dt)
+            # Print the current frame of the player
+            # print(f"Current frame: {c.PLAYER_CURRENT_FRAME}")
+            print(f"Current position: {c.PLAYER_CURRENT_POSITION}")
             # Update the frame counter
             self.frame_counter += 1
-
-            print(f"Current frame: {current_frame}")
 
             # render everything
             self.render()
 
     def render(self):
-        # Draw the player1 after refreshing the screen
-        self.screen.blit(self.player1, (self.player.position[0], self.player.position[1]))
-
         # Update the full display surface to the screen
         pygame.display.flip()
 
