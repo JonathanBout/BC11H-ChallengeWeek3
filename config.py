@@ -12,12 +12,15 @@ SCREEN_BACKGROUND = "sprites/background.png"
 # World
 WORLD_NAME = "Rainbow Road"
 WORLD_DESCRIPTION = "A colorful track in the sky."
-WORLD_BACKGROUND = "sprites/background.png"
 WORLD_POSITION = [0, 0]
+WORLD_BACKGROUND = "sprites/background.png"
 WORLD_WIDTH = SCREEN_WIDTH
 WORLD_HEIGHT = SCREEN_HEIGHT
 
 # Player
+PLAYER_NAME = "Wario"
+PLAYER_DESCRIPTION = "A fat, yellow, greedy, and smelly character."
+PLAYER_POSITION = [0, 0]
 PLAYER_SPRITE = "sprites/bowser.png"
 PLAYER_SPRITE_WIDTH = 32
 PLAYER_SPRITE_HEIGHT = 32
@@ -32,4 +35,3 @@ MAP_POSITION = [0, 0]
 MAP_SPRITE = "sprites/map_01.png"
 MAP_WIDTH = 1280
 MAP_HEIGHT = 720
-
