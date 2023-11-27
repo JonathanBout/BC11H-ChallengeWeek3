@@ -8,6 +8,9 @@ def main():
     # Call methods
     game.print_config()
 
+    # Start game
+    game.start()
+
 
 if __name__ == "__main__":
     main()
