@@ -13,10 +13,10 @@ class Game:
 
     def do_movement(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_a]:
-            self.player_x += 100 / self.clock.get_fps()
-        if keys[pygame.K_d]:
-            self.player_x -= 100 / self.clock.get_fps()
+        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+            self.player_x -= 250 / self.clock.get_fps()
+        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+            self.player_x += 250 / self.clock.get_fps()
 
     def loop_frame(self):
         self.screen.fill("white")
