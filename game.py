@@ -3,37 +3,52 @@ from pygame.time import Clock
 from pygame.surface import Surface
 
 
-def loop(screen: Surface, clock: Clock):
-    screen.fill("white")
+class Game:
+    def __init__(self) -> None:
+        pygame.init()
+        self.screen = pygame.display.set_mode((500, 500))
+        self.clock = pygame.time.Clock()
+        self.main_menu()
 
-    # game logic
+    def movement(self) -> int:
+        move = 0
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_a]:
+            move += 100
+        if keys[pygame.K_d]:
+            move -= 100
+        return move
 
-    # render everything
-    pygame.display.flip()
-    # target 60 fps
-    clock.tick(60)
+    def loop_frame(self):
+        self.screen.fill("white")
 
+        # game logic
 
-def game_loop(screen: Surface, clock: Clock):
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                exit()
-        loop(screen, clock)
+        pygame.draw.circle(self.screen, "red", (250, 250), 50)
 
+        # render everything
+        pygame.display.flip()
 
-def main_menu(screen: Surface, clock: Clock):
+        # target 120 fps. If we want a more retro look,
+        # this can be lowered to e.g. 10fps
+        self.clock.tick(120)
 
-    # TODO: make a fancy menu
+    def game_loop(self):
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    exit()
+            print(self.clock.get_fps())
+            self.loop_frame()
 
-    game_loop(screen, clock)
+    def main_menu(self):
+        # TODO: make a fancy menu
+
+        self.game_loop()
 
 
 def main():
-    pygame.init()
-    screen = pygame.display.set_mode((500, 500))
-    clock = pygame.time.Clock()
-    main_menu(screen, clock)
+    Game()
 
 
 if __name__ == "__main__":
