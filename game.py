@@ -19,37 +19,33 @@ class Game:
         self.player = Player(c, c.PLAYER_NAME, c.PLAYER_DESCRIPTION, c.PLAYER_POSITION)
 
     def start(self):
-        # render everything
-        self.render()
+        # Set background color
+        self.screen.fill("purple")
 
         # Start game loop
         self.update()
 
     def update(self):
         while True:
-            # limit the fps to the max fps
-            self.clock.tick(c.MAX_FPS)
-
             # traversing through every event
             for event in pygame.event.get():
                 # if the event type is QUIT then exit the program
                 if event.type == pygame.QUIT:
                     exit()
-
-            # printing the frames per second (fps) rate
-            c.CURRENT_FPS = self.clock.get_fps()
-            print(c.CURRENT_FPS)
+            # render everything
+            self.render()
 
     def render(self):
-        # Set background color
-        self.screen.fill("purple")
-
         # Update the full display surface to the screen
         pygame.display.flip()
 
         # Set target fps
         self.clock.tick(c.MAX_FPS)
 
+        # printing the frames per second (fps) rate
+        c.CURRENT_FPS = self.clock.get_fps()
+
+        print(c.CURRENT_FPS)
 
     def print_config(self):
         self.world.print_config()
