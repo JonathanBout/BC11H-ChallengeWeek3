@@ -1,17 +1,18 @@
 from os import listdir
+from os.path import abspath
 
 
 def load_sprites():
-    found_images = []
+    found_images = {}
     for file in listdir("sprites"):
         if file.lower().endswith(".png"):
-            found_images.append(file)
+            found_images[file] = abspath("sprites/" + file)
 
     found_images = [
-        f"""def {file.rstrip(".png")}(x_center: int = 0, y_center: int = 0, top: int = None, left: int = None):
-    return ImageSprite("{file}", x_center, y_center, top, left)
+        f"""def {short_name.rstrip(".png")}(x_center: int = 0, y_center: int = 0, top: int = None, left: int = None):
+    return ImageSprite(r"{full_name}", x_center, y_center, top, left)
 """
-        for file in found_images
+        for short_name, full_name in found_images.items()
     ]
 
     file_content = """'''
