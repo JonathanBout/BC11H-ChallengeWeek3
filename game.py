@@ -34,15 +34,17 @@ class Game:
         self.update()
 
     def update(self):
-        # Refresh the screen
-        self.refresh_screen()
-
+        # Start game loop
         while True:
+            # Set the current window caption
+            pygame.display.set_caption(f"{c.WORLD_NAME} - {c.CURRENT_FPS}")
+
             # traversing through every event
             for event in pygame.event.get():
                 # if the event type is QUIT then exit thwe program
                 if event.type == pygame.QUIT:
                     exit()
+
             pygame.time.wait(10)
 
             # Update the player1 after refreshing the screen
@@ -54,11 +56,16 @@ class Game:
             # Print the current frame of the player
             # print(f"Current frame: {c.PLAYER_CURRENT_FRAME}")
             print(f"Current position: {c.PLAYER_CURRENT_POSITION}")
+
             # Update the frame counter
             self.frame_counter += 1
 
+
             # render everything
             self.render()
+
+            # Refresh the screen
+            self.refresh_screen()
 
     def render(self):
         # Update the full display surface to the screen
