@@ -1,3 +1,14 @@
-class Config:
-    def __init__(self):
-        pass
+import pygame
+
+# Player
+PLAYER_SPRITE = "sprites/bowser.png"
+PLAYER_SPRITE_WIDTH = 32
+PLAYER_SPRITE_HEIGHT = 32
+PLAYER_MAX_SPEED = 10
+PLAYER_MIN_SPEED = 0
+PLAYER_AVG_SPEED = (PLAYER_MIN_SPEED + PLAYER_MAX_SPEED) / 2
+
+# Map
+MAP_SPRITE = "sprites/map_01.png"
+MAP_WIDTH = 1280
+MAP_HEIGHT = 720
