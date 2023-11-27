@@ -92,24 +92,24 @@ class Game:
 
     def refresh_screen(self):
         # Clear the screen by filling it with a single color (black in this case)
-        self.screen.fill((0, 0, 0))
+        self.screen.fill((0, 0, 96))
 
         # Fill the screen with a custom background
-        background = pygame.image.load(c.SCREEN_BACKGROUND)
-        background = pygame.transform.scale(background, c.SCREEN_SIZE)
+        background = pygame.image.load(c.WORLD_BACKGROUND)
+        background = pygame.transform.scale(background, (c.SCREEN_WIDTH*2, c.SCREEN_HEIGHT*2))
         self.screen.blit(background, (0, 0))
 
-        pixelPosition = (int(c.PLAYER_CURRENT_POSITION[0]), int(c.PLAYER_CURRENT_POSITION[1]))
+        pixelPosition = (int(c.PLAYER_CURRENT_POSITION[0]+60), int(c.PLAYER_CURRENT_POSITION[1]+60))
         color = self.screen.get_at(pixelPosition)
 
-        if color == (112, 176, 208, 255):
+        if color == (0, 0, 96, 255):
             self.respawn_text = True
             pygame.time.set_timer(self.RESPAWN_TEXT_EVENT, 3000)
             print("You are no longer on the road!")
             self.boo_laugh.play()
-            c.PLAYER_CURRENT_POSITION = [c.SCREEN_CENTER_X, c.SCREEN_CENTER_Y]
+            c.PLAYER_CURRENT_POSITION = [283.1699855873012, 101.21998571824301]
 
-        if self.respawn_text:
+        if self.respawn_text is True:
             respawn_text = self.font.render("You are no longer on the road!", True, self.font_color)
             self.screen.blit(respawn_text, (c.SCREEN_CENTER_X - 200, c.SCREEN_CENTER_Y - 100))
         print(color)
