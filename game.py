@@ -8,23 +8,23 @@ class Game:
         pygame.init()
         self.screen = pygame.display.set_mode((500, 500))
         self.clock = pygame.time.Clock()
+        self.player_x = 250
         self.main_menu()
 
-    def movement(self) -> int:
-        move = 0
+    def do_movement(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a]:
-            move += 100
+            self.player_x += 100 / self.clock.get_fps()
         if keys[pygame.K_d]:
-            move -= 100
-        return move
+            self.player_x -= 100 / self.clock.get_fps()
 
     def loop_frame(self):
         self.screen.fill("white")
 
         # game logic
-
-        pygame.draw.circle(self.screen, "red", (250, 250), 50)
+        self.do_movement()
+        print(self.player_x)
+        pygame.draw.circle(self.screen, "red", (self.player_x, 250), 50)
 
         # render everything
         pygame.display.flip()
