@@ -34,7 +34,7 @@ class Game:
 
         # setup menu and stats
         self.menu = Menu()
-        self.stats = Stats()
+        self.stats = Stats(self.font)
 
         # initialize game objects
         self.world = World(c, c.WORLD_NAME, c.WORLD_DESCRIPTION, c.WORLD_POSITION)
