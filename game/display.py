@@ -1,5 +1,5 @@
 import pygame
-from . import config as c
+import game.config as c
 from util.text import TextRenderer
 
 

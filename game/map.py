@@ -1,4 +1,4 @@
-from world import World
+from game.world import World
 
 
 class Map(World):

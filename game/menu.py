@@ -1,8 +1,8 @@
 import helper
 import pygame
 
-import config
-import sprites
+from game import config
+from game import sprites
 
 
 class Menu:

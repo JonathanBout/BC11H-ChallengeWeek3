@@ -6,13 +6,13 @@ SCREEN_HEIGHT = 720
 SCREEN_CENTER_X = (SCREEN_WIDTH / 2) - 30
 SCREEN_CENTER_Y = (SCREEN_HEIGHT / 2) - 30
 SCREEN_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT)
-SCREEN_BACKGROUND = "../assets/sprites/win_background.png"
+SCREEN_BACKGROUND = "assets/sprites/win_background.png"
 
 # World
 WORLD_NAME = "Rainbow Road"
 WORLD_DESCRIPTION = "A colorful track in the sky."
 WORLD_POSITION = [0, 0]
-WORLD_BACKGROUND = "../assets/sprites/rainbow_road_map.png"
+WORLD_BACKGROUND = "assets/sprites/rainbow_road_map.png"
 WORLD_WIDTH = SCREEN_WIDTH
 WORLD_HEIGHT = SCREEN_HEIGHT
 
@@ -22,8 +22,8 @@ PLAYER_DESCRIPTION = "A fat, yellow, greedy, and smelly character."
 PLAYER_POSITION = [SCREEN_CENTER_X, SCREEN_CENTER_Y]
 PLAYER_RESPAWN_POSITION = [283.1699855873012, 101.21998571824301]
 PLAYER_CURRENT_POSITION = PLAYER_RESPAWN_POSITION[:]
-PLAYER_SPRITE = "../assets/sprites/bowser.png"
-PLAYER_RESPAWN_SOUND = "../assets/sounds/mk64_boo_laugh.wav"
+PLAYER_SPRITE = "assets/sprites/bowser.png"
+PLAYER_RESPAWN_SOUND = "assets/sounds/mk64_boo_laugh.wav"
 PLAYER_SPRITE_WIDTH = 32
 PLAYER_SPRITE_HEIGHT = 32
 PLAYER_SPRITE_SCALE = 2
@@ -40,6 +40,6 @@ PLAYER_CURRENT_SPEED = 10
 MAP_NAME = WORLD_NAME
 MAP_DESCRIPTION = WORLD_DESCRIPTION
 MAP_POSITION = [0, 0]
-MAP_SPRITE = "../assets/sprites/map_01.png"
+MAP_SPRITE = "assets/sprites/map_01.png"
 MAP_WIDTH = 1280
 MAP_HEIGHT = 720

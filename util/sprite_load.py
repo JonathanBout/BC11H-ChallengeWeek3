@@ -7,13 +7,14 @@ from os import listdir
 
 def load_sprites():
     found_images = {}
-    for file in listdir("../assets/sprites"):
+    for file in listdir("assets/sprites"):
         if file.lower().endswith(".png"):
-            found_images[file.rstrip(".png")] = "sprites/" + file
+            found_images[file.rstrip(".png")] = "assets/sprites/" + file
 
     found_images = [
         f"""
 {short_name} = load(r"{full_name}")
+
 
 def get_{short_name}_sprite(
       x_center: int = 0,
@@ -30,13 +31,13 @@ def get_{short_name}_sprite(
 THIS IS AUTO-GENERATED CODE GENERATED FOR EVERY .PNG FILE IN THE 'sprites' FOLDER.
 ANY CHANGES TO THIS FILE WILL BE DISCARDED WHEN THE CODE IS REGENERATED.
 '''
-from sprite_overrides import ImageSprite
+from util.sprite_overrides import ImageSprite
 from pygame.image import load
 
 """
 
     file_content += "\n".join(found_images)
-    with open("../game/sprites.py", "w") as file:
+    with open("game/sprites.py", "w") as file:
         file.write(file_content)
 
 

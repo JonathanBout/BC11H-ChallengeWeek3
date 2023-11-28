@@ -1,5 +1,5 @@
 import pygame
-import config, sprites
+from game import config, sprites
 import helper
 
 

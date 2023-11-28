@@ -3,8 +3,8 @@ import pygame
 import game.config as c
 from util.eventHandler import EventManager, RespawnEvent
 from util.text import TextRenderer
-from world import World
-from display import Display
+from game.world import World
+from game.display import Display
 
 
 class Player(World):
