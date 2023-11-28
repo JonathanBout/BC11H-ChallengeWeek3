@@ -4,6 +4,8 @@ import config as c
 from map import Map
 from world import World
 from player import Player
+from display import Display
+
 
 
 class Game:
@@ -12,10 +14,8 @@ class Game:
         pygame.init()
 
         # initialize screen and clock
-        self.screen = pygame.display.set_mode((c.SCREEN_WIDTH, c.SCREEN_HEIGHT))
-        self.clock = pygame.time.Clock()
-        self.frame_counter = 0  # add counter for frames
-        self.dt = 0  # add delta time
+        self.display = Display()
+        self.display.set_display_size()
 
         # Initialize frame_update_interval using config variable
         self.frame_update_interval = c.PLAYER_FRAME_UPDATE_INTERVAL
@@ -52,54 +52,26 @@ class Game:
 
             # traversing through every event
             for event in pygame.event.get():
-                # if the event type is QUIT then exit thwe program
+                # if the event type is QUIT then exit the program
                 if event.type == pygame.QUIT:
                     exit()
                 elif event.type == self.RESPAWN_TEXT_EVENT:
                     self.respawn_text = False
             pygame.time.wait(10)
 
-            # Update the player1 after refreshing the screen
-            if c.CURRENT_FPS == 0:
-                print("CURRENT_FPS value is Zero! Please, check the value.")
-            else:
-                self.dt = 1.0 / c.CURRENT_FPS
-            self.player1 = self.player.move(self.screen, self.dt)
-            # Print the current frame of the player
-            # print(f"Current frame: {c.PLAYER_CURRENT_FRAME}")
-            print(f"Current position: {c.PLAYER_CURRENT_POSITION}")
+            # Move the player
+            self.player1 = self.player.move(self.display.screen)
 
-            # Update the frame counter
-            self.frame_counter += 1
+            # Check if player is on the road
+            self.player1 = self.player.check_for_events(self.display.screen)
 
-            # render everything
-            self.render()
+            # Update the display and fps
+            self.display.draw()
 
-            # Refresh the screen
-            self.refresh_screen()
-
-    def render(self):
-        # Update the full display surface to the screen
-        pygame.display.flip()
-
-        # Set target fps
-        self.clock.tick(c.MAX_FPS)
-
-        # printing the frames per second (fps) rate
-        c.CURRENT_FPS = self.clock.get_fps()
-
-        # print("FPS:", c.CURRENT_FPS)
 
     def refresh_screen(self):
-        # Clear the screen by filling it with a single color (black in this case)
-        self.screen.fill((0, 0, 96))
 
-        # Fill the screen with a custom background
-        background = pygame.image.load(c.WORLD_BACKGROUND)
-        background = pygame.transform.scale(background, (c.SCREEN_WIDTH*2, c.SCREEN_HEIGHT*2))
-        self.screen.blit(background, (0, 0))
-
-        pixelPosition = (int(c.PLAYER_CURRENT_POSITION[0]+60), int(c.PLAYER_CURRENT_POSITION[1]+60))
+        pixelPosition = (int(c.PLAYER_CURRENT_POSITION[0] + 60), int(c.PLAYER_CURRENT_POSITION[1] + 60))
         color = self.screen.get_at(pixelPosition)
 
         if color == (0, 0, 96, 255):
