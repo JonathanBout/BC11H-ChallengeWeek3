@@ -5,7 +5,7 @@ def main():
     # Object creation
     game = Game()
 
-    # Call methods
+    # Call methodss
     game.print_config()
 
     # Start game

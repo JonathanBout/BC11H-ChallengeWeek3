@@ -1,6 +1,6 @@
 import pygame
-import config
 
+import config
 import sprites
 from game import Game
 
