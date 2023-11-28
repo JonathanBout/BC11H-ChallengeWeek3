@@ -35,14 +35,20 @@ class Game:
         self.world = World(c, c.WORLD_NAME, c.WORLD_DESCRIPTION, c.WORLD_POSITION)
         self.race_track = Map(c, c.MAP_NAME, c.MAP_DESCRIPTION, c.MAP_POSITION)
         self.player = Player(c, c.PLAYER_NAME, c.PLAYER_DESCRIPTION, c.PLAYER_POSITION)
+        from menu import Menu
+        self.menu = Menu()
 
         # Player properties
         self.flip_player = None
         self.player1 = self.player.prepare(c.PLAYER_CURRENT_FRAME)
 
     def start(self):
-        # Start game loop
-        self.update()
+        while True:
+            match self.menu.show(self):
+                case 1:
+                    self.update()
+                case 2:
+                    return
 
     def update(self):
         # Start game loop
@@ -97,10 +103,15 @@ class Game:
 
         # Fill the screen with a custom background
         background = pygame.image.load(c.WORLD_BACKGROUND)
-        background = pygame.transform.scale(background, (c.SCREEN_WIDTH*2, c.SCREEN_HEIGHT*2))
+        background = pygame.transform.scale(
+            background, (c.SCREEN_WIDTH * 2, c.SCREEN_HEIGHT * 2)
+        )
         self.screen.blit(background, (0, 0))
 
-        pixelPosition = (int(c.PLAYER_CURRENT_POSITION[0]+60), int(c.PLAYER_CURRENT_POSITION[1]+60))
+        pixelPosition = (
+            int(c.PLAYER_CURRENT_POSITION[0] + 60),
+            int(c.PLAYER_CURRENT_POSITION[1] + 60),
+        )
         color = self.screen.get_at(pixelPosition)
 
         if color == (0, 0, 96, 255):
@@ -111,8 +122,12 @@ class Game:
             c.PLAYER_CURRENT_POSITION = [283.1699855873012, 101.21998571824301]
 
         if self.respawn_text is True:
-            respawn_text = self.font.render("You are no longer on the road!", True, self.font_color)
-            self.screen.blit(respawn_text, (c.SCREEN_CENTER_X - 200, c.SCREEN_CENTER_Y - 100))
+            respawn_text = self.font.render(
+                "You are no longer on the road!", True, self.font_color
+            )
+            self.screen.blit(
+                respawn_text, (c.SCREEN_CENTER_X - 200, c.SCREEN_CENTER_Y - 100)
+            )
         print(color)
 
     def print_config(self):
