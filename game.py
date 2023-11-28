@@ -7,7 +7,6 @@ from player import Player
 from display import Display
 
 
-
 class Game:
     def __init__(self):
         # initialize pygame
@@ -31,6 +30,10 @@ class Game:
         pygame.mixer.init()
         self.boo_laugh = pygame.mixer.Sound("sounds/mk64_boo_laugh.wav")
 
+        # setup menu
+        from menu import Menu
+        self.menu = Menu()
+
         # initialize game objects
         self.world = World(c, c.WORLD_NAME, c.WORLD_DESCRIPTION, c.WORLD_POSITION)
         self.race_track = Map(c, c.MAP_NAME, c.MAP_DESCRIPTION, c.MAP_POSITION)
@@ -41,8 +44,12 @@ class Game:
         self.player1 = self.player.prepare(c.PLAYER_CURRENT_FRAME)
 
     def start(self):
-        # Start game loop
-        self.update()
+        while True:
+            match self.menu.show(self):
+                case 1:
+                    self.update()
+                case 2:
+                    return
 
     def update(self):
         # Start game loop
