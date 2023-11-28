@@ -20,6 +20,17 @@ class Game:
         # Initialize frame_update_interval using config variable
         self.frame_update_interval = c.PLAYER_FRAME_UPDATE_INTERVAL
 
+        # set up font for text rendering
+        self.font_color = (144, 238, 144)
+        self.font = pygame.font.SysFont("Arial", 40)
+        self.font.set_bold(True)
+        self.respawn_text = False
+        self.RESPAWN_TEXT_EVENT = pygame.USEREVENT + 1
+
+        # set up sounds mixer
+        pygame.mixer.init()
+        self.boo_laugh = pygame.mixer.Sound("sounds/mk64_boo_laugh.wav")
+
         # initialize game objects
         self.world = World(c, c.WORLD_NAME, c.WORLD_DESCRIPTION, c.WORLD_POSITION)
         self.race_track = Map(c, c.MAP_NAME, c.MAP_DESCRIPTION, c.MAP_POSITION)
@@ -34,15 +45,18 @@ class Game:
         self.update()
 
     def update(self):
-        # Refresh the screen
-
+        # Start game loop
         while True:
-            self.refresh_screen()
+            # Set the current window caption
+            pygame.display.set_caption(f"{c.WORLD_NAME} - {c.CURRENT_FPS}")
+
             # traversing through every event
             for event in pygame.event.get():
                 # if the event type is QUIT then exit thwe program
                 if event.type == pygame.QUIT:
                     exit()
+                elif event.type == self.RESPAWN_TEXT_EVENT:
+                    self.respawn_text = False
             pygame.time.wait(10)
 
             # Update the player1 after refreshing the screen
@@ -53,12 +67,17 @@ class Game:
             self.player1 = self.player.move(self.screen, self.dt)
             # Print the current frame of the player
             # print(f"Current frame: {c.PLAYER_CURRENT_FRAME}")
-            #print(f"Current position: {c.PLAYER_CURRENT_POSITION}")
+
+            print(f"Current position: {c.PLAYER_CURRENT_POSITION}")
+
             # Update the frame counter
             self.frame_counter += 1
 
             # render everything
             self.render()
+
+            # Refresh the screen
+            self.refresh_screen()
 
     def render(self):
         # Update the full display surface to the screen
@@ -74,12 +93,27 @@ class Game:
 
     def refresh_screen(self):
         # Clear the screen by filling it with a single color (black in this case)
-        self.screen.fill((0, 0, 0))
+        self.screen.fill((0, 0, 96))
 
         # Fill the screen with a custom background
-        background = pygame.image.load(c.SCREEN_BACKGROUND)
-        background = pygame.transform.scale(background, c.SCREEN_SIZE)
+        background = pygame.image.load(c.WORLD_BACKGROUND)
+        background = pygame.transform.scale(background, (c.SCREEN_WIDTH*2, c.SCREEN_HEIGHT*2))
         self.screen.blit(background, (0, 0))
+
+        pixelPosition = (int(c.PLAYER_CURRENT_POSITION[0]+60), int(c.PLAYER_CURRENT_POSITION[1]+60))
+        color = self.screen.get_at(pixelPosition)
+
+        if color == (0, 0, 96, 255):
+            self.respawn_text = True
+            pygame.time.set_timer(self.RESPAWN_TEXT_EVENT, 3000)
+            print("You are no longer on the road!")
+            self.boo_laugh.play()
+            c.PLAYER_CURRENT_POSITION = [283.1699855873012, 101.21998571824301]
+
+        if self.respawn_text is True:
+            respawn_text = self.font.render("You are no longer on the road!", True, self.font_color)
+            self.screen.blit(respawn_text, (c.SCREEN_CENTER_X - 200, c.SCREEN_CENTER_Y - 100))
+        print(color)
 
     def print_config(self):
         self.world.print_config()

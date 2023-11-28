@@ -35,13 +35,13 @@ class Player(World):
 
     def move(self, screen: pygame.Surface, dt):
         # Initialize player speed and acceleration
-        player_speed = 0
-        player_acceleration = 800  # Adjust this acceleration parameter for more gradual movement
+        player_speed = config.PLAYER_CURRENT_SPEED
+        player_acceleration = config.PLAYER_MAX_SPEED  # Adjust this acceleration parameter for more gradual movement
 
         # Get the state of all keyboard buttons
         keys = pygame.key.get_pressed()
 
-        player_pos = pygame.Vector2(config.PLAYER_CURRENT_POSITION[0], config.PLAYER_CURRENT_POSITION[1])
+        player_pos = pygame.Vector2(*config.PLAYER_CURRENT_POSITION)
 
         frame_idle = (self.num_sprites // 2)
         config.PLAYER_CURRENT_FRAME = frame_idle
@@ -66,9 +66,7 @@ class Player(World):
             player_pos.x += player_speed
             config.PLAYER_CURRENT_FRAME = min(config.PLAYER_CURRENT_FRAME + frame_delta, self.num_sprites - 4)
 
-        #print(player_speed, player_pos)
-
-        # Set idle frame if no movement keys are pressed
+        # If no keys are pressed, set the frame to idle.
         if not any([keys[pygame.K_w], keys[pygame.K_s], keys[pygame.K_a], keys[pygame.K_d]]):
             config.PLAYER_CURRENT_FRAME = frame_idle
 
