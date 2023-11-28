@@ -1,8 +1,8 @@
+import helper
 import pygame
 
 import config
 import sprites
-from game import Game
 
 
 class Menu:
@@ -15,14 +15,14 @@ class Menu:
         self.background_image = sprites.get_menu_background_sprite(
             x_center=config.SCREEN_CENTER_X,
             y_center=config.SCREEN_CENTER_Y,
-            target_size=config.SCREEN_SIZE
+            target_size=config.SCREEN_SIZE,
         )
 
         self.background_image.image = pygame.transform.scale(
             self.background_image.image, config.SCREEN_SIZE
         )
 
-        self.logo = sprites.get_logo_sprite(
+        self.logo = sprites.get_logo_menu_sprite(
             x_center=config.SCREEN_CENTER_X, top=config.SCREEN_HEIGHT / 10
         )
 
@@ -38,10 +38,10 @@ class Menu:
             x_center=config.SCREEN_CENTER_X, top=self.button_quit_image.rect.bottom + 10
         )
 
-    def show(self, game: Game):
+    def show(self):
         pygame.display.flip()
         while (x := self.__show_menu()) == 0:
-            pygame.event.pump()
+            helper.exit_if_user_wants()
             pygame.display.flip()
         return x
 
@@ -63,8 +63,3 @@ class Menu:
         elif self.button_stats.is_clicked():
             return 3
         return 0
-
-
-if __name__ == "__main__":
-    game = Game()
-    game.start()

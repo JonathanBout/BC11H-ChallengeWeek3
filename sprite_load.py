@@ -3,7 +3,6 @@ This little script loads all sprites from the sprites folder and puts them in th
 """
 
 from os import listdir
-from os.path import abspath
 
 
 def load_sprites():

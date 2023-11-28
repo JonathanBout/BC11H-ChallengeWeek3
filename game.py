@@ -5,6 +5,8 @@ from map import Map
 from world import World
 from player import Player
 from display import Display
+from menu import Menu
+from stats import Stats
 
 
 class Game:
@@ -30,18 +32,14 @@ class Game:
         pygame.mixer.init()
         self.boo_laugh = pygame.mixer.Sound("sounds/mk64_boo_laugh.wav")
 
-        # setup menu
-        from menu import Menu
+        # setup menu and stats
         self.menu = Menu()
+        self.stats = Stats()
 
         # initialize game objects
         self.world = World(c, c.WORLD_NAME, c.WORLD_DESCRIPTION, c.WORLD_POSITION)
         self.race_track = Map(c, c.MAP_NAME, c.MAP_DESCRIPTION, c.MAP_POSITION)
         self.player = Player(c, c.PLAYER_NAME, c.PLAYER_DESCRIPTION, c.PLAYER_POSITION)
-
-        from menu import Menu  # import menu over here due to circular import problems
-
-        self.menu = Menu()
 
         # Player properties
         self.flip_player = None
@@ -50,11 +48,14 @@ class Game:
     def start(self):
         # show the menu over and over again
         while True:
-            match self.menu.show(self):
+            match self.menu.show():
                 case 1:  # 1=start game
                     self.update()
                 case 2:  # 2=quit
                     return
+                case 3:  # 3=stats
+                    self.stats.show()
+                    continue
                 # add more cases e.g. for a leader board
 
     def update(self):
@@ -81,9 +82,7 @@ class Game:
             # Update the display and fps
             self.display.draw()
 
-
     def refresh_screen(self):
-
         pixelPosition = (int(c.PLAYER_CURRENT_POSITION[0] + 60), int(c.PLAYER_CURRENT_POSITION[1] + 60))
         color = self.screen.get_at(pixelPosition)
 

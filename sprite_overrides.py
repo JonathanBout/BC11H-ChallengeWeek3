@@ -1,18 +1,22 @@
 import pygame
 from pygame.sprite import Sprite
+from pygame import Surface
 
 
 class ImageSprite(Sprite):
     def __init__(
         self,
-        image_path: str,
+        image: str | Surface,
         x_center: int = 0,
         y_center: int = 0,
         top: int = None,
         left: int = None,
-        target_size: tuple[int | None, int | None] = (None, None)
+        target_size: tuple[int | None, int | None] = (None, None),
     ) -> None:
-        self.image = pygame.image.load(image_path)
+        if not isinstance(image, Surface):
+            image = pygame.image.load(image)
+
+        self.image = image
 
         width = self.image.get_width()
         height = self.image.get_height()
