@@ -43,3 +43,6 @@ MAP_POSITION = [0, 0]
 MAP_SPRITE = "assets/sprites/map_01.png"
 MAP_WIDTH = 1280
 MAP_HEIGHT = 720
+
+# stats
+STATS_FILE = "stats.json"
