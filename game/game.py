@@ -11,6 +11,15 @@ from game.player import Player
 
 class Game:
     def __init__(self):
+        """
+        Initialize the Game class.
+        Initialization includes:
+        - Initializing pygame, the display and the clock
+        - Setting up the menu and its stats page
+        - Initializing game objects (world, race_track, player)
+        - Setting up player properties
+        :return: None
+        """
         # initialize pygame
         pygame.init()
 
@@ -21,20 +30,12 @@ class Game:
         # Initialize frame_update_interval using config variable
         self.frame_update_interval = c.PLAYER_FRAME_UPDATE_INTERVAL
 
-        # set up font for text rendering
-        self.font_color = (144, 238, 144)
-        self.font = pygame.font.SysFont("Arial", 40)
-        self.font.set_bold(True)
-        self.respawn_text = False
-        self.RESPAWN_TEXT_EVENT = pygame.USEREVENT + 1
-
-        # set up sounds mixer
-        pygame.mixer.init()
-        self.boo_laugh = pygame.mixer.Sound("assets/sounds/mk64_boo_laugh.wav")
+        # set up font for text rendering - TODO: use text.py instead
+        self.stats_menu_font = pygame.font.Font("assets/fonts/SuperMario256.ttf", 40)
 
         # setup menu and stats
         self.menu = Menu()
-        self.stats = Stats(self.font)
+        self.stats = Stats(self.stats_menu_font)
 
         # initialize game objects
         self.world = World(c, c.WORLD_NAME, c.WORLD_DESCRIPTION, c.WORLD_POSITION)
@@ -42,10 +43,13 @@ class Game:
         self.player = Player(c, c.PLAYER_NAME, c.PLAYER_DESCRIPTION, c.PLAYER_POSITION)
 
         # Player properties
-        self.flip_player = None
         self.player1 = self.player.prepare(c.PLAYER_CURRENT_FRAME)
 
     def start(self):
+        """
+        Starts the game and displays the menu options.
+        :return: None
+        """
         # show the menu over and over again
         while True:
             match self.menu.show():
@@ -56,21 +60,26 @@ class Game:
                 case 3:  # 3=stats
                     self.stats.show()
                     continue
-                # add more cases e.g. for a leader board
+                # more cases e.g. for a leader board
 
     def update(self):
+        """
+        This method updates the game state and display.
+        This is needed to run and play the game.
+        :return: None
+        """
         # Start game loop
         while True:
             # Set the current window caption
             pygame.display.set_caption(f"{c.WORLD_NAME} - {c.CURRENT_FPS}")
 
-            # traversing through every event
+            # Check for events
             for event in pygame.event.get():
                 # if the event type is QUIT then exit the program
                 if event.type == pygame.QUIT:
                     exit()
-                elif event.type == self.RESPAWN_TEXT_EVENT:
-                    self.respawn_text = False
+
+            # Give the game some time to process events
             pygame.time.wait(10)
 
             # Move the player
@@ -79,31 +88,15 @@ class Game:
             # Check if player is on the road
             self.player1 = self.player.check_for_events(self.display.screen)
 
-            # Update the display and fps
+            # Update both the display and fps
             self.display.draw()
 
-    def refresh_screen(self):
-        pixelPosition = (int(c.PLAYER_CURRENT_POSITION[0] + 60), int(c.PLAYER_CURRENT_POSITION[1] + 60))
-        color = self.screen.get_at(pixelPosition)
-
-        if color == (0, 0, 96, 255):
-            self.respawn_text = True
-            pygame.time.set_timer(self.RESPAWN_TEXT_EVENT, 3000)
-            print("You are no longer on the road!")
-            self.boo_laugh.play()
-            c.PLAYER_CURRENT_POSITION = [283.1699855873012, 101.21998571824301]
-
-        if self.respawn_text is True:
-            respawn_text = self.font.render("You are no longer on the road!", True, self.font_color)
-            self.screen.blit(respawn_text, (c.SCREEN_CENTER_X - 200, c.SCREEN_CENTER_Y - 100))
-        print(color)
-
     def print_config(self):
+        """
+        Prints game configuration details.
+        This includes the world, racetrack, and player configurations.
+        :return: None
+        """
         self.world.print_config()
         self.race_track.print_config()
         self.player.print_config()
-
-
-if __name__ == "__main__":
-    game = Game()
-    game.start()

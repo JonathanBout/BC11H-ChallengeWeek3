@@ -2,14 +2,9 @@ from game import Game
 
 
 def main():
-    # Object creation
-    game = Game()
-
-    # Call methodss
-    game.print_config()
-
-    # Start game
-    game.start()
+    game = Game()  # Initialize game
+    game.print_config()  # Print game config
+    game.start()  # Start the game
 
 
 if __name__ == "__main__":

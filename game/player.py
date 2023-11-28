@@ -9,6 +9,13 @@ from game.display import Display
 
 class Player(World):
     def __init__(self, config, name, description, position):
+        """
+        Initialize the Player class object.
+        :param config: The game configuration object.
+        :param name: The name of the player.
+        :param description: The description of the player.
+        :param position: The starting position of the player.
+        """
         super().__init__(config, name, description, position)
 
         # Initialize display
@@ -18,6 +25,17 @@ class Player(World):
         self.num_sprites = 0
 
     def prepare(self, frame=0):
+        """
+        :param frame: an integer representing the index of the desired sprite frame
+        :return: the sprite image at the specified frame index
+        This method prepares the player character sprite by loading the sprite image file
+        and extracting individual frames. It returns the sprite image at the specified frame index.
+        Example usage:
+            player = Player()
+            frame = 0
+            sprite = player.prepare(frame)
+        Note: This method does not handle error checking for invalid frame indices.
+        """
         sprite_path = c.PLAYER_SPRITE
         game_image = pygame.image.load(sprite_path).convert_alpha()
 
@@ -40,6 +58,18 @@ class Player(World):
         return sprites[frame]
 
     def move(self, screen):
+        """
+        :param screen: the screen object on which to draw the player character
+        :return: None
+
+        This method handles the movement of the player character based on keyboard inputs. It updates the player's
+        position and frame, and draws the character on the screen.
+        If no keys are pressed, the player character stays idle.
+
+        Example usage:
+        player = Player()
+        player.move(screen)
+        """
         if c.CURRENT_FPS == 0:
             print("CURRENT_FPS value is Zero! Please, check the value.")
         else:
@@ -52,11 +82,14 @@ class Player(World):
         # Get the state of all keyboard buttons
         keys = pygame.key.get_pressed()
 
+        # Get the current player position
         player_pos = pygame.Vector2(*c.PLAYER_CURRENT_POSITION)
 
+        # Set the frame to idle
         frame_idle = (self.num_sprites // 2)
         c.PLAYER_CURRENT_FRAME = frame_idle
 
+        # Set the frame delta based on whether the player is moving horizontally
         frame_delta = 1 if keys[pygame.K_a] or keys[pygame.K_d] else 0
 
         # Adjust player position based on key presses and adjust frame accordingly
@@ -90,6 +123,11 @@ class Player(World):
         pygame.display.flip()
 
     def check_for_events(self, screen):
+        """
+        Check for registered player events.
+        :param screen: The pygame screen object.
+        :return: None
+        """
         # Event manager
         event_manager = EventManager()
 
@@ -109,12 +147,24 @@ class Player(World):
         event_manager.trigger_events()
 
     def check_flip(self, player, flip=(False, False)):
+        """
+        :param player: The current player sprite.
+        :param flip: A tuple representing the flip state. The first element indicates whether the sprite should be horizontally flipped, and the second element indicates whether it should be vertically flipped. Defaults to (False, False).
+        :return: The player sprite with the requested flip applied.
+        """
         if c.PLAYER_SPRITE_HORIZONTAL_FLIP or c.PLAYER_SPRITE_VERTICAL_FLIP:
-            player = pygame.transform.flip(surface=player, flip_x=c.PLAYER_SPRITE_HORIZONTAL_FLIP,
-                                           flip_y=c.PLAYER_SPRITE_VERTICAL_FLIP)  # Flip the image horizontally, not vertically
+            player = pygame.transform.flip(
+                surface=player,
+                flip_x=c.PLAYER_SPRITE_HORIZONTAL_FLIP,
+                flip_y=c.PLAYER_SPRITE_VERTICAL_FLIP
+            )
         return player
 
     def print_config(self):
+        """
+        Prints the configuration values which could be of importance for the Player object.
+        :return: None
+        """
         if self.config is None:
             print("Config is None")
             return False
