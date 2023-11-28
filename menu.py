@@ -42,7 +42,7 @@ class Menu:
         pygame.display.flip()
         while (x := self.__show_menu()) == 0:
             pygame.event.pump()
-            game.render()
+            pygame.display.flip()
         return x
 
     def __show_menu(self) -> int:
