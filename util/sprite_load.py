@@ -7,7 +7,7 @@ from os import listdir
 
 def load_sprites():
     found_images = {}
-    for file in listdir("sprites"):
+    for file in listdir("../assets/sprites"):
         if file.lower().endswith(".png"):
             found_images[file.rstrip(".png")] = "sprites/" + file
 
@@ -36,7 +36,7 @@ from pygame.image import load
 """
 
     file_content += "\n".join(found_images)
-    with open("sprites.py", "w") as file:
+    with open("../game/sprites.py", "w") as file:
         file.write(file_content)
 
 

@@ -1,9 +1,8 @@
 import pygame
 
-import config as c
-from eventHandler import EventManager, RespawnEvent
-from music import Music
-from text import TextRenderer
+import game.config as c
+from util.eventHandler import EventManager, RespawnEvent
+from util.text import TextRenderer
 from world import World
 from display import Display
 
@@ -99,7 +98,7 @@ class Player(World):
             screen,
             c.PLAYER_CURRENT_POSITION,
             TextRenderer(None, 32),
-            "sounds/mk64_boo_laugh.wav",
+            c.PLAYER_RESPAWN_SOUND,
             (c.SCREEN_CENTER_X, c.SCREEN_CENTER_Y)
         )
 
@@ -108,7 +107,6 @@ class Player(World):
 
         # Trigger the respawn event
         event_manager.trigger_events()
-
 
     def check_flip(self, player, flip=(False, False)):
         if c.PLAYER_SPRITE_HORIZONTAL_FLIP or c.PLAYER_SPRITE_VERTICAL_FLIP:

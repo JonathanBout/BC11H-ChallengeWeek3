@@ -1,7 +1,7 @@
 import pygame
-import config
-import sprites
+import config, sprites
 import helper
+
 
 class Stats:
     def __init__(self) -> None:

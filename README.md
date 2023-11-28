@@ -9,4 +9,4 @@ Ruben Flinterman (1037046)
 - [ ] Highscore system works
 - [x] Player can steer the car
 - [ ] Player can race against NPC
-- [ ] Player races on an oval track
+- [x] Player races on an (oval) track

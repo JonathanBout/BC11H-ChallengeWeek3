@@ -1,6 +1,6 @@
 import pygame
-import config as c
-from text import TextRenderer
+from . import config as c
+from util.text import TextRenderer
 
 
 class Display:
@@ -23,7 +23,6 @@ class Display:
     def draw(self):
         self.update_display_and_fps()
         self.clear_and_fill_screen()
-
 
     def update_display_and_fps(self):
         # Update the full display surface to the screen

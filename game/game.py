@@ -1,12 +1,12 @@
 import pygame
 
-import config as c
-from map import Map
-from world import World
-from player import Player
+from . import config as c
 from display import Display
 from menu import Menu
 from stats import Stats
+from world import World
+from map import Map
+from player import Player
 
 
 class Game:
@@ -30,7 +30,7 @@ class Game:
 
         # set up sounds mixer
         pygame.mixer.init()
-        self.boo_laugh = pygame.mixer.Sound("sounds/mk64_boo_laugh.wav")
+        self.boo_laugh = pygame.mixer.Sound("../assets/sounds/mk64_boo_laugh.wav")
 
         # setup menu and stats
         self.menu = Menu()

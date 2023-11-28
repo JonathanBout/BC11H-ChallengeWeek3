@@ -14,7 +14,7 @@ class ImageSprite(Sprite):
         target_size: tuple[int | None, int | None] = (None, None),
     ) -> None:
         if not isinstance(image, Surface):
-            image = pygame.image.load(image)
+            image = pygame.image.load(f"../assets/{image}")
 
         self.image = image
 

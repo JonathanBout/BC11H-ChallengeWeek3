@@ -1,8 +1,8 @@
 import pygame
 from pygame.constants import USEREVENT
 
-import config as c
-from music import Music
+import game.config as c
+from util.music import Music
 
 
 class CustomEvent:
