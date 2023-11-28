@@ -1,3 +1,7 @@
+"""
+This little script loads all sprites from the sprites folder and puts them in the sprites.py file.
+"""
+
 from os import listdir
 from os.path import abspath
 
@@ -6,11 +10,19 @@ def load_sprites():
     found_images = {}
     for file in listdir("sprites"):
         if file.lower().endswith(".png"):
-            found_images[file] = abspath("sprites/" + file)
+            found_images[file.rstrip(".png")] = "sprites/" + file
 
     found_images = [
-        f"""def {short_name.rstrip(".png")}(x_center: int = 0, y_center: int = 0, top: int = None, left: int = None):
-    return ImageSprite(r"{full_name}", x_center, y_center, top, left)
+        f"""
+{short_name} = load(r"{full_name}")
+
+def get_{short_name}_sprite(
+      x_center: int = 0,
+      y_center: int = 0,
+      top: int = None,
+      left: int = None,
+      target_size: tuple[int|None, int|None] = (None, None)):
+    return ImageSprite(r"{full_name}", x_center, y_center, top, left, target_size)
 """
         for short_name, full_name in found_images.items()
     ]
@@ -20,11 +32,11 @@ THIS IS AUTO-GENERATED CODE GENERATED FOR EVERY .PNG FILE IN THE 'sprites' FOLDE
 ANY CHANGES TO THIS FILE WILL BE DISCARDED WHEN THE CODE IS REGENERATED.
 '''
 from sprite_overrides import ImageSprite
-
+from pygame.image import load
 
 """
 
-    file_content += "\n\n".join(found_images)
+    file_content += "\n".join(found_images)
     with open("sprites.py", "w") as file:
         file.write(file_content)
 

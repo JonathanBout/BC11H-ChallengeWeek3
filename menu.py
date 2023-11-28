@@ -12,19 +12,30 @@ class Menu:
             (config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
         )
 
-        self.background_image = sprites.menu_background(
+        self.background_image = sprites.get_menu_background_sprite(
             x_center=config.SCREEN_CENTER_X,
             y_center=config.SCREEN_CENTER_Y,
+            target_size=config.SCREEN_SIZE
         )
-        self.logo = sprites.logo(x_center=config.SCREEN_CENTER_X, top=10)
 
-        self.button_start_game = sprites.button_start(
+        self.background_image.image = pygame.transform.scale(
+            self.background_image.image, config.SCREEN_SIZE
+        )
+
+        self.logo = sprites.get_logo_sprite(
+            x_center=config.SCREEN_CENTER_X, top=config.SCREEN_HEIGHT / 10
+        )
+
+        self.button_start_game = sprites.get_button_start_sprite(
             x_center=config.SCREEN_CENTER_X,
             top=self.logo.rect.bottom + 10,
         )
-        self.button_quit_image = sprites.button_quit(
+        self.button_quit_image = sprites.get_button_quit_sprite(
             x_center=config.SCREEN_CENTER_X,
             top=self.button_start_game.rect.bottom + 10,
+        )
+        self.button_stats = sprites.get_button_stats_sprite(
+            x_center=config.SCREEN_CENTER_X, top=self.button_quit_image.rect.bottom + 10
         )
 
     def show(self, game: Game):
@@ -41,13 +52,19 @@ class Menu:
                 (self.logo.image, self.logo.rect),
                 (self.button_quit_image.image, self.button_quit_image.rect),
                 (self.button_start_game.image, self.button_start_game.rect),
+                (self.button_stats.image, self.button_stats.rect),
             ]
         )
 
         if self.button_start_game.is_clicked():
-            print("Start Game")
             return 1
         elif self.button_quit_image.is_clicked():
-            print("Quit Game")
             return 2
+        elif self.button_stats.is_clicked():
+            return 3
         return 0
+
+
+if __name__ == "__main__":
+    game = Game()
+    game.start()

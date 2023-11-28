@@ -10,11 +10,19 @@ class ImageSprite(Sprite):
         y_center: int = 0,
         top: int = None,
         left: int = None,
+        target_size: tuple[int | None, int | None] = (None, None)
     ) -> None:
         self.image = pygame.image.load(image_path)
 
         width = self.image.get_width()
         height = self.image.get_height()
+
+        if not target_size[0]:
+            target_size = (width, target_size[1])
+        if not target_size[1]:
+            target_size = (target_size[0], height)
+
+        self.image = pygame.transform.scale(self.image, target_size)
 
         if not top:
             top = y_center - self.image.get_height() / 2

@@ -35,7 +35,9 @@ class Game:
         self.world = World(c, c.WORLD_NAME, c.WORLD_DESCRIPTION, c.WORLD_POSITION)
         self.race_track = Map(c, c.MAP_NAME, c.MAP_DESCRIPTION, c.MAP_POSITION)
         self.player = Player(c, c.PLAYER_NAME, c.PLAYER_DESCRIPTION, c.PLAYER_POSITION)
-        from menu import Menu
+
+        from menu import Menu  # import menu over here due to circular import problems
+
         self.menu = Menu()
 
         # Player properties
@@ -43,12 +45,14 @@ class Game:
         self.player1 = self.player.prepare(c.PLAYER_CURRENT_FRAME)
 
     def start(self):
+        # show the menu over and over again
         while True:
             match self.menu.show(self):
-                case 1:
+                case 1:  # 1=start game
                     self.update()
-                case 2:
+                case 2:  # 2=quit
                     return
+                # add more cases e.g. for a leader board
 
     def update(self):
         # Start game loop
