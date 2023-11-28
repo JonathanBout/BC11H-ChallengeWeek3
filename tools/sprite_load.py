@@ -7,7 +7,7 @@ from os import listdir
 
 def load_sprites():
     found_images = {}
-    for file in listdir("assets/sprites"):
+    for file in listdir("../assets/sprites"):
         if file.lower().endswith(".png"):
             found_images[file.rstrip(".png")] = "assets/sprites/" + file
 
@@ -28,16 +28,17 @@ def get_{short_name}_sprite(
     ]
 
     file_content = """'''
-THIS IS AUTO-GENERATED CODE GENERATED FOR EVERY .PNG FILE IN THE 'sprites' FOLDER.
+[CHALLENGEWEEK 3] THIS IS AUTO-GENERATED CODE GENERATED FOR EVERY .PNG FILE IN THE 'sprites' FOLDER.
 ANY CHANGES TO THIS FILE WILL BE DISCARDED WHEN THE CODE IS REGENERATED.
 '''
 from util.sprite_overrides import ImageSprite
 from pygame.image import load
 
+
 """
 
     file_content += "\n".join(found_images)
-    with open("game/sprites.py", "w") as file:
+    with open("../game/sprites.py", "w") as file:
         file.write(file_content)
 
 

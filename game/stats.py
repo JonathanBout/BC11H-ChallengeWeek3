@@ -1,8 +1,7 @@
 from datetime import datetime
 import pygame
 from pygame.font import Font
-from game import config, sprites
-import helper
+from game import config, sprites, helper
 import json
 from os.path import isfile
 

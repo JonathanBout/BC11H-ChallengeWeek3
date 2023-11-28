@@ -1,7 +1,6 @@
-import helper
 import pygame
 
-from game import config
+from game import config, helper
 from game import sprites
 
 
