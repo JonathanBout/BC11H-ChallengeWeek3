@@ -7,7 +7,7 @@ from os.path import isfile
 
 
 class Stat:
-    def __init__(self, score: int, date: datetime) -> None:
+    def __init__(self, score: str, date: datetime) -> None:
         self.score = score
         self.date = date
 
@@ -70,8 +70,8 @@ class Stats:
             stored_scores = json.load(stats_file)
             return [Stat(score["score"], score["date"]) for score in stored_scores]
 
-    def add_stats(self, score):
+    def add_stat(self, score):
         current_stats = self.get_stats()
-        current_stats.append(Stat(score, datetime.now()))
+        current_stats.append(Stat(str(score), datetime.now()))
         with open(config.STATS_FILE, "w") as stats_file:
             json.dump(current_stats, stats_file)

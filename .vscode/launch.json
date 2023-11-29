@@ -10,7 +10,7 @@
       "request": "launch",
       "program": "../tools/sprite_load.py",
       "console": "externalTerminal",
-	  "cwd": "${workspaceFolder}/tools",
+      "cwd": "${workspaceFolder}/tools",
       "justMyCode": true
     },
     {
@@ -20,7 +20,7 @@
       "program": "${file}",
       "console": "externalTerminal",
       "justMyCode": true,
-	  "cwd": "${workspaceFolder}"
+      "cwd": "${workspaceFolder}"
     },
     {
       "name": "Python: Game",
