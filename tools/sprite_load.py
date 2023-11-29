@@ -3,14 +3,20 @@ This little script loads all sprites from the sprites folder and puts them in th
 """
 
 from os import listdir
+from time import sleep
+from os.path import abspath
 
 
 def load_sprites():
     found_images = {}
+    print("Generating sprites...")
     for file in listdir("../assets/sprites"):
         if file.lower().endswith(".png"):
+            print("\r" + file.ljust(25), end="")
             found_images[file.rstrip(".png")] = "assets/sprites/" + file
-
+            # sleep just to make it look impressive :D
+            sleep(0.001)
+    print(f"\rFound {len(found_images)} sprites.".ljust(25))
     found_images = [
         f"""
 {short_name} = load(r"{full_name}")
@@ -35,10 +41,13 @@ from util.sprite_overrides import ImageSprite
 from pygame.image import load
 
 """
-
+    absolute_path = abspath("../game/sprites.py")
+    print("writing to", absolute_path)
     file_content += "\n".join(found_images)
     with open("../game/sprites.py", "w") as file:
         file.write(file_content)
+
+    print("Done!")
 
 
 if __name__ == "__main__":
