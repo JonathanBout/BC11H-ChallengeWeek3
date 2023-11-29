@@ -1,11 +1,14 @@
 import pygame
 
+import game.config as c
 from game import config, helper
 from game import sprites
 
 
 class Menu:
     def __init__(self) -> None:
+        pygame.display.set_caption(f"{c.GAME_TITLE}")
+
         self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode(
             (config.SCREEN_WIDTH, config.SCREEN_HEIGHT)

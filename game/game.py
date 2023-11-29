@@ -78,6 +78,9 @@ class Game:
                 # if the event type is QUIT then exit the program
                 if event.type == pygame.QUIT:
                     exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.menu.show()
 
             # Give the game some time to process events
             pygame.time.wait(10)
