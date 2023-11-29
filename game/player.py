@@ -70,20 +70,22 @@ class Player(World):
         player = Player()
         player.move(screen)
         """
+        # We can't divide by zero, so we check if the current fps is zero.
         if c.CURRENT_FPS == 0:
             print("CURRENT_FPS value is Zero! Please, check the value.")
         else:
             self.display.dt = 1.0 / c.CURRENT_FPS
 
-        # Initialize player speed and acceleration
+        # Initialize player speed, acceleration and friction
         player_speed = c.PLAYER_CURRENT_SPEED
-        player_acceleration = c.PLAYER_MAX_SPEED  # Adjust this acceleration parameter for more gradual movement
+        player_acceleration = c.PLAYER_MAX_SPEED
+        player_friction = c.PLAYER_FRICTION
 
         # Get the state of all keyboard buttons
         keys = pygame.key.get_pressed()
 
         # Get the current player position
-        player_pos = pygame.Vector2(*c.PLAYER_CURRENT_POSITION)
+        player_rect = pygame.Rect(c.PLAYER_CURRENT_POSITION, (c.PLAYER_SPRITE_WIDTH, c.PLAYER_SPRITE_HEIGHT))
 
         # Set the frame to idle
         frame_idle = (self.num_sprites // 2)
@@ -92,31 +94,49 @@ class Player(World):
         # Set the frame delta based on whether the player is moving horizontally
         frame_delta = 1 if keys[pygame.K_a] or keys[pygame.K_d] else 0
 
+        # Get the initial player speed
+        initial_player_speed = player_speed
+
+        # Adjust player speed based on acceleration and friction
+        if c.PLAYER_CURRENT_SPEED < c.PLAYER_MAX_SPEED:
+            player_speed = (initial_player_speed + player_acceleration * self.display.dt) * player_friction
+
         # Adjust player position based on key presses and adjust frame accordingly
         if keys[pygame.K_w]:
-            player_speed = player_acceleration * self.display.dt
-            player_pos.y -= player_speed
+            player_rect.y -= int(player_speed)
             c.PLAYER_CURRENT_FRAME = 0
         if keys[pygame.K_s]:
-            player_speed = player_acceleration * self.display.dt
-            player_pos.y += player_speed
+            player_rect.y += int(player_speed)
             c.PLAYER_CURRENT_FRAME = 10
         if keys[pygame.K_a]:
-            player_speed = player_acceleration * self.display.dt
-            player_pos.x -= player_speed
+            player_rect.x -= int(player_speed)
             c.PLAYER_CURRENT_FRAME = min(c.PLAYER_CURRENT_FRAME + frame_delta, self.num_sprites - 4)
         if keys[pygame.K_d]:
-            player_speed = player_acceleration * self.display.dt
-            player_pos.x += player_speed
+            player_rect.x += int(player_speed)
             c.PLAYER_CURRENT_FRAME = min(c.PLAYER_CURRENT_FRAME + frame_delta, self.num_sprites - 4)
+
+        # Boost player speed if shift is pressed
+        store_speed = player_speed
+        if keys[pygame.K_LSHIFT]:
+            player_speed = player_speed * 2.5
+        else:
+            player_speed = store_speed
+
+        # Save the (new) current player speed to the config
+        c.PLAYER_CURRENT_SPEED = player_speed
 
         # If no keys are pressed, set the frame to idle.
         if not any([keys[pygame.K_w], keys[pygame.K_s], keys[pygame.K_a], keys[pygame.K_d]]):
             c.PLAYER_CURRENT_FRAME = frame_idle
 
-        # Update player position in the config
-        c.PLAYER_CURRENT_POSITION[0] = player_pos.x
-        c.PLAYER_CURRENT_POSITION[1] = player_pos.y
+        # Define the screen dimensions as a rect object
+        screen_rect = pygame.Rect(0, 0, c.SCREEN_WIDTH-c.PLAYER_SPRITE_WIDTH, c.SCREEN_HEIGHT-c.PLAYER_SPRITE_HEIGHT)
+
+        # Clamp the player_rect to the screen dimensions
+        player_rect.clamp_ip(screen_rect)
+
+        # Update player position in the config to the possibly clamped player_rect
+        c.PLAYER_CURRENT_POSITION[0], c.PLAYER_CURRENT_POSITION[1] = player_rect.topleft
 
         # Draw character at new position and update the display
         screen.blit(self.prepare(c.PLAYER_CURRENT_FRAME), c.PLAYER_CURRENT_POSITION)
