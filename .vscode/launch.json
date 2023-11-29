@@ -5,19 +5,29 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Python: Generate Sprites",
+      "type": "python",
+      "request": "launch",
+      "program": "../tools/sprite_load.py",
+      "console": "externalTerminal",
+	  "cwd": "${workspaceFolder}/tools",
+      "justMyCode": true
+    },
+    {
       "name": "Python: Current File",
       "type": "python",
       "request": "launch",
       "program": "${file}",
       "console": "externalTerminal",
-      "justMyCode": true
+      "justMyCode": true,
+	  "cwd": "${workspaceFolder}"
     },
     {
       "name": "Python: Game",
       "type": "python",
       "request": "launch",
       "program": "main.py",
-	  "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}",
       "console": "externalTerminal",
       "justMyCode": true
     }

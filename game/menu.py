@@ -12,8 +12,8 @@ class Menu:
         )
 
         self.background_image = sprites.get_menu_background_sprite(
-            x_center=config.SCREEN_CENTER_X,
-            y_center=config.SCREEN_CENTER_Y,
+            left=0,
+            right=0,
             target_size=config.SCREEN_SIZE,
         )
 
@@ -36,6 +36,21 @@ class Menu:
         self.button_stats = sprites.get_button_stats_sprite(
             x_center=config.SCREEN_CENTER_X, top=self.button_quit_image.rect.bottom + 10
         )
+        self.button_credits = sprites.get_powerup_box_sprite(
+            left=10,
+            top=config.SCREEN_HEIGHT
+            - 60,  # subtract 60, as height=50 and offset from bottom 10
+            target_size=(50, 50),
+        )
+
+        self.to_blit = [(image.image, image.rect) for image in [
+            self.background_image,
+            self.logo,
+            self.button_start_game,
+            self.button_quit_image,
+            self.button_stats,
+            self.button_credits,
+        ]]
 
     def show(self):
         pygame.display.flip()
@@ -45,15 +60,7 @@ class Menu:
         return x
 
     def __show_menu(self) -> int:
-        self.screen.blits(
-            [
-                (self.background_image.image, self.background_image.rect),
-                (self.logo.image, self.logo.rect),
-                (self.button_quit_image.image, self.button_quit_image.rect),
-                (self.button_start_game.image, self.button_start_game.rect),
-                (self.button_stats.image, self.button_stats.rect),
-            ]
-        )
+        self.screen.blits(self.to_blit)
 
         if self.button_start_game.is_clicked():
             return 1

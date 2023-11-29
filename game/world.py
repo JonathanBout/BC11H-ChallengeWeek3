@@ -4,7 +4,7 @@ class World:
     description = "description_placeholder"
     position = [0, 0]
 
-    def __init__(self, config, name, description, position):
+    def __init__(self, config, name: str, description: str, position: tuple[int, int]):
         """
         Constructor for the World class.
         :param config: The configuration for the world.
