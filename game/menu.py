@@ -12,8 +12,8 @@ class Menu:
         )
 
         self.background_image = sprites.get_menu_background_sprite(
-            left=0,
-            top=0,
+            left=1,
+            top=1,
             target_size=config.SCREEN_SIZE,
         )
 
