@@ -21,14 +21,14 @@ def get_{short_name}_sprite(
       y_center: int = 0,
       top: int = None,
       left: int = None,
-      target_size: tuple[int | None, int | None] | None = None):
+      target_size: tuple[int | None, int | None] = None):
     return ImageSprite(r"{full_name}", x_center, y_center, top, left, target_size)
 """
         for short_name, full_name in found_images.items()
     ]
 
     file_content = """'''
-[CHALLENGEWEEK 3] THIS IS AUTO-GENERATED CODE GENERATED FOR EVERY .PNG FILE IN THE 'sprites' FOLDER.
+THIS IS AUTO-GENERATED CODE GENERATED FOR EVERY .PNG FILE IN THE 'sprites' FOLDER.
 ANY CHANGES TO THIS FILE WILL BE DISCARDED WHEN THE CODE IS REGENERATED.
 '''
 from util.sprite_overrides import ImageSprite

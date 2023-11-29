@@ -13,7 +13,7 @@ class Menu:
 
         self.background_image = sprites.get_menu_background_sprite(
             left=0,
-            right=0,
+            top=0,
             target_size=config.SCREEN_SIZE,
         )
 
@@ -54,6 +54,7 @@ class Menu:
 
     def show(self):
         pygame.display.flip()
+        self.screen.fill("black")
         while (x := self.__show_menu()) == 0:
             helper.exit_if_user_wants()
             pygame.display.flip()
