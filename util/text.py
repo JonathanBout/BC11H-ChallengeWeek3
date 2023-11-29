@@ -1,5 +1,6 @@
 import pygame
 
+
 class TextObject:
     def __init__(self, surface, position, creation_time, delay):
         self.surface = surface
