@@ -1,4 +1,5 @@
-import pygame  # noqa: E402
+import pygame
+from game.camera import Camera  # noqa: E402
 
 import game.config as c
 from game.display import Display
@@ -45,7 +46,7 @@ class Game:
         self.world = World(c, c.WORLD_NAME, c.WORLD_DESCRIPTION, c.WORLD_POSITION)
         self.race_track = Map(c, c.MAP_NAME, c.MAP_DESCRIPTION, c.MAP_POSITION)
         self.player = Player(c, c.PLAYER_NAME, c.PLAYER_DESCRIPTION, c.PLAYER_POSITION)
-
+        self.camera = Camera()
         # Player properties
         self.player1 = self.player.prepare(c.PLAYER_CURRENT_FRAME)
 
@@ -94,11 +95,8 @@ class Game:
                     did_win = False
                     break
 
-            # Give the game some time to process events
-            pygame.time.wait(10)
-
             # Move the player
-            self.player1 = self.player.move(self.display.screen)
+            self.player1 = self.player.move(self.display.screen, self.camera)
 
             # Check if player is on the road
             self.player1 = self.player.check_for_events(self.display.screen)
