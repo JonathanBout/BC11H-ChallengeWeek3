@@ -76,7 +76,7 @@ class Game:
 
         if run_game:
             self.rainbow_road_music.set_volume(0.1)
-            self.rainbow_road_music.play()
+            self.rainbow_road_music.play(-1)
 
         while run_game:
             # Set the current window caption

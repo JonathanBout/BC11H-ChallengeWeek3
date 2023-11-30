@@ -11,9 +11,9 @@ class Music:
     def set_channel(self, channel_id):
         self.channel = pygame.mixer.Channel(channel_id)
 
-    def play(self):
+    def play(self, loop=0):
         if not self.channel.get_busy():
-            self.channel.play(self.sound_file)
+            self.channel.play(self.sound_file, loops=loop)
 
     def stop(self):
         self.channel.stop()
