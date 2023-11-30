@@ -91,6 +91,7 @@ class Game:
                     if event.key == pygame.K_ESCAPE:
                         self.menu.show()
                 if event.type == c.PLAYER_GAMEOVER_EVENT:
+                    self.camera.reset()
                     run_game = False
                     did_win = False
                     break

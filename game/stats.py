@@ -57,7 +57,8 @@ class Stats:
             text_to_show = ""
             place = 1
             for stat in self.get_stats(top=10):
-                text_to_show += f"{str(place).rjust(2)}. {stat.date.strftime('%b %d %Y, %H:%M')}: {stat.score} points\r\n"
+                text_to_show += f"{str(place).rjust(2)}. {stat.date.strftime('%b %d %Y, %H:%M')}: \
+{stat.score} points\r\n"
                 place += 1
 
             if text_to_show == "":

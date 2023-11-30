@@ -21,3 +21,6 @@ class Camera:
             player_rect.right += config.PLAYER_CURRENT_SPEED
 
         return player_rect, screen_rect
+
+    def reset(self):
+        config.MAP_POSITION = [0, 0]
