@@ -114,10 +114,11 @@ class Game:
             self.player1 = self.player.move(self.display.screen, self.camera)
 
             # Check if player is on the road
-            self.player1 = self.player.check_for_events(self.display.screen)
 
             # Update both the display and fps
             self.display.draw()
+
+            self.player1 = self.player.check_for_events(self.display.screen)
 
         if did_win:
             self.rainbow_road_music.stop_on_channel(0)
