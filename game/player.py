@@ -190,9 +190,7 @@ class Player(World):
         respawn_event = RespawnEvent(
             screen,
             c.PLAYER_CURRENT_POSITION,
-            TextRenderer(None, 32),
             c.RESPAWN_SOUND,
-            (c.SCREEN_CENTER_X, c.SCREEN_CENTER_Y),
         )
 
         # Register the respawn event with the event manager

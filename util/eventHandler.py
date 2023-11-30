@@ -15,13 +15,11 @@ class CustomEvent:
 
 
 class RespawnEvent(CustomEvent):
-    def __init__(self, screen, player_position, text_renderer, respawn_sound, screen_center):
+    def __init__(self, screen, player_position, respawn_sound):
         super().__init__()
         self.screen = screen
         self.player_position = player_position
-        self.text_renderer = text_renderer
         self.respawn_sound = Music(respawn_sound, 1)
-        self.screen_center = screen_center
         self.is_respawn_triggered = False
 
     def trigger(self):
@@ -54,16 +52,8 @@ class RespawnEvent(CustomEvent):
         self.respawn_sound.play()
         c.MAP_POSITION = [0, 0]
         c.PLAYER_CURRENT_POSITION = c.PLAYER_RESPAWN_POSITION[:]
-        self.text_renderer.render_text(
-            self.screen,
-            "You are no longer on the road!",
-            (255, 255, 255),
-            (self.screen_center[0] - 200, self.screen_center[1] - 100)
-        )
 
         pygame.event.post(pygame.event.Event(c.PLAYER_GAMEOVER_EVENT))
-
-        self.text_renderer.update(self.screen)
 
 
 class EventManager:
