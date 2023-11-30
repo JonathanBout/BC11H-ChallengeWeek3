@@ -82,7 +82,7 @@ class Game:
 
         while run_game:
             # Set the current window caption
-            pygame.display.set_caption(f"{c.WORLD_NAME} - {c.CURRENT_FPS}")
+            pygame.display.set_caption(f"{c.WORLD_NAME} - {c.CURRENT_FPS:.2f}")
 
             # Check for events
             for event in pygame.event.get():

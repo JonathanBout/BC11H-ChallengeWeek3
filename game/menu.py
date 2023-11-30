@@ -26,14 +26,14 @@ class Menu:
 
         self.button_start_game = sprites.get_button_start_sprite(
             x_center=config.SCREEN_CENTER_X,
-            top=self.logo.rect.bottom + 10,
+            top=self.logo.rect.bottom + 20,
         )
         self.button_quit_image = sprites.get_button_quit_sprite(
             x_center=config.SCREEN_CENTER_X,
-            top=self.button_start_game.rect.bottom + 10,
+            top=self.button_start_game.rect.bottom + 20,
         )
         self.button_stats = sprites.get_button_stats_sprite(
-            x_center=config.SCREEN_CENTER_X, top=self.button_quit_image.rect.bottom + 10
+            x_center=config.SCREEN_CENTER_X, top=self.button_quit_image.rect.bottom + 20
         )
         self.button_credits = sprites.get_powerup_box_sprite(
             left=10,

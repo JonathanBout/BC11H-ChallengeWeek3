@@ -66,5 +66,7 @@ class Display:
 
         # Fill the screen with a custom background
         background = pygame.image.load(c.WORLD_BACKGROUND)
-        background = pygame.transform.scale(background, (c.SCREEN_WIDTH * 2, c.SCREEN_HEIGHT * 2))
+        background = pygame.transform.scale(
+            background, (c.SCREEN_WIDTH * 2, c.SCREEN_HEIGHT * 2)
+        )
         self.screen.blit(background, c.MAP_POSITION)
