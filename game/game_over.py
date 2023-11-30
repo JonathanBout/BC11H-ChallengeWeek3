@@ -25,7 +25,7 @@ class GameOver:
         )
 
         # self.to_menu_button = sprites
-        self.play_again_button = sprites.get_button_playagain_sprite(
+        self.play_again_button = sprites.get_button_playagai_sprite(
             config.SCREEN_CENTER_X, top=self.game_over_text.rect.bottom + 20
         )
 
