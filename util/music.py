@@ -6,6 +6,7 @@ class Music:
         pygame.mixer.init()
         self.sound_file = pygame.mixer.Sound(music_file)
         self.channel = pygame.mixer.Channel(channel_id)
+        self.volume = self.channel.get_volume()
 
     def set_channel(self, channel_id):
         self.channel = pygame.mixer.Channel(channel_id)

@@ -73,7 +73,7 @@ class Game:
         did_win = False
 
         if run_game:
-            self.rainbow_road_music.set_volume(self.rainbow_road_music.get_volume() / 10)
+            self.rainbow_road_music.set_volume(0.1)
             self.rainbow_road_music.play()
 
         while run_game:
@@ -87,6 +87,10 @@ class Game:
                     if event.key == pygame.K_ESCAPE:
                         c.GAME_PAUSED = True
                         self.show_menu(True)
+                if event.type == c.GAME_PAUSED:
+                    self.rainbow_road_music.pause()
+                else:
+                    self.rainbow_road_music.unpause()
                 if event.type == c.PLAYER_GAMEOVER_EVENT:
                     self.camera.reset()
                     run_game = False
