@@ -17,6 +17,15 @@ class Music:
     def stop(self):
         self.channel.stop()
 
+    def stop_on_channel(self, channel_id):
+        pygame.mixer.Channel(channel_id).stop()
+
+    def set_volume(self, volume):
+        self.channel.set_volume(volume)
+
+    def get_volume(self):
+        return self.channel.get_volume()
+
     def pause(self):
         self.channel.pause()
 

@@ -10,6 +10,7 @@ from game.world import World
 from game.map import Map
 from game.player import Player
 from game.credits import Credits
+from util.music import Music
 
 
 class Game:
@@ -49,6 +50,8 @@ class Game:
         self.camera = Camera()
         # Player properties
         self.player1 = self.player.prepare(c.PLAYER_CURRENT_FRAME)
+        # Music
+        self.rainbow_road_music = Music(c.MUSIC_RAINBOW_ROAD, 0)
 
     def start(self):
         """
@@ -80,6 +83,10 @@ class Game:
         run_game = True
         did_win = False
 
+        if run_game:
+            self.rainbow_road_music.set_volume(self.rainbow_road_music.get_volume() / 10)
+            self.rainbow_road_music.play()
+
         while run_game:
             # Set the current window caption
             pygame.display.set_caption(f"{c.WORLD_NAME} - {c.CURRENT_FPS:.2f}")
@@ -106,9 +113,11 @@ class Game:
             self.display.draw()
 
         if did_win:
+            self.rainbow_road_music.stop_on_channel(0)
             # show win screen
             ...
         else:
+            self.rainbow_road_music.stop_on_channel(0)
             # show gameover screen
             if self.game_over.show() == 1:
                 return self.update()

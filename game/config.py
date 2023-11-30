@@ -54,5 +54,8 @@ STATS_DATE_FORMAT = "%c"
 RESPAWN_SOUND = "assets/sounds/mk64_wario05_wahhh.wav"
 POWERUP_SOUND = "assets/sounds/smb3_power-up.wav"
 
+# Music
+MUSIC_RAINBOW_ROAD = "assets/sounds/music/Mario_Kart_64_Rainbow_Road.mp3"
+
 # Camera
 SCREEN_MOVE_OFFSET = 100
