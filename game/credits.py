@@ -1,0 +1,75 @@
+from pygame.font import Font
+import pygame
+from game import config, helper, sprites
+
+
+class Credits:
+    def __init__(self, font: Font) -> None:
+        self.clock = pygame.time.Clock()
+        self.screen = pygame.display.set_mode(
+            (config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
+        )
+        self.font = font
+
+        self.background_image = sprites.get_menu_background_sprite(
+            left=0,
+            top=0,
+            target_size=(config.SCREEN_SIZE[0] * 1.3, config.SCREEN_SIZE[1] * 1.4),
+        )
+
+        self.logo = sprites.logo_menu
+
+    def show(self):
+        y_pos = config.SCREEN_CENTER_Y
+        while self.__write_to_screen("""
+
+
+
+
+
+
+programming
+----------------------------------
+Ruben Flinterman
+Jonathan Bout
+
+
+
+
+
+
+project management
+----------------------------------
+Ruben Flinterman
+Jonathan Bout
+
+
+
+
+
+
+
+planning
+----------------------------------
+Ruben Flinterman
+Jonathan Bout
+""", y_pos):
+            y_pos -= 1
+            self.clock.tick(120)
+            pygame.display.flip()
+            helper.exit_if_user_wants()
+
+    def __write_to_screen(self, text: str, distance_from_top: int) -> bool:
+        last_y = distance_from_top
+        lines_to_blit = [(self.logo, (config.SCREEN_CENTER_X - self.logo.get_width() / 2, last_y))]
+        last_y += self.logo.get_height()
+        for line in text.split("\n"):
+            text_to_blit = self.font.render(line, True, "black")
+            lines_to_blit.append((text_to_blit, (config.SCREEN_CENTER_X - text_to_blit.get_width() / 2, last_y)))
+            last_y += text_to_blit.get_height() + 10
+
+        self.screen.blits(
+            [(self.background_image.image, self.background_image.rect), *lines_to_blit]
+        )
+
+        return last_y > 0

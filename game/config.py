@@ -45,3 +45,4 @@ MAP_SPRITE = "assets/sprites/map_01.png"
 
 # stats
 STATS_FILE = "stats.json"
+STATS_DATE_FORMAT = "%c"

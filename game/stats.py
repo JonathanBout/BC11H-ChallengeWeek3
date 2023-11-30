@@ -3,13 +3,29 @@ import pygame
 from pygame.font import Font
 from game import config, sprites, helper
 import json
-from os.path import isfile
+from os.path import isfile, getsize
 
 
 class Stat:
-    def __init__(self, score: str, date: datetime) -> None:
+    def __init__(self, score: int, date: datetime) -> None:
         self.score = score
         self.date = date
+
+    def get_json_dict(self):
+        return {
+            "score": self.score,
+            "date": self.date.strftime(config.STATS_DATE_FORMAT),
+        }
+
+    @staticmethod
+    def from_json_dict(json_dict):
+        return Stat(
+            json_dict["score"],
+            datetime.strptime(json_dict["date"], config.STATS_DATE_FORMAT),
+        )
+
+    def get_order(self):
+        return int(self.score)
 
 
 class Stats:
@@ -40,38 +56,45 @@ class Stats:
             helper.exit_if_user_wants()
             self.screen.fill("black")
             text_to_show = ""
-            for stat in self.get_stats():
-                text_to_show += f"{stat.date.strftime()}: {stat.score}"
+            for stat in self.get_stats(top=10):
+                text_to_show += (
+                    f"{stat.date.strftime('%b %d %Y, %H:%M')}: {stat.score}\r\n"
+                )
 
             if text_to_show == "":
                 text_to_show = "No scores yet!"
 
-            text = self.font.render(text_to_show, True, "black")
-            self.screen.blits(
-                [
-                    *self.to_blit,
-                    (
-                        text,
-                        (
-                            config.SCREEN_CENTER_X - text.get_width() / 2,
-                            config.SCREEN_HEIGHT / 10,
-                        ),
-                    ),
-                ]
-            )
+            self.__write_to_screen(text_to_show)
             pygame.display.flip()
             self.clock.tick(config.MAX_FPS)
 
-    def get_stats(self) -> list[Stat]:
-        if not isfile(config.STATS_FILE):
+    def __write_to_screen(self, text: str):
+        lines_to_blit = []
+        last_y = 10
+        for line in text.split("\n"):
+            text_to_blit = self.font.render(line, True, "black")
+            lines_to_blit.append((text_to_blit, (30, last_y)))
+            last_y += text_to_blit.get_height() + 10
+
+        self.screen.blits([*self.to_blit, *lines_to_blit])
+
+    def get_stats(self, top=-1) -> list[Stat]:
+        if not isfile(config.STATS_FILE) or getsize(config.STATS_FILE) == 0:
             return []
 
         with open(config.STATS_FILE, "r") as stats_file:
             stored_scores = json.load(stats_file)
-            return [Stat(score["score"], score["date"]) for score in stored_scores]
+            scores = [Stat.from_json_dict(score) for score in stored_scores]
+            scores.sort(key=lambda i: i.get_order())
+            if top > 0:
+                scores = scores[:top]
+            return scores
 
-    def add_stat(self, score):
+    def add_stat(self, score: int):
         current_stats = self.get_stats()
-        current_stats.append(Stat(str(score), datetime.now()))
+        current_stats.append(Stat(score, datetime.now()))
+
+        current_stats = [stat.get_json_dict() for stat in current_stats]
+
         with open(config.STATS_FILE, "w") as stats_file:
             json.dump(current_stats, stats_file)

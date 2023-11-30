@@ -7,7 +7,7 @@ from game.stats import Stats
 from game.world import World
 from game.map import Map
 from game.player import Player
-
+from game.credits import Credits
 
 class Game:
     def __init__(self):
@@ -32,11 +32,11 @@ class Game:
 
         # set up font for text rendering - TODO: use text.py instead
         self.stats_menu_font = pygame.font.Font("assets/fonts/SuperMario256.ttf", 40)
-
+        self.credits_font = self.stats_menu_font
         # setup menu and stats
         self.menu = Menu()
         self.stats = Stats(self.stats_menu_font)
-
+        self.credits = Credits(self.credits_font)
         # initialize game objects
         self.world = World(c, c.WORLD_NAME, c.WORLD_DESCRIPTION, c.WORLD_POSITION)
         self.race_track = Map(c, c.MAP_NAME, c.MAP_DESCRIPTION, c.MAP_POSITION)
@@ -61,6 +61,7 @@ class Game:
                     self.stats.show()
                     continue
                 case 4:  # 4=credits
+                    self.credits.show()
                     continue
                 # more cases e.g. for a leader board
 
