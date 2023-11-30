@@ -113,9 +113,7 @@ class Player(World):
 
         # Adjust player speed based on acceleration and friction
         if c.PLAYER_CURRENT_SPEED <= c.PLAYER_MAX_SPEED:
-            player_speed = (
-                initial_player_speed + player_acceleration * self.display.dt
-            ) * player_friction
+            player_speed = (initial_player_speed + player_acceleration * self.display.dt) * player_friction
 
         # Adjust player position based on key presses and adjust frame accordingly
         if keys[pygame.K_w]:
@@ -144,13 +142,13 @@ class Player(World):
 
         # Adjust player speed if moving diagonally
         if (keys[pygame.K_w] or keys[pygame.K_s]) and (
-            keys[pygame.K_a] or keys[pygame.K_d]
+                keys[pygame.K_a] or keys[pygame.K_d]
         ):
             player_speed = player_speed / math.sqrt(2)
 
         # If no keys are pressed, set the frame to idle.
         if not any(
-            [keys[pygame.K_w], keys[pygame.K_s], keys[pygame.K_a], keys[pygame.K_d]]
+                [keys[pygame.K_w], keys[pygame.K_s], keys[pygame.K_a], keys[pygame.K_d]]
         ):
             player_speed = 0
             c.PLAYER_CURRENT_FRAME = frame_idle
@@ -172,6 +170,9 @@ class Player(World):
 
         # Update player position in the config to the possibly clamped player_rect
         c.PLAYER_CURRENT_POSITION[0], c.PLAYER_CURRENT_POSITION[1] = player_rect.topleft
+
+        print(f"Player position: {player_rect.topleft}")
+        print(f"Player position: {c.MAP_POSITION}")
 
         # Draw character at new position and update the display
         screen.blit(self.prepare(c.PLAYER_CURRENT_FRAME), c.PLAYER_CURRENT_POSITION)
@@ -226,7 +227,7 @@ class Player(World):
         else:
             for var_name in dir(self.config):
                 if (
-                    var_name.isupper()
+                        var_name.isupper()
                 ):  # checking if it's constant (by convention constants are upper-case)
                     if var_name.startswith("PLAYER_"):
                         print(f"{var_name}: {getattr(self.config, var_name)}")

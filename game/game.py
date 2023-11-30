@@ -1,4 +1,6 @@
 import pygame
+
+import game.config
 from game.camera import Camera  # noqa: E402
 
 import game.config as c
