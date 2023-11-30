@@ -31,42 +31,22 @@ programming
 ----------------------------------
 Ruben Flinterman
 Jonathan Bout
-
-
-
-
-
-
+\n\n\n\n
 project management
 ----------------------------------
 Ruben Flinterman
 Jonathan Bout
-
-
-
-
-
-
+\n\n\n\n
 planning
 ----------------------------------
 Ruben Flinterman
 Jonathan Bout
-
-
-
-
-
-
+\n\n\n\n
 sounds
 ----------------------------------
 FROM
 themushroomkingdom.net
-
-
-
-
-
-
+\n\n\n\n
 sprites
 ----------------------------------
 FROM
@@ -76,12 +56,7 @@ spriters-resource.com
 MODIFIED BY
 Ruben Flinterman
 Jonathan Bout
-
-
-
-
-
-
+\n\n\n\n
 Thank you for playing (or at least installing)!
 """,
             y_pos,
