@@ -13,7 +13,7 @@ def load_sprites():
     for file in listdir("../assets/sprites"):
         if file.lower().endswith(".png"):
             print("\r" + file.ljust(25), end="")
-            found_images[file.rstrip(".png")] = "assets/sprites/" + file
+            found_images[file.removesuffix(".png")] = "assets/sprites/" + file
             # sleep just to make it look impressive :D
             sleep(0.001)
     print(f"\rFound {len(found_images)} sprites.".ljust(25))
@@ -28,7 +28,13 @@ def get_{short_name}_sprite(
       top: int = None,
       left: int = None,
       target_size: tuple[int | None, int | None] = None):
-    return SurfaceSprite(r"{full_name}", x_center, y_center, top, left, target_size)
+    return SurfaceSprite(
+        r"{full_name}",
+        x_center,
+        y_center,
+        top,
+        left,
+        target_size)
 """
         for short_name, full_name in found_images.items()
     ]
