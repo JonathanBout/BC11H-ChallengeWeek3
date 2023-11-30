@@ -1,7 +1,6 @@
 import pygame  # noqa: E402
 
 import game.config as c
-from game import helper
 from game.display import Display
 from game.game_over import GameOver
 from game.menu import Menu

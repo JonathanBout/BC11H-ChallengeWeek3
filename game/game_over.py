@@ -19,7 +19,7 @@ class GameOver:
         )
 
         self.game_over_text = SurfaceSprite(
-            self.font.render("game over", True, "black"),
+            self.font.render("game over", True, "white"),
             x_center=config.SCREEN_CENTER_X,
             top=config.SCREEN_HEIGHT / 10,
         )

@@ -56,7 +56,6 @@ class Menu:
 
     def show(self):
         pygame.display.flip()
-        self.screen.fill("black")
         while (x := self.__show_menu()) == 0:
             helper.exit_if_user_wants()
             pygame.display.flip()

@@ -76,7 +76,7 @@ Thank you for playing (or at least installing)!
         ]
         last_y += self.logo.get_height()
         for line in text.split("\n"):
-            text_to_blit = self.font.render(line, True, "black")
+            text_to_blit = self.font.render(line, True, "white")
             lines_to_blit.append(
                 (
                     text_to_blit,
