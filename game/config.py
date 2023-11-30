@@ -23,7 +23,7 @@ PLAYER_DESCRIPTION = "A fat, yellow, greedy, and smelly character."
 PLAYER_POSITION = [SCREEN_CENTER_X, SCREEN_CENTER_Y]
 PLAYER_RESPAWN_POSITION = [283.1699855873012, 101.21998571824301]
 PLAYER_CURRENT_POSITION = PLAYER_RESPAWN_POSITION[:]
-PLAYER_SPRITE = "assets/sprites/bowser.png"
+PLAYER_SPRITE = "assets/sprites/wario.png"
 PLAYER_SPRITE_WIDTH = 32
 PLAYER_SPRITE_HEIGHT = 32
 PLAYER_SPRITE_SCALE = 2
@@ -48,5 +48,5 @@ STATS_FILE = "stats.json"
 STATS_DATE_FORMAT = "%c"
 
 # sounds
-RESPAWN_SOUND = "assets/sounds/mk64_boo_laugh.wav"
+RESPAWN_SOUND = "assets/sounds/mk64_wario05_wahhh.wav"
 POWERUP_SOUND = "assets/sounds/smb3_power-up.wav"

@@ -59,6 +59,7 @@ Jonathan Bout
 
 sounds
 ----------------------------------
+FROM
 themushroomkingdom.net
 
 
@@ -70,6 +71,7 @@ sprites
 ----------------------------------
 FROM
 pygame.org/project/3596
+spriters-resource.com
 
 MODIFIED BY
 Ruben Flinterman
