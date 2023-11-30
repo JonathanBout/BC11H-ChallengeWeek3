@@ -59,18 +59,7 @@ class Game:
         :return: None
         """
         # show the menu over and over again
-        while True:
-            match self.menu.show():
-                case 1:  # 1=start game
-                    self.update()
-                case 2:  # 2=quit
-                    return
-                case 3:  # 3=stats
-                    self.stats.show()
-                    continue
-                case 4:  # 4=credits
-                    self.credits.show()
-                    continue
+        self.show_menu(False)
 
     def update(self):
         """
@@ -96,7 +85,8 @@ class Game:
                 # if the event type is QUIT then exit the program
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
-                        self.menu.show()
+                        c.GAME_PAUSED = True
+                        self.show_menu(True)
                 if event.type == c.PLAYER_GAMEOVER_EVENT:
                     self.camera.reset()
                     run_game = False
@@ -121,6 +111,27 @@ class Game:
             # show gameover screen
             if self.game_over.show() == 1:
                 return self.update()
+
+    def show_menu(self, is_pause_menu: bool):
+        while True:
+            match self.menu.show(is_pause_menu):
+                case 1:  # 1=start game
+                    if is_pause_menu:
+                        c.GAME_PAUSED = False
+                        return
+                    else:
+                        self.update()
+                case 2:  # 2=quit
+                    if is_pause_menu:
+                        exit()
+                    else:
+                        return
+                case 3:  # 3=stats
+                    self.stats.show()
+                    continue
+                case 4:  # 4=credits
+                    self.credits.show()
+                    continue
 
     def print_config(self):
         """
