@@ -34,12 +34,17 @@ class Menu:
             top=self.logo.rect.bottom + 20,
         )
 
-        self.button_quit_image = sprites.get_button_quit_sprite(
+        self.button_quit = sprites.get_button_quit_sprite(
             x_center=config.SCREEN_CENTER_X,
             top=self.button_start_game.rect.bottom + 20,
         )
+
+        self.button_back = sprites.get_button_back_to_menu_sprite(
+            x_center=config.SCREEN_CENTER_X, top=self.button_start_game.rect.bottom + 20
+        )
+
         self.button_stats = sprites.get_button_stats_sprite(
-            x_center=config.SCREEN_CENTER_X, top=self.button_quit_image.rect.bottom + 20
+            x_center=config.SCREEN_CENTER_X, top=self.button_quit.rect.bottom + 20
         )
         self.button_credits = sprites.get_powerup_box_sprite(
             left=10,
@@ -53,7 +58,6 @@ class Menu:
             for image in [
                 self.background_image,
                 self.logo,
-                self.button_quit_image,
                 self.button_stats,
                 self.button_credits,
             ]
@@ -67,18 +71,21 @@ class Menu:
         return x
 
     def __show_menu(self, is_paused: bool) -> int:
-        resume_or_start = self.button_resume_game if is_paused else self.button_start_game
+        resume_or_start = (
+            self.button_resume_game if is_paused else self.button_start_game
+        )
+        quit_or_back = self.button_back if is_paused else self.button_quit
         self.screen.blits(
             [
                 *self.to_blit,
                 (resume_or_start.image, resume_or_start.rect),
+                (quit_or_back.image, quit_or_back.rect),
             ]
         )
 
         if self.button_start_game.is_clicked():
             return 1
-        elif self.button_quit_image.is_clicked():
-            helper.exit_if_user_wants()
+        elif self.button_quit.is_clicked():
             return 2
         elif self.button_stats.is_clicked():
             return 3

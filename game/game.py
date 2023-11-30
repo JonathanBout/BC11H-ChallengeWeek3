@@ -76,7 +76,7 @@ class Game:
 
         run_game = True
         did_win = False
-
+        should_show_main_menu = False
         if run_game:
             self.rainbow_road_music.set_volume(0.1)
             self.rainbow_road_music.play(-1)
@@ -92,7 +92,10 @@ class Game:
                     if event.key == pygame.K_ESCAPE:
                         c.GAME_PAUSED = True
                         self.pause()
-                        self.show_menu(True)
+                        if not self.show_menu(True):
+                            run_game = False
+                            should_show_main_menu = True
+                            break
                         self.resume()
                         c.GAME_PAUSED = False
                 if event.type == c.GAME_PAUSE_CHANGED:
@@ -110,6 +113,9 @@ class Game:
                     did_win = True
                     break
 
+            if not run_game:
+                break
+
             # Move the player
             self.player1 = self.player.move(self.display.screen, self.camera)
 
@@ -120,15 +126,18 @@ class Game:
 
             self.player1 = self.player.check_for_events(self.display.screen)
 
+        self.camera.reset()
+        self.player.reset()
+        self.rainbow_road_music.stop_on_channel(0)
         if did_win:
-            self.rainbow_road_music.stop_on_channel(0)
             # show win screen
             ...
         else:
-            self.rainbow_road_music.stop_on_channel(0)
             # show gameover screen
-            if self.game_over.show() == 1:
+            if not should_show_main_menu and self.game_over.show() == 1:
                 return self.update()
+            # (not) temporary solution for a weird bug
+            pygame.mouse.set_pos(c.SCREEN_CENTER)
 
     def show_menu(self, is_pause_menu: bool):
         while True:
@@ -136,14 +145,11 @@ class Game:
                 case 1:  # 1=start game
                     if is_pause_menu:
                         c.GAME_PAUSED = False
-                        return
+                        return True
                     else:
                         self.update()
                 case 2:  # 2=quit
-                    if is_pause_menu:
-                        exit()
-                    else:
-                        return
+                    return False
                 case 3:  # 3=stats
                     self.stats.show()
                     continue
