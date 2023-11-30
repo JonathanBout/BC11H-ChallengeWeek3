@@ -165,8 +165,22 @@ class Player(World):
             c.SCREEN_HEIGHT - c.PLAYER_SPRITE_HEIGHT,
         )
 
-        # Clamp the player_rect to the screen dimensions
-        player_rect.clamp_ip(screen_rect)
+        Move the screen if the player is close to the edge
+        if player_rect.bottom + 100 >= screen_rect.bottom:
+            c.MAP_POSITION[1] -= player_speed
+            player_rect.top -= player_speed
+        elif player_rect.top - 100 <= screen_rect.top:
+            c.MAP_POSITION[1] += player_speed
+            player_rect.top += player_speed
+
+        if player_rect.right + 100 >= screen_rect.right:
+            c.MAP_POSITION[0] -= player_speed
+            player_rect.left -= player_speed
+        elif player_rect.left - 100 <= screen_rect.left:
+            c.MAP_POSITION[0] += player_speed
+            player_rect.right += player_speed
+
+        # player_rect.clamp_ip(screen_rect)
 
         # Update player position in the config to the possibly clamped player_rect
         c.PLAYER_CURRENT_POSITION[0], c.PLAYER_CURRENT_POSITION[1] = player_rect.topleft

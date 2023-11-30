@@ -26,6 +26,7 @@ class RespawnEvent(CustomEvent):
 
     def trigger(self):
         # Get the color of the pixel at the player's position
+
         color = self.screen.get_at(
             (
                 int(self.player_position[0] + 60),
@@ -51,6 +52,7 @@ class RespawnEvent(CustomEvent):
         print("R: ", c.PLAYER_RESPAWN_POSITION)
         print("You are no longer on the road!")
         self.respawn_sound.play()
+        c.MAP_POSITION = [0, 0]
         c.PLAYER_CURRENT_POSITION = c.PLAYER_RESPAWN_POSITION[:]
         self.text_renderer.render_text(
             self.screen,
