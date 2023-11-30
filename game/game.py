@@ -65,7 +65,6 @@ class Game:
                 case 4:  # 4=credits
                     self.credits.show()
                     continue
-                # more cases e.g. for a leader board
 
     def update(self):
         """

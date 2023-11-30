@@ -51,9 +51,16 @@ class Player(World):
         sprites = []
         for i in range(num_sprites):
             sprite_x = i * sprite_width
-            sprite = game_image.subsurface(pygame.Rect((sprite_x, 0, sprite_width, sprite_height)))
-            sprite = pygame.transform.scale(sprite, (
-                sprite_width * c.PLAYER_SPRITE_SCALE, sprite_height * c.PLAYER_SPRITE_SCALE))
+            sprite = game_image.subsurface(
+                pygame.Rect((sprite_x, 0, sprite_width, sprite_height))
+            )
+            sprite = pygame.transform.scale(
+                sprite,
+                (
+                    sprite_width * c.PLAYER_SPRITE_SCALE,
+                    sprite_height * c.PLAYER_SPRITE_SCALE,
+                ),
+            )
             sprites.append(sprite)
 
         # print("Player prepared")
@@ -87,10 +94,12 @@ class Player(World):
         keys = pygame.key.get_pressed()
 
         # Get the current player position
-        player_rect = pygame.Rect(c.PLAYER_CURRENT_POSITION, (c.PLAYER_SPRITE_WIDTH, c.PLAYER_SPRITE_HEIGHT))
+        player_rect = pygame.Rect(
+            c.PLAYER_CURRENT_POSITION, (c.PLAYER_SPRITE_WIDTH, c.PLAYER_SPRITE_HEIGHT)
+        )
 
         # Set the frame to idle
-        frame_idle = (self.num_sprites // 2)
+        frame_idle = self.num_sprites // 2
         c.PLAYER_CURRENT_FRAME = frame_idle
 
         # Set the frame delta based on whether the player is moving horizontally
@@ -101,7 +110,9 @@ class Player(World):
 
         # Adjust player speed based on acceleration and friction
         if c.PLAYER_CURRENT_SPEED <= c.PLAYER_MAX_SPEED:
-            player_speed = (initial_player_speed + player_acceleration * self.display.dt) * player_friction
+            player_speed = (
+                initial_player_speed + player_acceleration * self.display.dt
+            ) * player_friction
 
         # Adjust player position based on key presses and adjust frame accordingly
         if keys[pygame.K_w]:
@@ -112,10 +123,14 @@ class Player(World):
             c.PLAYER_CURRENT_FRAME = 10
         if keys[pygame.K_a]:
             player_rect.x -= int(player_speed)
-            c.PLAYER_CURRENT_FRAME = min(c.PLAYER_CURRENT_FRAME + frame_delta, self.num_sprites - 4)
+            c.PLAYER_CURRENT_FRAME = min(
+                c.PLAYER_CURRENT_FRAME + frame_delta, self.num_sprites - 4
+            )
         if keys[pygame.K_d]:
             player_rect.x += int(player_speed)
-            c.PLAYER_CURRENT_FRAME = min(c.PLAYER_CURRENT_FRAME + frame_delta, self.num_sprites - 4)
+            c.PLAYER_CURRENT_FRAME = min(
+                c.PLAYER_CURRENT_FRAME + frame_delta, self.num_sprites - 4
+            )
 
         # Boost player speed if shift is pressed
         store_speed = player_speed
@@ -125,11 +140,15 @@ class Player(World):
             player_speed = store_speed
 
         # Adjust player speed if moving diagonally
-        if (keys[pygame.K_w] or keys[pygame.K_s]) and (keys[pygame.K_a] or keys[pygame.K_d]):
+        if (keys[pygame.K_w] or keys[pygame.K_s]) and (
+            keys[pygame.K_a] or keys[pygame.K_d]
+        ):
             player_speed = player_speed / math.sqrt(2)
 
         # If no keys are pressed, set the frame to idle.
-        if not any([keys[pygame.K_w], keys[pygame.K_s], keys[pygame.K_a], keys[pygame.K_d]]):
+        if not any(
+            [keys[pygame.K_w], keys[pygame.K_s], keys[pygame.K_a], keys[pygame.K_d]]
+        ):
             player_speed = 0
             c.PLAYER_CURRENT_FRAME = frame_idle
 
@@ -139,7 +158,12 @@ class Player(World):
         print(f"Player speed: {c.PLAYER_CURRENT_SPEED}")
 
         # Define the screen dimensions as a rect object
-        screen_rect = pygame.Rect(0, 0, c.SCREEN_WIDTH-c.PLAYER_SPRITE_WIDTH, c.SCREEN_HEIGHT-c.PLAYER_SPRITE_HEIGHT)
+        screen_rect = pygame.Rect(
+            0,
+            0,
+            c.SCREEN_WIDTH - c.PLAYER_SPRITE_WIDTH,
+            c.SCREEN_HEIGHT - c.PLAYER_SPRITE_HEIGHT,
+        )
 
         # Clamp the player_rect to the screen dimensions
         player_rect.clamp_ip(screen_rect)
@@ -165,8 +189,8 @@ class Player(World):
             screen,
             c.PLAYER_CURRENT_POSITION,
             TextRenderer(None, 32),
-            c.PLAYER_RESPAWN_SOUND,
-            (c.SCREEN_CENTER_X, c.SCREEN_CENTER_Y)
+            c.RESPAWN_SOUND,
+            (c.SCREEN_CENTER_X, c.SCREEN_CENTER_Y),
         )
 
         # Register the respawn event with the event manager
@@ -178,14 +202,16 @@ class Player(World):
     def check_flip(self, player, flip=(False, False)):
         """
         :param player: The current player sprite.
-        :param flip: A tuple representing the flip state. The first element indicates whether the sprite should be horizontally flipped, and the second element indicates whether it should be vertically flipped. Defaults to (False, False).
+        :param flip: A tuple representing the flip state. The first element indicates whether the sprite should be
+        horizontally flipped, and the second element indicates whether it should be vertically flipped. Defaults to
+        (False, False).
         :return: The player sprite with the requested flip applied.
         """
         if c.PLAYER_SPRITE_HORIZONTAL_FLIP or c.PLAYER_SPRITE_VERTICAL_FLIP:
             player = pygame.transform.flip(
                 surface=player,
                 flip_x=c.PLAYER_SPRITE_HORIZONTAL_FLIP,
-                flip_y=c.PLAYER_SPRITE_VERTICAL_FLIP
+                flip_y=c.PLAYER_SPRITE_VERTICAL_FLIP,
             )
         return player
 
@@ -199,6 +225,8 @@ class Player(World):
             return False
         else:
             for var_name in dir(self.config):
-                if var_name.isupper():  # checking if it's constant (by convention constants are upper-case)
+                if (
+                    var_name.isupper()
+                ):  # checking if it's constant (by convention constants are upper-case)
                     if var_name.startswith("PLAYER_"):
                         print(f"{var_name}: {getattr(self.config, var_name)}")

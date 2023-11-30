@@ -1,6 +1,8 @@
 from pygame.font import Font
 import pygame
 from game import config, helper, sprites
+from util.music import Music
+from time import sleep
 
 
 class Credits:
@@ -20,14 +22,11 @@ class Credits:
         self.logo = sprites.logo_menu
 
     def show(self):
-        y_pos = config.SCREEN_CENTER_Y
-        while self.__write_to_screen("""
-
-
-
-
-
-
+        Music(config.POWERUP_SOUND).play()
+        sleep(1)
+        y_pos = config.SCREEN_HEIGHT / 10
+        while self.__write_to_screen(
+            """\n\n\n\n\n\n\n\n\n\n\n
 programming
 ----------------------------------
 Ruben Flinterman
@@ -48,24 +47,67 @@ Jonathan Bout
 
 
 
-
 planning
 ----------------------------------
 Ruben Flinterman
 Jonathan Bout
-""", y_pos):
+
+
+
+
+
+
+sounds
+----------------------------------
+FROM
+themushroomkingdom.net
+
+
+
+
+
+
+sprites
+----------------------------------
+FROM
+pygame.org/project/3596
+spriters-resource.com
+
+MODIFIED BY
+Ruben Flinterman
+Jonathan Bout
+
+
+
+
+
+
+Thank you for playing (or at least installing)!
+""",
+            y_pos,
+        ):
             y_pos -= 1
             self.clock.tick(120)
             pygame.display.flip()
             helper.exit_if_user_wants()
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_ESCAPE]:
+                break
 
     def __write_to_screen(self, text: str, distance_from_top: int) -> bool:
         last_y = distance_from_top
-        lines_to_blit = [(self.logo, (config.SCREEN_CENTER_X - self.logo.get_width() / 2, last_y))]
+        lines_to_blit = [
+            (self.logo, (config.SCREEN_CENTER_X - self.logo.get_width() / 2, last_y))
+        ]
         last_y += self.logo.get_height()
         for line in text.split("\n"):
             text_to_blit = self.font.render(line, True, "black")
-            lines_to_blit.append((text_to_blit, (config.SCREEN_CENTER_X - text_to_blit.get_width() / 2, last_y)))
+            lines_to_blit.append(
+                (
+                    text_to_blit,
+                    (config.SCREEN_CENTER_X - text_to_blit.get_width() / 2, last_y),
+                )
+            )
             last_y += text_to_blit.get_height() + 10
 
         self.screen.blits(
