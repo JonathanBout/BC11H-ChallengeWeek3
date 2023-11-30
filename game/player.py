@@ -165,7 +165,7 @@ class Player(World):
             c.SCREEN_HEIGHT - c.PLAYER_SPRITE_HEIGHT,
         )
 
-        Move the screen if the player is close to the edge
+        # Move the screen if the player is close to the edge
         if player_rect.bottom + 100 >= screen_rect.bottom:
             c.MAP_POSITION[1] -= player_speed
             player_rect.top -= player_speed
