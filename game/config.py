@@ -40,7 +40,6 @@ PLAYER_MIN_SPEED = PLAYER_MAX_SPEED / 1.5
 PLAYER_AVG_SPEED = (PLAYER_MIN_SPEED + PLAYER_MAX_SPEED) / 2
 PLAYER_FRICTION = 0.2
 PLAYER_CURRENT_SPEED = 100
-PLAYER_GAMEOVER_EVENT = pygame.event.custom_type()
 
 # Map
 MAP_NAME = WORLD_NAME
@@ -61,3 +60,8 @@ MUSIC_RAINBOW_ROAD = "assets/sounds/music/Mario_Kart_64_Rainbow_Road.mp3"
 
 # Camera
 SCREEN_MOVE_OFFSET = 100
+
+# Events
+PLAYER_GAMEOVER_EVENT = pygame.event.custom_type()
+PLAYER_WON_EVENT = pygame.event.custom_type()
+GAME_PAUSE_CHANGED = pygame.event.custom_type()
