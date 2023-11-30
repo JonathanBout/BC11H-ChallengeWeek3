@@ -9,6 +9,7 @@ from game.map import Map
 from game.player import Player
 from game.credits import Credits
 
+
 class Game:
     def __init__(self):
         """
@@ -63,7 +64,6 @@ class Game:
                 case 4:  # 4=credits
                     self.credits.show()
                     continue
-                # more cases e.g. for a leader board
 
     def update(self):
         """
