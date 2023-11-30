@@ -1,6 +1,7 @@
 import pygame  # noqa: E402
 
 import game.config as c
+from game import helper
 from game.display import Display
 from game.menu import Menu
 from game.stats import Stats
@@ -8,6 +9,7 @@ from game.world import World
 from game.map import Map
 from game.player import Player
 from game.credits import Credits
+
 
 class Game:
     def __init__(self):
@@ -79,8 +81,6 @@ class Game:
             # Check for events
             for event in pygame.event.get():
                 # if the event type is QUIT then exit the program
-                if event.type == pygame.QUIT:
-                    exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.menu.show()

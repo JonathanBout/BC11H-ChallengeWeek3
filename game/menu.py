@@ -68,6 +68,7 @@ class Menu:
         if self.button_start_game.is_clicked():
             return 1
         elif self.button_quit_image.is_clicked():
+            helper.why_quit_if_you_can_stay()
             return 2
         elif self.button_stats.is_clicked():
             return 3

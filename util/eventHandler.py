@@ -33,12 +33,18 @@ class RespawnEvent(CustomEvent):
             )
         )
 
-        # If the player is not on the road, trigger the respawn event
-        if color == (0, 0, 96, 255) and not self.is_respawn_triggered:
-            self.is_respawn_triggered = True
-            self.handle_respawn()
-        else:
+        # The color of the respawn area
+        respawn_color = (0, 0, 96, 255)
+
+        # If the player is on the road, reset the respawn trigger
+        if color != respawn_color:
             self.is_respawn_triggered = False
+
+        # If the player is not on the road, trigger the respawn event
+        if color == respawn_color:
+            if not self.is_respawn_triggered:
+                self.is_respawn_triggered = True
+                self.handle_respawn()
 
     def handle_respawn(self):
         print("C: ", c.PLAYER_CURRENT_POSITION)
@@ -52,6 +58,7 @@ class RespawnEvent(CustomEvent):
             (255, 255, 255),
             (self.screen_center[0] - 200, self.screen_center[1] - 100)
         )
+        self.text_renderer.update(self.screen)
 
 
 class EventManager:
