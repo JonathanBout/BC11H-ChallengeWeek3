@@ -1,3 +1,5 @@
+import math
+
 import pygame
 
 import game.config as c
@@ -98,7 +100,7 @@ class Player(World):
         initial_player_speed = player_speed
 
         # Adjust player speed based on acceleration and friction
-        if c.PLAYER_CURRENT_SPEED < c.PLAYER_MAX_SPEED:
+        if c.PLAYER_CURRENT_SPEED <= c.PLAYER_MAX_SPEED:
             player_speed = (initial_player_speed + player_acceleration * self.display.dt) * player_friction
 
         # Adjust player position based on key presses and adjust frame accordingly
@@ -122,12 +124,19 @@ class Player(World):
         else:
             player_speed = store_speed
 
-        # Save the (new) current player speed to the config
-        c.PLAYER_CURRENT_SPEED = player_speed
+        # Adjust player speed if moving diagonally
+        if (keys[pygame.K_w] or keys[pygame.K_s]) and (keys[pygame.K_a] or keys[pygame.K_d]):
+            player_speed = player_speed / math.sqrt(2)
 
         # If no keys are pressed, set the frame to idle.
         if not any([keys[pygame.K_w], keys[pygame.K_s], keys[pygame.K_a], keys[pygame.K_d]]):
+            player_speed = 0
             c.PLAYER_CURRENT_FRAME = frame_idle
+
+        # Save the (new) current player speed to the config
+        c.PLAYER_CURRENT_SPEED = round(player_speed, 0)
+
+        print(f"Player speed: {c.PLAYER_CURRENT_SPEED}")
 
         # Define the screen dimensions as a rect object
         screen_rect = pygame.Rect(0, 0, c.SCREEN_WIDTH-c.PLAYER_SPRITE_WIDTH, c.SCREEN_HEIGHT-c.PLAYER_SPRITE_HEIGHT)

@@ -13,6 +13,11 @@ class Display:
         # Initialize pygame.display
         pygame.display.init()
 
+        # Set logo
+        logo = pygame.image.load(c.GAME_ICON)
+        small_logo = pygame.transform.scale(logo, (32, 32))
+        pygame.display.set_icon(small_logo)
+
         # Initialize display and clock
         self.screen = None  # Initialize display/screen
         self.clock = pygame.time.Clock()  # Initialize clock

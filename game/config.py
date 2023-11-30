@@ -1,5 +1,6 @@
 # Game
 GAME_TITLE = "Wario Kart"
+GAME_ICON = "assets/sprites/powerup_box.png"
 MAX_FPS = 120
 CURRENT_FPS = 0
 SCREEN_WIDTH = 1280
