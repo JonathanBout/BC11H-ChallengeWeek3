@@ -157,6 +157,7 @@ class Player(World):
         c.PLAYER_CURRENT_SPEED = round(player_speed, 0)
 
         print(f"Player speed: {c.PLAYER_CURRENT_SPEED}")
+        print(f"Player position: {c.PLAYER_CURRENT_POSITION}")
 
         # Define the screen dimensions as a rect object
         screen_rect = pygame.Rect(

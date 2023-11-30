@@ -7,6 +7,7 @@ import game.config as c
 from game.display import Display
 from game.game_over import GameOver
 from game.menu import Menu
+from game.score_manager import ScoreManager
 from game.stats import Stats
 from game.world import World
 from game.map import Map
@@ -45,6 +46,7 @@ class Game:
         self.stats = Stats(self.stats_menu_font)
         self.credits = Credits(self.credits_font)
         self.game_over = GameOver(self.game_over_font)
+        self.score_manager = ScoreManager()
         # initialize game objects
         self.world = World(c, c.WORLD_NAME, c.WORLD_DESCRIPTION, c.WORLD_POSITION)
         self.race_track = Map(c, c.MAP_NAME, c.MAP_DESCRIPTION, c.MAP_POSITION)
@@ -64,6 +66,7 @@ class Game:
         self.show_menu(False)
 
     def update(self):
+        self.score_manager.start()
         """
         This method updates the game state and display.
         This is needed to run and play the game.
@@ -88,25 +91,34 @@ class Game:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         c.GAME_PAUSED = True
+                        self.pause()
                         self.show_menu(True)
-                if event.type == c.GAME_PAUSED:
-                    self.rainbow_road_music.pause()
-                else:
-                    self.rainbow_road_music.unpause()
+                        self.resume()
+                        c.GAME_PAUSED = False
+                if event.type == c.GAME_PAUSE_CHANGED:
+                    if c.GAME_PAUSED:
+                        self.pause()
+                    else:
+                        self.resume()
                 if event.type == c.PLAYER_GAMEOVER_EVENT:
                     self.camera.reset()
                     run_game = False
                     did_win = False
+                    break
+                if event.type == c.PLAYER_WON_EVENT:
+                    run_game = False
+                    did_win = True
                     break
 
             # Move the player
             self.player1 = self.player.move(self.display.screen, self.camera)
 
             # Check if player is on the road
-            self.player1 = self.player.check_for_events(self.display.screen)
 
             # Update both the display and fps
             self.display.draw()
+
+            self.player1 = self.player.check_for_events(self.display.screen)
 
         if did_win:
             self.rainbow_road_music.stop_on_channel(0)
@@ -148,3 +160,11 @@ class Game:
         self.world.print_config()
         self.race_track.print_config()
         self.player.print_config()
+
+    def pause(self):
+        self.rainbow_road_music.pause()
+        self.score_manager.pause()
+
+    def resume(self):
+        self.rainbow_road_music.unpause()
+        self.score_manager.resume()

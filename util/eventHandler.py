@@ -27,8 +27,8 @@ class RespawnEvent(CustomEvent):
 
         color = self.screen.get_at(
             (
-                int(self.player_position[0] + 60),
-                int(self.player_position[1] + 60)
+                int(self.player_position[0] + c.PLAYER_SPRITE_HEIGHT),
+                int(self.player_position[1] + c.PLAYER_SPRITE_WIDTH)
             )
         )
 
