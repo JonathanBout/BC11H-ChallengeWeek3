@@ -3,6 +3,7 @@ import pygame  # noqa: E402
 import game.config as c
 from game import helper
 from game.display import Display
+from game.game_over import GameOver
 from game.menu import Menu
 from game.stats import Stats
 from game.world import World
@@ -35,10 +36,12 @@ class Game:
         # set up font for text rendering - TODO: use text.py instead
         self.stats_menu_font = pygame.font.Font("assets/fonts/SuperMario256.ttf", 40)
         self.credits_font = self.stats_menu_font
+        self.game_over_font = self.stats_menu_font
         # setup menu and stats
         self.menu = Menu()
         self.stats = Stats(self.stats_menu_font)
         self.credits = Credits(self.credits_font)
+        self.game_over = GameOver(self.game_over_font)
         # initialize game objects
         self.world = World(c, c.WORLD_NAME, c.WORLD_DESCRIPTION, c.WORLD_POSITION)
         self.race_track = Map(c, c.MAP_NAME, c.MAP_DESCRIPTION, c.MAP_POSITION)
@@ -73,7 +76,11 @@ class Game:
         :return: None
         """
         # Start game loop
-        while True:
+
+        run_game = True
+        did_win = False
+
+        while run_game:
             # Set the current window caption
             pygame.display.set_caption(f"{c.WORLD_NAME} - {c.CURRENT_FPS}")
 
@@ -83,6 +90,10 @@ class Game:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.menu.show()
+                if event.type == c.PLAYER_GAMEOVER_EVENT:
+                    run_game = False
+                    did_win = False
+                    break
 
             # Give the game some time to process events
             pygame.time.wait(10)
@@ -95,6 +106,14 @@ class Game:
 
             # Update both the display and fps
             self.display.draw()
+
+        if did_win:
+            # show win screen
+            ...
+        else:
+            # show gameover screen
+            if self.game_over.show() == 1:
+                return self.update()
 
     def print_config(self):
         """

@@ -60,6 +60,9 @@ class RespawnEvent(CustomEvent):
             (255, 255, 255),
             (self.screen_center[0] - 200, self.screen_center[1] - 100)
         )
+
+        pygame.event.post(pygame.event.Event(c.PLAYER_GAMEOVER_EVENT))
+
         self.text_renderer.update(self.screen)
 
 

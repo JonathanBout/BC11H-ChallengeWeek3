@@ -1,3 +1,5 @@
+import pygame
+
 # Game
 GAME_TITLE = "Wario Kart"
 GAME_ICON = "assets/sprites/powerup_box.png"
@@ -36,6 +38,7 @@ PLAYER_MIN_SPEED = PLAYER_MAX_SPEED / 1.5
 PLAYER_AVG_SPEED = (PLAYER_MIN_SPEED + PLAYER_MAX_SPEED) / 2
 PLAYER_FRICTION = 0.2
 PLAYER_CURRENT_SPEED = 100
+PLAYER_GAMEOVER_EVENT = pygame.event.custom_type()
 
 # Map
 MAP_NAME = WORLD_NAME
@@ -43,10 +46,13 @@ MAP_DESCRIPTION = WORLD_DESCRIPTION
 MAP_POSITION = [0, 0]
 MAP_SPRITE = "assets/sprites/map_01.png"
 
-# stats
+# Stats
 STATS_FILE = "stats.json"
 STATS_DATE_FORMAT = "%c"
 
-# sounds
+# Sounds
 RESPAWN_SOUND = "assets/sounds/mk64_wario05_wahhh.wav"
 POWERUP_SOUND = "assets/sounds/smb3_power-up.wav"
+
+# Camera
+SCREEN_MOVE_OFFSET = 100

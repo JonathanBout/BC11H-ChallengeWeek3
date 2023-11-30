@@ -3,7 +3,7 @@ from pygame.sprite import Sprite
 from pygame import Surface
 
 
-class ImageSprite(Sprite):
+class SurfaceSprite(Sprite):
     def __init__(
         self,
         image: str | Surface,
