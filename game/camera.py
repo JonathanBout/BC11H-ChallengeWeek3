@@ -23,4 +23,4 @@ class Camera:
         return player_rect, screen_rect
 
     def reset(self):
-        config.MAP_POSITION = [0, 0]
+        config.MAP_POSITION = config.MAP_RESPAWN_POSITION
