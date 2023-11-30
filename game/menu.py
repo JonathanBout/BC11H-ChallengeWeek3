@@ -72,4 +72,6 @@ class Menu:
             return 2
         elif self.button_stats.is_clicked():
             return 3
+        elif self.button_credits.is_clicked():
+            return 4
         return 0

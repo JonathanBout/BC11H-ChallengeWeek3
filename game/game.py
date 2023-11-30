@@ -1,4 +1,4 @@
-import pygame
+import pygame  # noqa: E402
 
 import game.config as c
 from game.display import Display
@@ -59,6 +59,8 @@ class Game:
                     return
                 case 3:  # 3=stats
                     self.stats.show()
+                    continue
+                case 4:  # 4=credits
                     continue
                 # more cases e.g. for a leader board
 
