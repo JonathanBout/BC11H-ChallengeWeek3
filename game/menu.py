@@ -15,13 +15,9 @@ class Menu:
         )
 
         self.background_image = sprites.get_menu_background_sprite(
-            left=1,
-            top=1,
-            target_size=config.SCREEN_SIZE,
-        )
-
-        self.background_image.image = pygame.transform.scale(
-            self.background_image.image, config.SCREEN_SIZE
+            left=0,
+            top=0,
+            target_size=(config.SCREEN_SIZE[0] * 1.3, config.SCREEN_SIZE[1] * 1.4),
         )
 
         self.logo = sprites.get_logo_menu_sprite(
@@ -46,14 +42,17 @@ class Menu:
             target_size=(50, 50),
         )
 
-        self.to_blit = [(image.image, image.rect) for image in [
-            self.background_image,
-            self.logo,
-            self.button_start_game,
-            self.button_quit_image,
-            self.button_stats,
-            self.button_credits,
-        ]]
+        self.to_blit = [
+            (image.image, image.rect)
+            for image in [
+                self.background_image,
+                self.logo,
+                self.button_start_game,
+                self.button_quit_image,
+                self.button_stats,
+                self.button_credits,
+            ]
+        ]
 
     def show(self):
         pygame.display.flip()

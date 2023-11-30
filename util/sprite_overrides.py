@@ -23,7 +23,7 @@ class ImageSprite(Sprite):
                 target_size = (self.image.get_width(), target_size[1])
             if not target_size[1]:
                 target_size = (target_size[0], self.image.get_height())
-            self.image = pygame.transform.scale(self.image, target_size)
+            image = pygame.transform.scale(self.image, target_size)
 
         if not top:
             top = y_center - self.image.get_height() // 2
@@ -31,7 +31,8 @@ class ImageSprite(Sprite):
         if not left:
             left = x_center - self.image.get_width() // 2
 
-        self.rect = pygame.Rect(left, top, self.image.get_width(), self.image.get_height())
+        self.rect = pygame.Rect(left, top, image.get_width(), image.get_height())
+        self.image = image
 
     def is_clicked(self):
         return pygame.mouse.get_pressed()[0] and self.rect.collidepoint(
