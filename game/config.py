@@ -1,5 +1,6 @@
 import pygame
 
+# GAME CONFIGURATION
 # Game title
 GAME_TITLE = "Wario Kart"
 
@@ -33,6 +34,7 @@ MAX_FPS = 120
 # Current FPS
 CURRENT_FPS = 0
 
+# WORLD CONFIGURATION
 # World name
 WORLD_NAME = "Rainbow Road"
 
@@ -51,6 +53,7 @@ WORLD_WIDTH = SCREEN_WIDTH
 # World height = screen height
 WORLD_HEIGHT = SCREEN_HEIGHT
 
+# PLAYER CONFIGURATION
 # What's the player's name?
 PLAYER_NAME = "Wario"
 
@@ -105,6 +108,7 @@ PLAYER_FRICTION = 0.2
 # Player's current speed
 PLAYER_CURRENT_SPEED = 100
 
+# MAP CONFIGURATION
 # Map name is the same as the world name
 MAP_NAME = WORLD_NAME
 
@@ -120,14 +124,22 @@ MAP_RESPAWN_POSITION = MAP_POSITION[:]
 # Map sprite - TODO: change sprite, this is just a placeholder
 MAP_SPRITE = "assets/sprites/map_01.png"
 
+# STATS CONFIGURATION
 # Stats file
 STATS_FILE = "stats.json"
 
 # Stats date format
 STATS_DATE_FORMAT = "%c"
 
+# SOUND CONFIGURATION
 # Respawn sound for when player dies
 RESPAWN_SOUND = "assets/sounds/mk64_wario05_wahhh.wav"
+
+# Lap sound for when player finishes a lap
+LAP_SOUND = "assets/sounds/mk64_wario_im_gonna_win.wav"
+
+# Finish sound for when player finishes the map
+FINISH_SOUND = "assets/sounds/mk64_announcer11_jp_congratiolation.wav"
 
 # Powerup sound for credits button
 POWERUP_SOUND = "assets/sounds/smb3_power-up.wav"
@@ -135,9 +147,11 @@ POWERUP_SOUND = "assets/sounds/smb3_power-up.wav"
 # Rainbow Road music for the map
 MUSIC_RAINBOW_ROAD = "assets/sounds/music/Mario_Kart_64_Rainbow_Road.mp3"
 
+# CAMERA CONFIGURATION
 # How close the player has to be to the edge of the screen for the screen to move
 SCREEN_MOVE_OFFSET = 100
 
+# EVENT CONFIGURATION
 # Player gameover event
 PLAYER_GAMEOVER_EVENT = pygame.event.custom_type()
 
@@ -146,3 +160,10 @@ PLAYER_WON_EVENT = pygame.event.custom_type()
 
 # Game pause changed event
 GAME_PAUSE_CHANGED = pygame.event.custom_type()
+
+# RACE TRACK CONFIGURATION
+# Set laps until finish
+RACE_LAPS = 2
+
+# Keep track of the current lap
+RACE_CURRENT_LAP = 0

@@ -140,6 +140,8 @@ class Game:
             if not run_game:
                 break
 
+            print(c.RACE_CURRENT_LAP)
+
             # Move player 1
             self.player1 = self.player.move(self.display.screen, self.camera)
 

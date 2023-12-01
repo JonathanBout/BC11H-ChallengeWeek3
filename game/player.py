@@ -6,7 +6,7 @@ from pygame.surface import Surface
 from game.camera import Camera
 
 import game.config as c
-from util.eventHandler import EventManager, RespawnEvent
+from util.eventHandler import EventManager, RespawnEvent, FinishEvent
 from util.text import TextRenderer
 from game.world import World
 from game.display import Display
@@ -196,8 +196,15 @@ class Player(World):
             c.RESPAWN_SOUND,
         )
 
-        # Register the respawn event with the event manager
+        finish_event = FinishEvent(
+            screen,
+            c.PLAYER_CURRENT_POSITION,
+            c.FINISH_SOUND,
+        )
+
+        # Register the events with the event manager
         event_manager.register_event(respawn_event)
+        event_manager.register_event(finish_event)
 
         # Trigger the respawn event
         event_manager.trigger_events()

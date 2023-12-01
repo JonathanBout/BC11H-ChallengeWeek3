@@ -24,7 +24,6 @@ class RespawnEvent(CustomEvent):
 
     def trigger(self):
         # Get the color of the pixel at the player's position
-
         color = self.screen.get_at(
             (
                 int(self.player_position[0] + c.PLAYER_SPRITE_HEIGHT * 2),
@@ -54,6 +53,53 @@ class RespawnEvent(CustomEvent):
         c.PLAYER_CURRENT_POSITION = c.PLAYER_RESPAWN_POSITION[:]
 
         pygame.event.post(pygame.event.Event(c.PLAYER_GAMEOVER_EVENT))
+
+
+class FinishEvent(CustomEvent):
+    def __init__(self, screen, player_position, finish_sound):
+        super().__init__()
+        self.screen = screen
+        self.player_position = player_position
+        self.finish_sound = Music(finish_sound, 2)
+        self.lap_sound = Music(c.LAP_SOUND, 1)
+        self.is_finish_triggered = False
+        self.finish_count = 0
+
+    def trigger(self):
+        # Get the color of the pixel at the player's position
+        color = self.screen.get_at(
+            (
+                int(self.player_position[0] + c.PLAYER_SPRITE_HEIGHT * 2),
+                int(self.player_position[1] + c.PLAYER_SPRITE_WIDTH * 2)
+            )
+        )
+
+        print(color)
+
+        # The color of the respawn area
+        finish_color = (248, 248, 248, 255)
+
+        # If the player is on the road, reset the respawn trigger
+        if color != finish_color:
+            self.is_finish_triggered = False
+
+        # If the player is not on the road, trigger the respawn event
+        if color == finish_color:
+            keys = pygame.key.get_pressed()
+            backwards = keys[pygame.K_s]
+            if not backwards:
+                c.RACE_CURRENT_LAP += 1
+            if not backwards and c.RACE_CURRENT_LAP > c.RACE_LAPS+1:
+                self.is_finish_triggered = True
+            if not self.is_finish_triggered:
+                if 2 < c.RACE_CURRENT_LAP:
+                    self.lap_sound.play()
+
+        if self.is_finish_triggered:
+            self.handle_finish()
+
+    def handle_finish(self):
+        self.finish_sound.play()
 
 
 class EventManager:
