@@ -4,8 +4,8 @@ from game import config
 
 
 class Camera:
+    # Move the screen if the player is close to the edge
     def do_movement(self, player_rect: Rect, screen_rect: Rect) -> tuple[Rect, Rect]:
-        # Move the screen if the player is close to the edge
         if player_rect.bottom + config.SCREEN_MOVE_OFFSET >= screen_rect.bottom:
             config.MAP_POSITION[1] -= config.PLAYER_CURRENT_SPEED
             player_rect.top -= config.PLAYER_CURRENT_SPEED
@@ -22,5 +22,6 @@ class Camera:
 
         return player_rect, screen_rect
 
+    # Reset the camera to the spawn position
     def reset(self):
         config.MAP_POSITION = config.MAP_RESPAWN_POSITION

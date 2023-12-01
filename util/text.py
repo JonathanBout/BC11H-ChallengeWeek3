@@ -16,14 +16,30 @@ class TextRenderer:
         self.text_objects = []  # Temporary storage for text objects
 
     def render_text(self, surface, text, color, position, delay=3000):
+        """
+        Renders a piece of text onto the given surface at the specified position.
+        :param surface: The surface to render the text onto.
+        :param text: The text to be rendered.
+        :param color: The color of the text.
+        :param position: The position of the text on the surface. (x, y)
+        :param delay: The delay in milliseconds before the text disappears. Default is 3000ms.
+        :return: None
+        """
         text_surface = self.font.render(text, True, color)
         text_object = TextObject(text_surface, position, pygame.time.get_ticks(), delay)
         self.text_objects.append(text_object)
         self.update(surface)
 
     def update(self, surface):
+        """
+        Update method to render text objects on a given surface.
+        :param surface: The surface to render text objects onto.
+        :type surface: pygame.Surface
+        :return: None
+        """
         current_time = pygame.time.get_ticks()
-        self.text_objects = [text_object for text_object in self.text_objects if
-                             current_time - text_object.creation_time < text_object.delay]
+        self.text_objects = [
+            text_object for text_object in self.text_objects if current_time - text_object.creation_time < text_object.delay
+        ]
         for text_object in self.text_objects:
             surface.blit(text_object.surface, text_object.position)

@@ -31,6 +31,6 @@ class World:
             return False
         else:
             for var_name in dir(self.config):
-                if var_name.isupper():  # checking if it's constant (by convention constants are upper-case)
+                if var_name.isupper():  # Checking if it's constant (by convention constants are upper-case)
                     if var_name.startswith("WORLD_"):
                         print(f"{var_name}: {getattr(self.config, var_name)}")

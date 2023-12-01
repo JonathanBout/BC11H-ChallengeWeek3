@@ -10,6 +10,7 @@ class Menu:
         pygame.display.set_caption(f"{c.GAME_TITLE}")
 
         self.clock = pygame.time.Clock()
+
         self.screen = pygame.display.set_mode(
             (config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
         )
@@ -49,7 +50,7 @@ class Menu:
         self.button_credits = sprites.get_powerup_box_sprite(
             left=10,
             top=config.SCREEN_HEIGHT
-            - 60,  # subtract 60, as height=50 and offset from bottom 10
+            - 60,  # Subtract 60, as height=50 and offset from bottom 10
             target_size=(50, 50),
         )
 

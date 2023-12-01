@@ -1,16 +1,16 @@
 from pygame.font import Font
 import pygame
 from game import config, helper, sprites
+from game.display import Display
 from util.music import Music
 from time import sleep
 
 
 class Credits:
     def __init__(self, font: Font) -> None:
-        self.clock = pygame.time.Clock()
-        self.screen = pygame.display.set_mode(
-            (config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
-        )
+
+        self.clock = Display().clock
+        self.screen = Display().set_display_size()
         self.font = font
 
         self.background_image = sprites.get_menu_background_sprite(
@@ -26,40 +26,40 @@ class Credits:
         sleep(1)
         y_pos = config.SCREEN_HEIGHT / 10
         while self.__write_to_screen(
-            """\n\n\n\n\n\n\n\n\n\n\n
-programming
-----------------------------------
-Ruben Flinterman
-Jonathan Bout
-\n\n\n\n
-project management
-----------------------------------
-Ruben Flinterman
-Jonathan Bout
-\n\n\n\n
-planning
-----------------------------------
-Ruben Flinterman
-Jonathan Bout
-\n\n\n\n
-sounds
-----------------------------------
-FROM
-themushroomkingdom.net
-\n\n\n\n
-sprites
-----------------------------------
-FROM
-pygame.org/project/3596
-spriters-resource.com
-
-MODIFIED BY
-Ruben Flinterman
-Jonathan Bout
-\n\n\n\n
-Thank you for playing (or at least installing)!
-""",
-            y_pos,
+                """\n\n\n\n\n\n\n\n\n\n\n
+    programming
+    ----------------------------------
+    Ruben Flinterman
+    Jonathan Bout
+    \n\n\n\n
+    project management
+    ----------------------------------
+    Ruben Flinterman
+    Jonathan Bout
+    \n\n\n\n
+    planning
+    ----------------------------------
+    Ruben Flinterman
+    Jonathan Bout
+    \n\n\n\n
+    sounds
+    ----------------------------------
+    FROM
+    themushroomkingdom.net
+    \n\n\n\n
+    sprites
+    ----------------------------------
+    FROM
+    pygame.org/project/3596
+    spriters-resource.com
+    
+    MODIFIED BY
+    Ruben Flinterman
+    Jonathan Bout
+    \n\n\n\n
+    Thank you for playing (or at least installing)!
+    """,
+                y_pos,
         ):
             y_pos -= 1
             self.clock.tick(120)

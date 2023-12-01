@@ -41,12 +41,15 @@ class Player(World):
             sprite = player.prepare(frame)
         Note: This method does not handle error checking for invalid frame indices.
         """
+        # Load the sprite image
         sprite_path = c.PLAYER_SPRITE
         game_image = pygame.image.load(sprite_path).convert_alpha()
 
+        # Set the sprite width and height
         sprite_width = c.PLAYER_SPRITE_WIDTH
         sprite_height = c.PLAYER_SPRITE_HEIGHT
 
+        # Calculate the number of sprites in the sprite image
         num_sprites = game_image.get_width() // sprite_width
         self.num_sprites = num_sprites
 
@@ -66,12 +69,13 @@ class Player(World):
             )
             sprites.append(sprite)
 
-        # print("Player prepared")
+        # Return the sprite at the specified frame index
         return sprites[frame]
 
     def move(self, screen: Surface, camera: Camera):
         """
         :param screen: the screen object on which to draw the player character
+        :param camera: the camera object to use for movement
         :return: None
 
         This method handles the movement of the player character based on keyboard inputs. It updates the player's
@@ -141,23 +145,17 @@ class Player(World):
             player_speed = store_speed
 
         # Adjust player speed if moving diagonally
-        if (keys[pygame.K_w] or keys[pygame.K_s]) and (
-                keys[pygame.K_a] or keys[pygame.K_d]
-        ):
+        if (keys[pygame.K_w] or keys[pygame.K_s]) and (keys[pygame.K_a] or keys[pygame.K_d]):
             player_speed = player_speed / math.sqrt(2)
 
         # If no keys are pressed, set the frame to idle.
-        if not any(
-                [keys[pygame.K_w], keys[pygame.K_s], keys[pygame.K_a], keys[pygame.K_d]]
-        ):
+        any_keys = [keys[pygame.K_w], keys[pygame.K_s], keys[pygame.K_a], keys[pygame.K_d]]
+        if not any(any_keys):
             player_speed = 0
             c.PLAYER_CURRENT_FRAME = frame_idle
 
         # Save the (new) current player speed to the config
         c.PLAYER_CURRENT_SPEED = round(player_speed, 0)
-
-        print(f"Player speed: {c.PLAYER_CURRENT_SPEED}")
-        print(f"Player position: {c.PLAYER_CURRENT_POSITION}")
 
         # Define the screen dimensions as a rect object
         screen_rect = pygame.Rect(
@@ -167,13 +165,16 @@ class Player(World):
             c.SCREEN_HEIGHT - c.PLAYER_SPRITE_HEIGHT,
         )
 
+        # Clamp the player position to the screen dimensions
         player_rect, screen_rect = camera.do_movement(player_rect, screen_rect)
 
         # Update player position in the config to the possibly clamped player_rect
         c.PLAYER_CURRENT_POSITION[0], c.PLAYER_CURRENT_POSITION[1] = player_rect.topleft
 
+        # Print player speed and player and map position
+        print(f"Player speed: {c.PLAYER_CURRENT_SPEED}")
         print(f"Player position: {player_rect.topleft}")
-        print(f"Player position: {c.MAP_POSITION}")
+        print(f"Map position: {c.MAP_POSITION}")
 
         # Draw character at new position and update the display
         screen.blit(self.prepare(c.PLAYER_CURRENT_FRAME), c.PLAYER_CURRENT_POSITION)
@@ -217,6 +218,15 @@ class Player(World):
             )
         return player
 
+    def reset(self):
+        """
+        Resets the player's position and speed.
+        :param self: The Player object.
+        :return: None.
+        """
+        c.PLAYER_CURRENT_POSITION = c.PLAYER_RESPAWN_POSITION
+        c.PLAYER_CURRENT_SPEED = 0
+
     def print_config(self):
         """
         Prints the configuration values which could be of importance for the Player object.
@@ -229,6 +239,6 @@ class Player(World):
             for var_name in dir(self.config):
                 if (
                         var_name.isupper()
-                ):  # checking if it's constant (by convention constants are upper-case)
+                ):  # Checking if it's constant (by convention constants are upper-case)
                     if var_name.startswith("PLAYER_"):
                         print(f"{var_name}: {getattr(self.config, var_name)}")

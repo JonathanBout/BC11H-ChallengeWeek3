@@ -33,6 +33,7 @@ class Display:
         """
         # Set display size
         self.screen = pygame.display.set_mode((c.SCREEN_WIDTH, c.SCREEN_HEIGHT))
+        return self.screen
 
     def draw(self):
         """
@@ -53,7 +54,7 @@ class Display:
         # Set target fps
         self.clock.tick(c.MAX_FPS)
 
-        # printing the frames per second (fps) rate
+        # Printing the frames per second (fps) rate
         c.CURRENT_FPS = self.clock.get_fps()
 
     def clear_and_fill_screen(self):
