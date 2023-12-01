@@ -63,6 +63,7 @@ class FinishEvent(CustomEvent):
         self.finish_sound = Music(finish_sound, 2)
         self.lap_sound = Music(c.LAP_SOUND, 1)
         self.is_finish_triggered = False
+        self.is_lap_triggered = False
         self.finish_count = 0
 
     def trigger(self):
@@ -84,22 +85,30 @@ class FinishEvent(CustomEvent):
             self.is_finish_triggered = False
 
         # If the player is not on the road, trigger the respawn event
+        keys = pygame.key.get_pressed()
+        backwards = keys[pygame.K_s]
+
         if color == finish_color:
-            keys = pygame.key.get_pressed()
-            backwards = keys[pygame.K_s]
             if not backwards:
                 c.RACE_CURRENT_LAP += 1
-            if not backwards and c.RACE_CURRENT_LAP > c.RACE_LAPS+1:
+            if not backwards and c.RACE_CURRENT_LAP > c.RACE_LAPS + 1:
                 self.is_finish_triggered = True
+                c.RACE_CURRENT_LAP = 0
             if not self.is_finish_triggered:
-                if 2 < c.RACE_CURRENT_LAP:
-                    self.lap_sound.play()
+                self.is_lap_triggered = True
 
-        if self.is_finish_triggered:
+        if not backwards and self.is_finish_triggered:
             self.handle_finish()
+
+        if not backwards and self.is_lap_triggered and c.RACE_CURRENT_LAP > 1:
+            self.handle_lap()
+            self.is_lap_triggered = False
 
     def handle_finish(self):
         self.finish_sound.play()
+
+    def handle_lap(self):
+        self.lap_sound.play()
 
 
 class EventManager:

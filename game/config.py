@@ -163,7 +163,7 @@ GAME_PAUSE_CHANGED = pygame.event.custom_type()
 
 # RACE TRACK CONFIGURATION
 # Set laps until finish
-RACE_LAPS = 2
+RACE_LAPS = 3
 
 # Keep track of the current lap
-RACE_CURRENT_LAP = 0
+RACE_CURRENT_LAP = -1
