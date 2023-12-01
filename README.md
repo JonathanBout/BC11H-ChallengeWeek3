@@ -6,7 +6,7 @@ Jonathan Bout (1070667),
 Ruben Flinterman (1037046)
 
 ## Minimum Viable Product
-- [ ] Working highscore system
+- [x] Working highscore system
 - [x] Player can steer the car
 - [ ] Player can race against NPC
 - [x] Player races on a track and gets punished for leaving the track
