@@ -198,7 +198,9 @@ class Game:
                 for rect in self.map_rects
             ]
 
-            self.display.screen.blits([(pygame.Surface(x.size), x) for x in map_rects])
+            # Show dynamic collision map
+            # self.display.screen.blits([(pygame.Surface(x.size), x) for x in map_rects])
+
             # Move player 1
             self.player1.move(
                 self.display.screen,

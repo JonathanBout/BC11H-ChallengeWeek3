@@ -117,8 +117,8 @@ class FinishEvent(CustomEvent):
             self.is_on_finish = False
 
         # Draw hitboxes
-        pygame.draw.rect(self.screen, (255, 0, 0), finish_rect)
-        pygame.draw.rect(self.screen, (0, 255, 0), player_rect)
+        # pygame.draw.rect(self.screen, (255, 0, 0), finish_rect)
+        # pygame.draw.rect(self.screen, (0, 255, 0), player_rect)
 
     # Define how handle_finish and handle_lap works, replace `camera` with your camera instance.
     def handle_finish(self):
