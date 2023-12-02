@@ -115,11 +115,11 @@ MAP_NAME = WORLD_NAME
 # Map description is the same as the world description
 MAP_DESCRIPTION = WORLD_DESCRIPTION
 
-# Map position, relative to the screen
-MAP_POSITION = [5.0, -131.0]
-
 # Map respawn position, relative to the screen
-MAP_RESPAWN_POSITION = MAP_POSITION[:]
+MAP_RESPAWN_POSITION = [5.0, -131.0]
+
+# Map position, relative to the screen
+MAP_POSITION = MAP_RESPAWN_POSITION[:]
 
 # Map sprite - TODO: change sprite, this is just a placeholder
 MAP_SPRITE = "assets/sprites/map_01.png"

@@ -1,10 +1,12 @@
-from game import config, helper, sprites
-from pygame.font import Font
-from util.sprite_overrides import SurfaceSprite
 import pygame
+from game import config, helper, sprites
+from game.score_manager import ScoreManager
+from game.stats import Stats
+from util.sprite_overrides import SurfaceSprite
+from pygame.font import Font
 
 
-class GameOver:
+class GameWon:
     def __init__(self, font: Font) -> None:
         self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode(
@@ -19,7 +21,7 @@ class GameOver:
         )
 
         self.game_over_text = SurfaceSprite(
-            self.font.render("game over", True, "white"),
+            self.font.render("You won!", True, "white"),
             x_center=config.SCREEN_CENTER_X,
             top=config.SCREEN_HEIGHT / 10,
         )
@@ -29,7 +31,7 @@ class GameOver:
             config.SCREEN_CENTER_X, top=self.game_over_text.rect.bottom + 20
         )
 
-        self.to_menu_button = sprites.get_button_back_to_menu_sprite(
+        self.to_menu_button = sprites.get_button_back_sprite(
             config.SCREEN_CENTER_X, top=self.play_again_button.rect.bottom + 20
         )
 
@@ -43,8 +45,12 @@ class GameOver:
             ]
         ]
 
-    def show(self):
-        pygame.display.set_caption("You Lost!")
+    def show(self, score_manager: ScoreManager, stats: Stats):
+        pygame.display.set_caption("You Won!")
+        score = score_manager.get_score()
+
+        stats.add_stat(score)
+
         while True:
             self.screen.blits([*self.to_blit])
             if self.play_again_button.is_clicked():
