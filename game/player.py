@@ -185,9 +185,9 @@ class Player(World):
         ) = player_rect.topleft
 
         # Print player speed and player and map position
-        print(f"Player speed: {config.PLAYER_CURRENT_SPEED}")
-        print(f"Player position: {player_rect.topleft}")
-        print(f"Map position: {config.MAP_POSITION}")
+        # print(f"Player speed: {config.PLAYER_CURRENT_SPEED}")
+        # print(f"Player position: {player_rect.topleft}")
+        # print(f"Map position: {config.MAP_POSITION}")
 
         # Draw character at new position and update the display
         screen.blit(

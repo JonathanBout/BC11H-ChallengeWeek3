@@ -183,7 +183,7 @@ class Game:
             if not run_game:
                 break
 
-            print(config.RACE_CURRENT_LAP)
+            print("current lap:", config.RACE_CURRENT_LAP)
 
             # Update key states
             self.keys = pygame.key.get_pressed()

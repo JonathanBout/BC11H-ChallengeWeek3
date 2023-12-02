@@ -107,38 +107,25 @@ class FinishEvent(CustomEvent):
             else:
                 config.RACE_CURRENT_LAP -= 1
 
-        if not backwards:
-            if self.has_started_race:
-                if not finish_rect.colliderect(player_rect):
-                    self.was_on_finish = True
-
-            if self.was_on_finish:
-                if finish_rect.colliderect(player_rect):
-                    self.is_finish_triggered = True
-
-            if self.is_finish_triggered:
-                config.RACE_CURRENT_LAP += 1
-                if config.RACE_CURRENT_LAP >= config.RACE_LAPS:
-                    self.handle_finish()
-                else:
-                    self.handle_lap()
-            else:
-                self.is_finish_triggered = False
-
-            print(
-                f"Was on Finish {self.was_on_finish}\n"
-                f"Started {self.has_started_race}\n" * 100
-            )
-        else:
-            print('Backwards! Finish is not valid!')
-
         if finish_rect.colliderect(player_rect):
-            if self.was_on_finish:
-                if self.has_started_race:
-                    self.finish_count += 1
-                    self.finish_sound.play()
-
-        print(f"Finish count: {self.finish_count}\n" * 100)
+            if not backwards:
+                if not self.is_on_finish:
+                    self.is_on_finish = True
+                    config.RACE_CURRENT_LAP += 1
+                    if config.RACE_CURRENT_LAP >= config.RACE_LAPS:
+                        self.handle_finish()
+                    else:
+                        self.handle_lap()
+            else:
+                if not self.is_on_finish:
+                    self.is_on_finish = True
+                    config.RACE_CURRENT_LAP -= 1
+                    print(
+                        "REVERSING OVER THE FINISH DOESN'T COUNT! NOW AT LAP",
+                        config.RACE_CURRENT_LAP,
+                    )
+        else:
+            self.is_on_finish = False
 
         # Draw hitboxes
         pygame.draw.rect(self.screen, (255, 0, 0), finish_rect)
@@ -146,11 +133,13 @@ class FinishEvent(CustomEvent):
 
     # Define how handle_finish and handle_lap works, replace `camera` with your camera instance.
     def handle_finish(self):
-        print("Handle finish")
+        print("YOU FINISHED! CURRENT LAP")
+
         self.finish_sound.play()
+        pygame.event.post(pygame.event.Event(config.PLAYER_WON_EVENT))
 
     def handle_lap(self):
-        print("Handle lap")
+        print("NEXT LAP! CURRENT LAP: ", config.RACE_CURRENT_LAP)
         self.lap_sound.play()
 
 
