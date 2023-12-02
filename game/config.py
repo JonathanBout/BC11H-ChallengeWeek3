@@ -62,6 +62,8 @@ PLAYER_DESCRIPTION = "A fat, yellow, greedy, and smelly character."
 
 # Player position, relative to the screen
 PLAYER_POSITION = [SCREEN_CENTER_X, SCREEN_CENTER_Y]
+PLAYER_1_POSITION = [SCREEN_CENTER_X, SCREEN_CENTER_Y]
+PLAYER_2_POSITION = [SCREEN_CENTER_X, SCREEN_CENTER_Y]
 
 # Player respawn position, relative to the screen
 PLAYER_RESPAWN_POSITION = [127, 494]
@@ -70,7 +72,9 @@ PLAYER_RESPAWN_POSITION = [127, 494]
 PLAYER_CURRENT_POSITION = PLAYER_RESPAWN_POSITION[:]
 
 # Player sprite
-PLAYER_SPRITE = "assets/sprites/wario.png"
+PLAYER_SPRITE = None
+PLAYER_1_SPRITE = "assets/sprites/wario.png"
+PLAYER_2_SPRITE = "assets/sprites/bowser.png"
 
 # Player sprite width
 PLAYER_SPRITE_WIDTH = 32

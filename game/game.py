@@ -50,11 +50,14 @@ class Game:
         # Initialize game objects
         self.world = World(c, c.WORLD_NAME, c.WORLD_DESCRIPTION, c.WORLD_POSITION)
         self.race_track = Map(c, c.MAP_NAME, c.MAP_DESCRIPTION, c.MAP_POSITION)
-        self.player = Player(c, c.PLAYER_NAME, c.PLAYER_DESCRIPTION, c.PLAYER_POSITION)
+        self.player1 = Player(c, c.PLAYER_NAME, c.PLAYER_DESCRIPTION, c.PLAYER_POSITION, c.PLAYER_1_SPRITE)
+        self.player2 = Player(c, c.PLAYER_NAME, c.PLAYER_DESCRIPTION, c.PLAYER_POSITION, c.PLAYER_2_SPRITE)
         self.camera = Camera()
 
         # Player properties
-        self.player1 = self.player.prepare(c.PLAYER_CURRENT_FRAME)
+        self.player_one = self.player1.prepare(c.PLAYER_CURRENT_FRAME)
+        self.player_two = self.player2.prepare(c.PLAYER_CURRENT_FRAME)
+        self.keys = None
 
         # Music
         self.rainbow_road_music = Music(c.MUSIC_RAINBOW_ROAD, 0)
@@ -121,7 +124,8 @@ class Game:
                 if event.type == c.PLAYER_GAMEOVER_EVENT:
                     # Reset the camera and player
                     self.camera.reset()
-                    self.player.reset()
+                    self.player_one.reset()
+                    self.player_two.reset()
                     # Stop the game and set the win state to false
                     run_game = False
                     did_win = False
@@ -130,7 +134,8 @@ class Game:
                 if event.type == c.PLAYER_WON_EVENT:
                     # Reset the camera and player
                     self.camera.reset()
-                    self.player.reset()
+                    self.player_one.reset()
+                    self.player_two.reset()
                     # Stop the game and set the win state to true
                     run_game = False
                     did_win = True
@@ -142,14 +147,33 @@ class Game:
 
             print(c.RACE_CURRENT_LAP)
 
+            # Update key states
+            self.keys = pygame.key.get_pressed()
+
             # Move player 1
-            self.player1 = self.player.move(self.display.screen, self.camera)
+            self.player_one = self.player1.move(self.display.screen, self.camera, [
+                self.keys[pygame.K_w],
+                self.keys[pygame.K_s],
+                self.keys[pygame.K_a],
+                self.keys[pygame.K_d],
+                self.keys[pygame.K_LSHIFT],
+            ])
+
+            # Move player 2
+            self.player_two = self.player2.move(self.display.screen, self.camera, [
+                self.keys[pygame.K_UP],
+                self.keys[pygame.K_DOWN],
+                self.keys[pygame.K_LEFT],
+                self.keys[pygame.K_RIGHT],
+                self.keys[pygame.K_RSHIFT],
+            ])
 
             # Refresh the display and frame rate
             self.display.draw()
 
             # Check for events related to the player, such as collisions with the respawn area
-            self.player1 = self.player.check_for_events(self.display.screen)
+            self.player_one = self.player1.check_for_events(self.display.screen)
+            self.player_two = self.player2.check_for_events(self.display.screen)
 
         # Set game state to game over, regardless of whether the player won or lost
         self.game_over_state(did_win, should_show_main_menu)
@@ -183,7 +207,7 @@ class Game:
         """
         self.world.print_config()
         self.race_track.print_config()
-        self.player.print_config()
+        self.player1.print_config()
 
     # Initialize game variables
     def init_game(self):
@@ -202,7 +226,7 @@ class Game:
     def game_over_state(self, did_win, should_show_main_menu):
         # If the game is over, reset the camera and player and stop the music.
         self.camera.reset()
-        self.player.reset()
+        self.player_one.reset()
         self.rainbow_road_music.stop_on_channel(0)
 
         # If the player won, show the win screen, otherwise show the game over screen.

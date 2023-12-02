@@ -13,13 +13,14 @@ from game.display import Display
 
 
 class Player(World):
-    def __init__(self, config, name, description, position):
+    def __init__(self, config, name, description, position, player_sprite):
         """
         Initialize the Player class object.
         :param config: The game configuration object.
         :param name: The name of the player.
         :param description: The description of the player.
         :param position: The starting position of the player.
+        :param player_sprite: The sprite of the player.
         """
         super().__init__(config, name, description, position)
 
@@ -27,10 +28,12 @@ class Player(World):
         self.display = Display()
 
         # sprites
+        self.player_sprite = player_sprite
         self.num_sprites = 0
 
     def prepare(self, frame=0):
         """
+        :param player: an integer representing the player number
         :param frame: an integer representing the index of the desired sprite frame
         :return: the sprite image at the specified frame index
         This method prepares the player character sprite by loading the sprite image file
@@ -42,8 +45,7 @@ class Player(World):
         Note: This method does not handle error checking for invalid frame indices.
         """
         # Load the sprite image
-        sprite_path = c.PLAYER_SPRITE
-        game_image = pygame.image.load(sprite_path).convert_alpha()
+        game_image = pygame.image.load(self.player_sprite).convert_alpha()
 
         # Set the sprite width and height
         sprite_width = c.PLAYER_SPRITE_WIDTH
@@ -72,10 +74,11 @@ class Player(World):
         # Return the sprite at the specified frame index
         return sprites[frame]
 
-    def move(self, screen: Surface, camera: Camera):
+    def move(self, screen: Surface, camera: Camera, controls: list):
         """
         :param screen: the screen object on which to draw the player character
         :param camera: the camera object to use for movement
+        :param controls: a list containing the controls for the player character
         :return: None
 
         This method handles the movement of the player character based on keyboard inputs. It updates the player's
@@ -98,7 +101,13 @@ class Player(World):
         player_friction = c.PLAYER_FRICTION
 
         # Get the state of all keyboard buttons
-        keys = pygame.key.get_pressed()
+        # keys = pygame.key.get_pressed()
+        key = dict()
+        key["w"] = controls[0]
+        key["s"] = controls[1]
+        key["a"] = controls[2]
+        key["d"] = controls[3]
+        key["shift"] = controls[4]
 
         # Get the current player position
         player_rect = pygame.Rect(
@@ -110,7 +119,7 @@ class Player(World):
         c.PLAYER_CURRENT_FRAME = frame_idle
 
         # Set the frame delta based on whether the player is moving horizontally
-        frame_delta = 1 if keys[pygame.K_a] or keys[pygame.K_d] else 0
+        frame_delta = 1 if key["a"] or key["d"] else 0
 
         # Get the initial player speed
         initial_player_speed = player_speed
@@ -120,18 +129,18 @@ class Player(World):
             player_speed = (initial_player_speed + player_acceleration * self.display.dt) * player_friction
 
         # Adjust player position based on key presses and adjust frame accordingly
-        if keys[pygame.K_w]:
+        if key["w"]:
             player_rect.y -= int(player_speed)
             c.PLAYER_CURRENT_FRAME = 0
-        if keys[pygame.K_s]:
+        if key["s"]:
             player_rect.y += int(player_speed)
             c.PLAYER_CURRENT_FRAME = 10
-        if keys[pygame.K_a]:
+        if key["a"]:
             player_rect.x -= int(player_speed)
             c.PLAYER_CURRENT_FRAME = min(
                 c.PLAYER_CURRENT_FRAME + frame_delta, self.num_sprites - 4
             )
-        if keys[pygame.K_d]:
+        if key["d"]:
             player_rect.x += int(player_speed)
             c.PLAYER_CURRENT_FRAME = min(
                 c.PLAYER_CURRENT_FRAME + frame_delta, self.num_sprites - 4
@@ -139,17 +148,17 @@ class Player(World):
 
         # Boost player speed if shift is pressed
         store_speed = player_speed
-        if keys[pygame.K_LSHIFT]:
+        if key["shift"]:
             player_speed = player_speed * 2.5
         else:
             player_speed = store_speed
 
         # Adjust player speed if moving diagonally
-        if (keys[pygame.K_w] or keys[pygame.K_s]) and (keys[pygame.K_a] or keys[pygame.K_d]):
+        if (key["w"] or key["s"]) and (key["a"] or key["d"]):
             player_speed = player_speed / math.sqrt(2)
 
         # If no keys are pressed, set the frame to idle.
-        any_keys = [keys[pygame.K_w], keys[pygame.K_s], keys[pygame.K_a], keys[pygame.K_d]]
+        any_keys = [key["w"], key["s"], key["a"], key["d"]]
         if not any(any_keys):
             player_speed = 0
             c.PLAYER_CURRENT_FRAME = frame_idle
