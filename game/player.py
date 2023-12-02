@@ -26,7 +26,9 @@ class Player(World):
         # sprites
         self.player_sprite = player_sprite
         self.num_sprites = 0
-        self.finish_event = FinishEvent(None, config.PLAYER_1_POSITION, config.FINISH_SOUND)
+        self.finish_event = FinishEvent(
+            None, config.PLAYER_1_POSITION, config.FINISH_SOUND
+        )
 
     def prepare(self, frame=0):
         """
@@ -69,7 +71,7 @@ class Player(World):
             sprites.append(sprite)
 
         # Return the sprite at the specified frame index
-        return sprites[frame]
+        return self.check_flip(sprites[frame])
 
     def move(self, screen: Surface, camera: Camera, controls: list):
         """
@@ -136,11 +138,13 @@ class Player(World):
             player_rect.y += int(player_speed)
             config.PLAYER_CURRENT_FRAME = 10
         if key["a"]:
+            config.PLAYER_SPRITE_HORIZONTAL_FLIP = True
             player_rect.x -= int(player_speed)
             config.PLAYER_CURRENT_FRAME = min(
                 config.PLAYER_CURRENT_FRAME + frame_delta, self.num_sprites - 4
             )
         if key["d"]:
+            config.PLAYER_SPRITE_HORIZONTAL_FLIP = False
             player_rect.x += int(player_speed)
             config.PLAYER_CURRENT_FRAME = min(
                 config.PLAYER_CURRENT_FRAME + frame_delta, self.num_sprites - 4
@@ -220,7 +224,7 @@ class Player(World):
         # Trigger the respawn event
         event_manager.trigger_events()
 
-    def check_flip(self, player, flip=(False, False)):
+    def check_flip(self, player):
         """
         :param player: The current player sprite.
         :param flip: A tuple representing the flip state. The first element indicates whether the sprite should be
@@ -246,7 +250,6 @@ class Player(World):
         config.PLAYER_POSITION = config.PLAYER_CURRENT_POSITION[:]
         config.PLAYER_CURRENT_SPEED = 0
         config.RACE_CURRENT_LAP = 0
-        
 
     def print_config(self):
         """
