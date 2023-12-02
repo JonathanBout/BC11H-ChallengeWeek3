@@ -1,20 +1,20 @@
 import pygame
-
-import game.config as c
 from game import config, helper
 from game import sprites
 
 
 class Menu:
     def __init__(self) -> None:
-        pygame.display.set_caption(f"{c.GAME_TITLE}")
+        pygame.display.set_caption(f"{config.GAME_TITLE}")
 
+        # initialize clock and screen
         self.clock = pygame.time.Clock()
 
         self.screen = pygame.display.set_mode(
             (config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
         )
 
+        # region sprites to render
         self.background_image = sprites.get_menu_background_sprite(
             left=0,
             top=0,
@@ -53,7 +53,10 @@ class Menu:
             - 60,  # Subtract 60, as height=50 and offset from bottom 10
             target_size=(50, 50),
         )
+        # endregion
 
+        # collect all sprites to blit in a single list
+        # for a cleaner  screen.blits while rendering
         self.to_blit = [
             (image.image, image.rect)
             for image in [
@@ -65,6 +68,9 @@ class Menu:
         ]
 
     def show(self, is_paused: bool):
+        '''
+        render the menu on the screen
+        '''
         pygame.display.flip()
         while (x := self.__show_menu(is_paused)) == 0:
             helper.exit_if_user_wants()
@@ -72,10 +78,15 @@ class Menu:
         return x
 
     def __show_menu(self, is_paused: bool) -> int:
+
+        # show the resume and back to menu button when pause menu,
+        # otherwise show the play and quit button
         resume_or_start = (
             self.button_resume_game if is_paused else self.button_start_game
         )
         quit_or_back = self.button_back if is_paused else self.button_quit
+
+        # render all sprites to the screen
         self.screen.blits(
             [
                 *self.to_blit,
@@ -84,6 +95,7 @@ class Menu:
             ]
         )
 
+        # check if any button is clicked
         if self.button_start_game.is_clicked():
             return 1
         elif self.button_quit.is_clicked():

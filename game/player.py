@@ -2,7 +2,7 @@ import math
 import pygame
 from pygame.surface import Surface
 from game.camera import Camera
-import game.config as c
+from game import config
 from util.eventHandler import EventManager, RespawnEvent, FinishEvent
 from game.world import World
 from game.display import Display
@@ -44,8 +44,8 @@ class Player(World):
         game_image = pygame.image.load(self.player_sprite).convert_alpha()
 
         # Set the sprite width and height
-        sprite_width = c.PLAYER_SPRITE_WIDTH
-        sprite_height = c.PLAYER_SPRITE_HEIGHT
+        sprite_width = config.PLAYER_SPRITE_WIDTH
+        sprite_height = config.PLAYER_SPRITE_HEIGHT
 
         # Calculate the number of sprites in the sprite image
         num_sprites = game_image.get_width() // sprite_width
@@ -61,8 +61,8 @@ class Player(World):
             sprite = pygame.transform.scale(
                 sprite,
                 (
-                    sprite_width * c.PLAYER_SPRITE_SCALE,
-                    sprite_height * c.PLAYER_SPRITE_SCALE,
+                    sprite_width * config.PLAYER_SPRITE_SCALE,
+                    sprite_height * config.PLAYER_SPRITE_SCALE,
                 ),
             )
             sprites.append(sprite)
@@ -86,15 +86,15 @@ class Player(World):
         player.move(screen)
         """
         # We can't divide by zero, so we check if the current fps is zero.
-        if c.CURRENT_FPS == 0:
+        if config.CURRENT_FPS == 0:
             print("CURRENT_FPS value is Zero! Please, check the value.")
         else:
-            self.display.dt = 1.0 / c.CURRENT_FPS
+            self.display.dt = 1.0 / config.CURRENT_FPS
 
         # Initialize player speed, acceleration and friction
-        player_speed = c.PLAYER_CURRENT_SPEED
-        player_acceleration = c.PLAYER_MAX_SPEED
-        player_friction = c.PLAYER_FRICTION
+        player_speed = config.PLAYER_CURRENT_SPEED
+        player_acceleration = config.PLAYER_MAX_SPEED
+        player_friction = config.PLAYER_FRICTION
 
         # Get the state of all keyboard buttons
         # keys = pygame.key.get_pressed()
@@ -107,12 +107,13 @@ class Player(World):
 
         # Get the current player position
         player_rect = pygame.Rect(
-            c.PLAYER_CURRENT_POSITION, (c.PLAYER_SPRITE_WIDTH, c.PLAYER_SPRITE_HEIGHT)
+            config.PLAYER_CURRENT_POSITION,
+            (config.PLAYER_SPRITE_WIDTH, config.PLAYER_SPRITE_HEIGHT),
         )
 
         # Set the frame to idle
         frame_idle = self.num_sprites // 2
-        c.PLAYER_CURRENT_FRAME = frame_idle
+        config.PLAYER_CURRENT_FRAME = frame_idle
 
         # Set the frame delta based on whether the player is moving horizontally
         frame_delta = 1 if key["a"] or key["d"] else 0
@@ -121,7 +122,7 @@ class Player(World):
         initial_player_speed = player_speed
 
         # Adjust player speed based on acceleration and friction
-        if c.PLAYER_CURRENT_SPEED <= c.PLAYER_MAX_SPEED:
+        if config.PLAYER_CURRENT_SPEED <= config.PLAYER_MAX_SPEED:
             player_speed = (
                 initial_player_speed + player_acceleration * self.display.dt
             ) * player_friction
@@ -129,19 +130,19 @@ class Player(World):
         # Adjust player position based on key presses and adjust frame accordingly
         if key["w"]:
             player_rect.y -= int(player_speed)
-            c.PLAYER_CURRENT_FRAME = 0
+            config.PLAYER_CURRENT_FRAME = 0
         if key["s"]:
             player_rect.y += int(player_speed)
-            c.PLAYER_CURRENT_FRAME = 10
+            config.PLAYER_CURRENT_FRAME = 10
         if key["a"]:
             player_rect.x -= int(player_speed)
-            c.PLAYER_CURRENT_FRAME = min(
-                c.PLAYER_CURRENT_FRAME + frame_delta, self.num_sprites - 4
+            config.PLAYER_CURRENT_FRAME = min(
+                config.PLAYER_CURRENT_FRAME + frame_delta, self.num_sprites - 4
             )
         if key["d"]:
             player_rect.x += int(player_speed)
-            c.PLAYER_CURRENT_FRAME = min(
-                c.PLAYER_CURRENT_FRAME + frame_delta, self.num_sprites - 4
+            config.PLAYER_CURRENT_FRAME = min(
+                config.PLAYER_CURRENT_FRAME + frame_delta, self.num_sprites - 4
             )
 
         # Boost player speed if shift is pressed
@@ -156,41 +157,41 @@ class Player(World):
             player_speed = player_speed / math.sqrt(2)
 
         # If no keys are pressed, set the frame to idle.
-        any_keys = [
-            key["w"],
-            key["s"],
-            key["a"],
-            key["d"]
-        ]
+        any_keys = [key["w"], key["s"], key["a"], key["d"]]
 
         if not any(any_keys):
             player_speed = 0
-            c.PLAYER_CURRENT_FRAME = frame_idle
+            config.PLAYER_CURRENT_FRAME = frame_idle
 
         # Save the (new) current player speed to the config
-        c.PLAYER_CURRENT_SPEED = round(player_speed, 0)
+        config.PLAYER_CURRENT_SPEED = round(player_speed, 0)
 
         # Define the screen dimensions as a rect object
         screen_rect = pygame.Rect(
             0,
             0,
-            c.SCREEN_WIDTH - c.PLAYER_SPRITE_WIDTH,
-            c.SCREEN_HEIGHT - c.PLAYER_SPRITE_HEIGHT,
+            config.SCREEN_WIDTH - config.PLAYER_SPRITE_WIDTH,
+            config.SCREEN_HEIGHT - config.PLAYER_SPRITE_HEIGHT,
         )
 
         # Clamp the player position to the screen dimensions
         player_rect, screen_rect = camera.do_movement(player_rect, screen_rect)
 
         # Update player position in the config to the possibly clamped player_rect
-        c.PLAYER_CURRENT_POSITION[0], c.PLAYER_CURRENT_POSITION[1] = player_rect.topleft
+        (
+            config.PLAYER_CURRENT_POSITION[0],
+            config.PLAYER_CURRENT_POSITION[1],
+        ) = player_rect.topleft
 
         # Print player speed and player and map position
-        print(f"Player speed: {c.PLAYER_CURRENT_SPEED}")
+        print(f"Player speed: {config.PLAYER_CURRENT_SPEED}")
         print(f"Player position: {player_rect.topleft}")
-        print(f"Map position: {c.MAP_POSITION}")
+        print(f"Map position: {config.MAP_POSITION}")
 
         # Draw character at new position and update the display
-        screen.blit(self.prepare(c.PLAYER_CURRENT_FRAME), c.PLAYER_CURRENT_POSITION)
+        screen.blit(
+            self.prepare(config.PLAYER_CURRENT_FRAME), config.PLAYER_CURRENT_POSITION
+        )
         pygame.display.flip()
 
     def check_for_events(self, screen):
@@ -205,14 +206,14 @@ class Player(World):
         # Create respawn event
         respawn_event = RespawnEvent(
             screen,
-            c.PLAYER_CURRENT_POSITION,
-            c.RESPAWN_SOUND,
+            config.PLAYER_CURRENT_POSITION,
+            config.RESPAWN_SOUND,
         )
 
         finish_event = FinishEvent(
             screen,
-            c.PLAYER_CURRENT_POSITION,
-            c.FINISH_SOUND,
+            config.PLAYER_CURRENT_POSITION,
+            config.FINISH_SOUND,
         )
 
         # Register the events with the event manager
@@ -230,11 +231,11 @@ class Player(World):
         (False, False).
         :return: The player sprite with the requested flip applied.
         """
-        if c.PLAYER_SPRITE_HORIZONTAL_FLIP or c.PLAYER_SPRITE_VERTICAL_FLIP:
+        if config.PLAYER_SPRITE_HORIZONTAL_FLIP or config.PLAYER_SPRITE_VERTICAL_FLIP:
             player = pygame.transform.flip(
                 surface=player,
-                flip_x=c.PLAYER_SPRITE_HORIZONTAL_FLIP,
-                flip_y=c.PLAYER_SPRITE_VERTICAL_FLIP,
+                flip_x=config.PLAYER_SPRITE_HORIZONTAL_FLIP,
+                flip_y=config.PLAYER_SPRITE_VERTICAL_FLIP,
             )
         return player
 
@@ -244,8 +245,8 @@ class Player(World):
         :param self: The Player object.
         :return: None.
         """
-        c.PLAYER_CURRENT_POSITION = c.PLAYER_RESPAWN_POSITION
-        c.PLAYER_CURRENT_SPEED = 0
+        config.PLAYER_CURRENT_POSITION = config.PLAYER_RESPAWN_POSITION
+        config.PLAYER_CURRENT_SPEED = 0
 
     def print_config(self):
         """

@@ -1,6 +1,6 @@
 import pygame
 
-import game.config as c
+from game import config
 from game.camera import Camera
 from game.display import Display
 from game.game_over import GameOver
@@ -34,7 +34,7 @@ class Game:
         self.display.set_display_size()
 
         # Initialize frame_update_interval using config variable
-        self.frame_update_interval = c.PLAYER_FRAME_UPDATE_INTERVAL
+        self.frame_update_interval = config.PLAYER_FRAME_UPDATE_INTERVAL
 
         # Set up font for text rendering - TODO: use text.py instead
         self.stats_menu_font = pygame.font.Font("assets/fonts/SuperMario256.ttf", 40)
@@ -51,19 +51,35 @@ class Game:
         self.score_manager = ScoreManager()
 
         # Initialize game objects
-        self.world = World(c, c.WORLD_NAME, c.WORLD_DESCRIPTION, c.WORLD_POSITION)
-        self.race_track = Map(c, c.MAP_NAME, c.MAP_DESCRIPTION, c.MAP_POSITION)
-        self.player1 = Player(c, c.PLAYER_NAME, c.PLAYER_DESCRIPTION, c.PLAYER_POSITION, c.PLAYER_1_SPRITE)
-        self.player2 = Player(c, c.PLAYER_NAME, c.PLAYER_DESCRIPTION, c.PLAYER_POSITION, c.PLAYER_2_SPRITE)
+        self.world = World(
+            config, config.WORLD_NAME, config.WORLD_DESCRIPTION, config.WORLD_POSITION
+        )
+        self.race_track = Map(
+            config, config.MAP_NAME, config.MAP_DESCRIPTION, config.MAP_POSITION
+        )
+        self.player1 = Player(
+            config,
+            config.PLAYER_NAME,
+            config.PLAYER_DESCRIPTION,
+            config.PLAYER_POSITION,
+            config.PLAYER_1_SPRITE,
+        )
+        self.player2 = Player(
+            config,
+            config.PLAYER_NAME,
+            config.PLAYER_DESCRIPTION,
+            config.PLAYER_POSITION,
+            config.PLAYER_2_SPRITE,
+        )
         self.camera = Camera()
 
         # Player properties
-        self.player_one = self.player1.prepare(c.PLAYER_CURRENT_FRAME)
-        self.player_two = self.player2.prepare(c.PLAYER_CURRENT_FRAME)
+        self.player_one = self.player1.prepare(config.PLAYER_CURRENT_FRAME)
+        self.player_two = self.player2.prepare(config.PLAYER_CURRENT_FRAME)
         self.keys = None
 
         # Music
-        self.rainbow_road_music = Music(c.MUSIC_RAINBOW_ROAD, 0)
+        self.rainbow_road_music = Music(config.MUSIC_RAINBOW_ROAD, 0)
 
     # Actions to perform when the game starts
     def start(self):
@@ -96,24 +112,26 @@ class Game:
         # Main game loop
         while run_game:
             # Set the current window caption
-            pygame.display.set_caption(f"{c.WORLD_NAME} - {c.CURRENT_FPS:.2f}")
+            pygame.display.set_caption(
+                f"{config.WORLD_NAME} - {config.CURRENT_FPS:.2f}"
+            )
 
             # Check for events and only get the events we want
             for event in pygame.event.get(
-                    (
-                            pygame.KEYDOWN,
-                            c.GAME_PAUSE_CHANGED,
-                            c.PLAYER_GAMEOVER_EVENT,
-                            c.PLAYER_WON_EVENT,
-                            pygame.QUIT,
-                    )
+                (
+                    pygame.KEYDOWN,
+                    config.GAME_PAUSE_CHANGED,
+                    config.PLAYER_GAMEOVER_EVENT,
+                    config.PLAYER_WON_EVENT,
+                    pygame.QUIT,
+                )
             ):
                 # If player presses a button
                 if event.type == pygame.KEYDOWN:
                     # And if the button is escape
                     if event.key == pygame.K_ESCAPE:
                         # Pause the game
-                        c.GAME_PAUSED = True
+                        config.GAME_PAUSED = True
                         self.pause()
                         # And show the menu
                         if not self.show_menu(True):
@@ -122,32 +140,32 @@ class Game:
                             break
                         # And if the menu is closed, resume the game
                         self.resume()
-                        c.GAME_PAUSED = False
+                        config.GAME_PAUSED = False
                 # If the pause state is changed
-                elif event.type == c.GAME_PAUSE_CHANGED:
+                elif event.type == config.GAME_PAUSE_CHANGED:
                     # And it is now paused
-                    if c.GAME_PAUSED:
+                    if config.GAME_PAUSED:
                         # Pause the game
                         self.pause()
                     else:
                         # Otherwise, resume the game
                         self.resume()
                 # If the player died
-                elif event.type == c.PLAYER_GAMEOVER_EVENT:
+                elif event.type == config.PLAYER_GAMEOVER_EVENT:
                     # Reset the camera and player
                     self.camera.reset()
-                    self.player_one.reset()
-                    self.player_two.reset()
+                    self.player1.reset()
+                    self.player2.reset()
                     # Stop the game and set the win state to false
                     run_game = False
                     did_win = False
                     break
                 # If the player won
-                elif event.type == c.PLAYER_WON_EVENT:
+                elif event.type == config.PLAYER_WON_EVENT:
                     # Reset the camera and player
                     self.camera.reset()
-                    self.player_one.reset()
-                    self.player_two.reset()
+                    self.player1.reset()
+                    self.player2.reset()
                     # Stop the game and set the win state to true
                     run_game = False
                     did_win = True
@@ -159,28 +177,36 @@ class Game:
             if not run_game:
                 break
 
-            print(c.RACE_CURRENT_LAP)
+            print(config.RACE_CURRENT_LAP)
 
             # Update key states
             self.keys = pygame.key.get_pressed()
 
             # Move player 1
-            self.player_one = self.player1.move(self.display.screen, self.camera, [
-                self.keys[pygame.K_w],
-                self.keys[pygame.K_s],
-                self.keys[pygame.K_a],
-                self.keys[pygame.K_d],
-                self.keys[pygame.K_LSHIFT],
-            ])
+            self.player_one = self.player1.move(
+                self.display.screen,
+                self.camera,
+                [
+                    self.keys[pygame.K_w],
+                    self.keys[pygame.K_s],
+                    self.keys[pygame.K_a],
+                    self.keys[pygame.K_d],
+                    self.keys[pygame.K_LSHIFT],
+                ],
+            )
 
             # Move player 2
-            self.player_two = self.player2.move(self.display.screen, self.camera, [
-                self.keys[pygame.K_UP],
-                self.keys[pygame.K_DOWN],
-                self.keys[pygame.K_LEFT],
-                self.keys[pygame.K_RIGHT],
-                self.keys[pygame.K_RSHIFT],
-            ])
+            self.player_two = self.player2.move(
+                self.display.screen,
+                self.camera,
+                [
+                    self.keys[pygame.K_UP],
+                    self.keys[pygame.K_DOWN],
+                    self.keys[pygame.K_LEFT],
+                    self.keys[pygame.K_RIGHT],
+                    self.keys[pygame.K_RSHIFT],
+                ],
+            )
 
             # Refresh the display and frame rate
             self.display.draw()
@@ -199,7 +225,7 @@ class Game:
             match self.menu.show(is_pause_menu):
                 case 1:  # 1=start game
                     if is_pause_menu:
-                        c.GAME_PAUSED = False
+                        config.GAME_PAUSED = False
                         return True
                     else:
                         self.update()
@@ -240,7 +266,7 @@ class Game:
     def game_over_state(self, did_win, should_show_main_menu):
         # If the game is over, reset the camera and player and stop the music.
         self.camera.reset()
-        self.player_one.reset()
+        self.player1.reset()
         self.rainbow_road_music.stop_on_channel(0)
 
         # If the player won, show the win screen, otherwise show the game over screen.
@@ -254,7 +280,7 @@ class Game:
                 return self.update()
 
         # (Not so) temporary solution for a weird bug
-        pygame.mouse.set_pos(c.SCREEN_CENTER)
+        pygame.mouse.set_pos(config.SCREEN_CENTER)
 
     # Pause the music and score manager if the game is paused
     def pause(self):

@@ -1,5 +1,5 @@
 import pygame
-import game.config as c
+from game import config
 from util.text import TextRenderer
 
 
@@ -14,7 +14,7 @@ class Display:
         pygame.display.init()
 
         # Set logo
-        logo = pygame.image.load(c.GAME_ICON)
+        logo = pygame.image.load(config.GAME_ICON)
         small_logo = pygame.transform.scale(logo, (32, 32))
         pygame.display.set_icon(small_logo)
 
@@ -32,7 +32,9 @@ class Display:
         :return: None
         """
         # Set display size
-        self.screen = pygame.display.set_mode((c.SCREEN_WIDTH, c.SCREEN_HEIGHT))
+        self.screen = pygame.display.set_mode(
+            (config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
+        )
         return self.screen
 
     def draw(self):
@@ -52,10 +54,10 @@ class Display:
         pygame.display.flip()
 
         # Set target fps
-        self.clock.tick(c.MAX_FPS)
+        self.clock.tick(config.MAX_FPS)
 
         # Printing the frames per second (fps) rate
-        c.CURRENT_FPS = self.clock.get_fps()
+        config.CURRENT_FPS = self.clock.get_fps()
 
     def clear_and_fill_screen(self):
         """
@@ -66,8 +68,8 @@ class Display:
         self.screen.fill((0, 0, 96))
 
         # Fill the screen with a custom background
-        background = pygame.image.load(c.WORLD_BACKGROUND)
+        background = pygame.image.load(config.WORLD_BACKGROUND)
         background = pygame.transform.scale(
-            background, (c.SCREEN_WIDTH * 2, c.SCREEN_HEIGHT * 2)
+            background, (config.SCREEN_WIDTH * 2, config.SCREEN_HEIGHT * 2)
         )
-        self.screen.blit(background, c.MAP_POSITION)
+        self.screen.blit(background, config.MAP_POSITION)
