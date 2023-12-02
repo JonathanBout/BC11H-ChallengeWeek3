@@ -91,7 +91,7 @@ class FinishEvent(CustomEvent):
         if color == finish_color:
             if not backwards:
                 config.RACE_CURRENT_LAP += 1
-            if not backwards and config.RACE_CURRENT_LAP > config.RACE_LAPS + 1:
+            if not backwards and config.RACE_CURRENT_LAP > config.RACE_LAPS + 6:
                 self.is_finish_triggered = True
                 config.RACE_CURRENT_LAP = 0
             if not self.is_finish_triggered:
