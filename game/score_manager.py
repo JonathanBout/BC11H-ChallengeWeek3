@@ -32,5 +32,5 @@ class ScoreManager:
 
     def get_score(self):
         return int(
-            self.get_elapsed().total_seconds()  # TODO: make some better formula?
+            100 / self.get_elapsed().total_seconds()  # TODO: make some better formula?
         )

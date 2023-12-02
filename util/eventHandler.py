@@ -23,6 +23,9 @@ class RespawnEvent(CustomEvent):
         self.is_respawn_triggered = False
 
     def trigger(self):
+        if config.SKIP_TRACK_CHECK:
+            return
+
         # Get the color of the pixel at the player's position
         color = self.screen.get_at(
             (
