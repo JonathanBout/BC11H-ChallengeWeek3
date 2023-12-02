@@ -9,7 +9,7 @@ from game.display import Display
 
 
 class Player(World):
-    def __init__(self, config, name, description, position, player_sprite):
+    def __init__(self, config: config, name, description, position, player_sprite):
         """
         Initialize the Player class object.
         :param config: The game configuration object.
@@ -26,6 +26,7 @@ class Player(World):
         # sprites
         self.player_sprite = player_sprite
         self.num_sprites = 0
+        self.finish_event = FinishEvent(None, config.PLAYER_1_POSITION, config.FINISH_SOUND)
 
     def prepare(self, frame=0):
         """
@@ -194,7 +195,7 @@ class Player(World):
         )
         pygame.display.flip()
 
-    def check_for_events(self, screen):
+    def check_for_events(self, screen: Surface):
         """
         Check for registered player events.
         :param screen: The pygame screen object.
@@ -210,15 +211,11 @@ class Player(World):
             config.RESPAWN_SOUND,
         )
 
-        finish_event = FinishEvent(
-            screen,
-            config.PLAYER_CURRENT_POSITION,
-            config.FINISH_SOUND,
-        )
-
+        self.finish_event.player_position = config.PLAYER_CURRENT_POSITION
+        self.finish_event.screen = screen
         # Register the events with the event manager
         event_manager.register_event(respawn_event)
-        event_manager.register_event(finish_event)
+        event_manager.register_event(self.finish_event)
 
         # Trigger the respawn event
         event_manager.trigger_events()
@@ -245,8 +242,11 @@ class Player(World):
         :param self: The Player object.
         :return: None.
         """
-        config.PLAYER_CURRENT_POSITION = config.PLAYER_RESPAWN_POSITION
+        config.PLAYER_CURRENT_POSITION = config.PLAYER_RESPAWN_POSITION[:]
+        config.PLAYER_POSITION = config.PLAYER_CURRENT_POSITION[:]
         config.PLAYER_CURRENT_SPEED = 0
+        config.RACE_CURRENT_LAP = 0
+        
 
     def print_config(self):
         """

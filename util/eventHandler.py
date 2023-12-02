@@ -1,7 +1,7 @@
 import pygame
 from pygame.constants import USEREVENT
 
-from game import config, camera
+from game import config
 from util.music import Music
 
 
@@ -89,14 +89,11 @@ class FinishEvent(CustomEvent):
         player_rect = pygame.Rect(
             *adjusted_player_position,
             config.PLAYER_SPRITE_WIDTH * 2,
-            config.PLAYER_SPRITE_HEIGHT * 0.5
+            config.PLAYER_SPRITE_HEIGHT * 0.5,
         )
 
         # Create the finish area hitbox (rect)
-        finish_rect = pygame.Rect(
-            *finish_area_position,
-            *finish_area_size
-        )
+        finish_rect = pygame.Rect(*finish_area_position, *finish_area_size)
 
         # Check if the player is on the finish area
         keys = pygame.key.get_pressed()
@@ -107,22 +104,33 @@ class FinishEvent(CustomEvent):
         if finish_rect.colliderect(player_rect):
             if not self.was_on_finish:
                 self.has_started_race = True
+            else:
+                config.RACE_CURRENT_LAP -= 1
 
-        if self.has_started_race:
-            if not finish_rect.colliderect(player_rect):
-                self.was_on_finish = True
+        if not backwards:
+            if self.has_started_race:
+                if not finish_rect.colliderect(player_rect):
+                    self.was_on_finish = True
 
-        if self.was_on_finish:
-            if finish_rect.colliderect(player_rect):
-                self.is_finish_triggered = True
+            if self.was_on_finish:
+                if finish_rect.colliderect(player_rect):
+                    self.is_finish_triggered = True
 
-        if self.is_finish_triggered:
-            self.handle_finish()
+            if self.is_finish_triggered:
+                config.RACE_CURRENT_LAP += 1
+                if config.RACE_CURRENT_LAP >= config.RACE_LAPS:
+                    self.handle_finish()
+                else:
+                    self.handle_lap()
+            else:
+                self.is_finish_triggered = False
+
+            print(
+                f"Was on Finish {self.was_on_finish}\n"
+                f"Started {self.has_started_race}\n" * 100
+            )
         else:
-            self.is_finish_triggered = False
-
-        print(f"Was on Finish {self.was_on_finish}\n"
-              f"Started {self.has_started_race}\n" * 100)
+            print('Backwards! Finish is not valid!')
 
         if finish_rect.colliderect(player_rect):
             if self.was_on_finish:

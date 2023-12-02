@@ -14,6 +14,8 @@ from game.player import Player
 from game.credits import Credits
 from util.music import Music
 
+import importlib
+
 
 class Game:
     def __init__(self):
@@ -57,6 +59,15 @@ class Game:
         self.race_track = Map(
             config, config.MAP_NAME, config.MAP_DESCRIPTION, config.MAP_POSITION
         )
+        self.camera = Camera()
+
+        # Player properties
+        self.keys = None
+
+        # Music
+        self.rainbow_road_music = Music(config.MUSIC_RAINBOW_ROAD, 0)
+
+    def init_players(self):
         self.player1 = Player(
             config,
             config.PLAYER_NAME,
@@ -71,15 +82,10 @@ class Game:
             config.PLAYER_POSITION,
             config.PLAYER_2_SPRITE,
         )
-        self.camera = Camera()
-
-        # Player properties
         self.player_one = self.player1.prepare(config.PLAYER_CURRENT_FRAME)
         self.player_two = self.player2.prepare(config.PLAYER_CURRENT_FRAME)
-        self.keys = None
-
-        # Music
-        self.rainbow_road_music = Music(config.MUSIC_RAINBOW_ROAD, 0)
+        self.player1.print_config()
+        self.player2.print_config()
 
     # Actions to perform when the game starts
     def start(self):
@@ -102,7 +108,7 @@ class Game:
 
         # Setup game variables
         run_game, did_win, should_show_main_menu = self.init_game()
-
+        self.init_players()
         # Play the music
         self.rainbow_road_music.set_volume(0.1)
         self.rainbow_road_music.play(-1)
@@ -183,7 +189,7 @@ class Game:
             self.keys = pygame.key.get_pressed()
 
             # Move player 1
-            self.player_one = self.player1.move(
+            self.player1.move(
                 self.display.screen,
                 self.camera,
                 [
@@ -212,8 +218,8 @@ class Game:
             self.display.draw()
 
             # Check for events related to the player, such as collisions with the respawn area
-            self.player_one = self.player1.check_for_events(self.display.screen)
-            self.player_two = self.player2.check_for_events(self.display.screen)
+            self.player1.check_for_events(self.display.screen)
+            # self.player2.check_for_events(self.display.screen)
 
         # Set game state to game over, regardless of whether the player won or lost
         self.game_over_state(did_win, should_show_main_menu)
@@ -247,7 +253,6 @@ class Game:
         """
         self.world.print_config()
         self.race_track.print_config()
-        self.player1.print_config()
 
     # Initialize game variables
     def init_game(self):
@@ -258,6 +263,10 @@ class Game:
             - did_win (bool): Indicates whether the player won the game.
             - should_show_main_menu (bool): Indicates whether the main menu should be displayed.
         """
+        global config
+
+        config = importlib.reload(config)
+
         run_game = True
         did_win = False
         should_show_main_menu = False
