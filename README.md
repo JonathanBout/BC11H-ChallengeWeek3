@@ -10,7 +10,7 @@ Challenge Week 3
 - [x] Working highscore system
 - [x] Player can steer the car
 - [ ] Player can race against NPC
-  - [ ] Finish line works
+  - [x] Finish line works
   - [ ] AI can steer its own car
 - [x] Player races on a track and gets punished for leaving the track
 
