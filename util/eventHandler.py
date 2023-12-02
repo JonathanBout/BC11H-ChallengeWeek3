@@ -6,19 +6,32 @@ from util.music import Music
 
 
 class CustomEvent:
-    def __init__(self, delay=3000):
+    def __init__(self, player_position: list[int, int], delay=3000):
         self.EVENT_TYPE = USEREVENT + 1
+        self.player_position = player_position
         pygame.time.set_timer(self.EVENT_TYPE, delay)
 
     def trigger(self):
         raise NotImplementedError
 
+    def rect_from_player_position(self):
+        adjusted_player_position = (
+            self.player_position[0],
+            self.player_position[1] + config.PLAYER_SPRITE_HEIGHT * 1.5,
+        )
+
+        # Create the player hitbox (rect)
+        return pygame.Rect(
+            *adjusted_player_position,
+            config.PLAYER_SPRITE_WIDTH * 2,
+            config.PLAYER_SPRITE_HEIGHT * 0.5,
+        )
+
 
 class RespawnEvent(CustomEvent):
-    def __init__(self, screen, player_position, respawn_sound):
-        super().__init__()
-        self.screen = screen
-        self.player_position = player_position
+    def __init__(self, map_rects: list[pygame.Rect], player_position, respawn_sound: str):
+        super().__init__(player_position)
+        self.map_rects = map_rects
         self.respawn_sound = Music(respawn_sound, 1)
         self.is_respawn_triggered = False
 
@@ -26,23 +39,23 @@ class RespawnEvent(CustomEvent):
         if config.SKIP_TRACK_CHECK:
             return
 
-        # Get the color of the pixel at the player's position
-        color = self.screen.get_at(
-            (
-                int(self.player_position[0] + config.PLAYER_SPRITE_HEIGHT * 2),
-                int(self.player_position[1] + config.PLAYER_SPRITE_WIDTH * 2),
-            )
-        )
+        # # Get the color of the pixel at the player's position
+        # color = self.screen.get_at(
+        #     (
+        #         int(self.player_position[0] + config.PLAYER_SPRITE_HEIGHT * 2),
+        #         int(self.player_position[1] + config.PLAYER_SPRITE_WIDTH * 2),
+        #     )
+        # )
 
-        # The color of the respawn area
-        respawn_color = (0, 0, 96, 255)
+        # # The color of the respawn area
+        # respawn_color = (0, 0, 96, 255)
 
-        # If the player is on the road, reset the respawn trigger
-        if color != respawn_color:
-            self.is_respawn_triggered = False
+        # # If the player is on the road, reset the respawn trigger
+        # if color != respawn_color:
+        #     self.is_respawn_triggered = False
 
-        # If the player is not on the road, trigger the respawn event
-        if color == respawn_color:
+        # # If the player is not on the road, trigger the respawn event
+        if not self.rect_from_player_position().collidelist(self.map_rects):
             if not self.is_respawn_triggered:
                 self.is_respawn_triggered = True
                 self.handle_respawn()
@@ -60,10 +73,9 @@ class RespawnEvent(CustomEvent):
 
 class FinishEvent(CustomEvent):
     def __init__(self, screen, player_position, finish_sound):
-        super().__init__()
+        super().__init__(player_position)
         # Display / Render
         self.screen = screen
-        self.player_position = player_position
         # Sound
         self.finish_sound = Music(finish_sound, 2)
         self.lap_sound = Music(config.LAP_SOUND, 1)
@@ -82,21 +94,9 @@ class FinishEvent(CustomEvent):
         finish_area_position = (map_pos_x + 60, map_pos_y + 630)
         finish_area_size = (130, 40)
 
-        # Adjust the player position to the bottom of the player sprite
-        adjusted_player_position = (
-            self.player_position[0],
-            self.player_position[1] + config.PLAYER_SPRITE_HEIGHT * 1.5,
-        )
-
-        # Create the player hitbox (rect)
-        player_rect = pygame.Rect(
-            *adjusted_player_position,
-            config.PLAYER_SPRITE_WIDTH * 2,
-            config.PLAYER_SPRITE_HEIGHT * 0.5,
-        )
-
         # Create the finish area hitbox (rect)
         finish_rect = pygame.Rect(*finish_area_position, *finish_area_size)
+        player_rect = self.rect_from_player_position()
 
         # Check if the player is on the finish area
         keys = pygame.key.get_pressed()
@@ -104,6 +104,7 @@ class FinishEvent(CustomEvent):
 
         # If we are not on the finish rect (we started racing),
         # reset the finish trigger and race start trigger
+
         if finish_rect.colliderect(player_rect):
             if not self.was_on_finish:
                 self.has_started_race = True

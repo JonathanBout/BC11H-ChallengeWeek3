@@ -13,6 +13,7 @@ from game.map import Map
 from game.player import Player
 from game.credits import Credits
 from util.music import Music
+from util import rect_from_image
 
 import importlib
 
@@ -105,7 +106,7 @@ class Game:
         """
         # Start the score manager
         self.score_manager.start()
-
+        self.load_map_rects()
         # Setup game variables
         run_game, did_win, should_show_main_menu = self.init_game()
         self.init_players()
@@ -187,7 +188,7 @@ class Game:
 
             # Update key states
             self.keys = pygame.key.get_pressed()
-
+            self.display.screen.blits([(pygame.Surface(x.size, masks="red"), x) for x in self.map_rects])
             # Move player 1
             self.player1.move(
                 self.display.screen,
@@ -218,7 +219,7 @@ class Game:
             self.display.draw()
 
             # Check for events related to the player, such as collisions with the respawn area
-            self.player1.check_for_events(self.display.screen)
+            self.player1.check_for_events(self.display.screen, self.map_rects)
             # self.player2.check_for_events(self.display.screen)
 
         # Set game state to game over, regardless of whether the player won or lost
@@ -308,3 +309,6 @@ class Game:
         """
         self.rainbow_road_music.unpause()
         self.score_manager.resume()
+
+    def load_map_rects(self):
+        self.map_rects = rect_from_image.load_rect(config.MAP_SPRITE)

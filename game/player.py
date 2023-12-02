@@ -199,7 +199,7 @@ class Player(World):
         )
         pygame.display.flip()
 
-    def check_for_events(self, screen: Surface):
+    def check_for_events(self, screen: Surface, map_rects: list[pygame.Rect]):
         """
         Check for registered player events.
         :param screen: The pygame screen object.
@@ -210,7 +210,7 @@ class Player(World):
 
         # Create respawn event
         respawn_event = RespawnEvent(
-            screen,
+            map_rects,
             config.PLAYER_CURRENT_POSITION,
             config.RESPAWN_SOUND,
         )
