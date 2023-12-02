@@ -45,7 +45,7 @@ WORLD_DESCRIPTION = "A colorful track in the sky."
 WORLD_POSITION = [0, 0]
 
 # World background
-WORLD_BACKGROUND = "assets/sprites/rainbow_road_map.png"
+WORLD_BACKGROUND = "assets/sprites/rainbow_road_map_old.png"
 
 # World width = screen width
 WORLD_WIDTH = SCREEN_WIDTH
@@ -170,4 +170,4 @@ GAME_PAUSE_CHANGED = pygame.event.custom_type()
 RACE_LAPS = 3
 
 # Keep track of the current lap
-RACE_CURRENT_LAP = -1
+RACE_CURRENT_LAP = 0

@@ -1,7 +1,7 @@
 import pygame
 from pygame.constants import USEREVENT
 
-from game import config
+from game import config, camera
 from util.music import Music
 
 
@@ -65,49 +65,76 @@ class FinishEvent(CustomEvent):
         self.is_finish_triggered = False
         self.is_lap_triggered = False
         self.finish_count = 0
+        self.previous_color = None
+        self.was_on_finish_color = True
+        self.has_started_race = False
+
+    def handle_finish(self):
+        # You need to define the implementation of handle_finish
+        pass
+
+    def handle_lap(self):
+        # You need to define the implementation of handle_lap
+        pass
 
     def trigger(self):
-        # Get the color of the pixel at the player's position
-        color = self.screen.get_at(
-            (
-                int(self.player_position[0] + config.PLAYER_SPRITE_HEIGHT * 2),
-                int(self.player_position[1] + config.PLAYER_SPRITE_WIDTH * 2),
-            )
-        )
+        player_rect = pygame.Rect(*self.player_position, config.PLAYER_SPRITE_WIDTH * 2,
+                                  config.PLAYER_SPRITE_HEIGHT * 2)
 
-        print(color)
+        camera_inst = camera
+        map_pos_x, map_pos_y = config.MAP_POSITION
+        finish_area_position = (map_pos_x + 60, map_pos_y + 630)
+        finish_area_size = (130, 40)
 
-        # The color of the respawn area
-        finish_color = (248, 248, 248, 255)
+        finish_rect = pygame.Rect(*finish_area_position, *finish_area_size)
 
-        # If the player is on the road, reset the respawn trigger
-        if color != finish_color:
-            self.is_finish_triggered = False
-
-        # If the player is not on the road, trigger the respawn event
         keys = pygame.key.get_pressed()
         backwards = keys[pygame.K_s]
 
-        if color == finish_color:
-            if not backwards:
-                config.RACE_CURRENT_LAP += 1
-            if not backwards and config.RACE_CURRENT_LAP > config.RACE_LAPS + 6:
-                self.is_finish_triggered = True
-                config.RACE_CURRENT_LAP = 0
-            if not self.is_finish_triggered:
-                self.is_lap_triggered = True
+        # If we are not on the finish rect (we started racing),
+        # reset the finish trigger and race start trigger
+        if not finish_rect.colliderect(player_rect):
+            if not self.was_on_finish_color:
+                self.was_on_finish_color = True
+            if not self.has_started_race:
+                self.has_started_race = True
 
-        if not backwards and self.is_finish_triggered:
-            self.handle_finish()
+        if finish_rect.colliderect(player_rect):
+            if self.was_on_finish_color:
+                if self.has_started_race:
+                    self.finish_count += 1
+                    self.finish_sound.play()
 
-        if not backwards and self.is_lap_triggered and config.RACE_CURRENT_LAP > 1:
-            self.handle_lap()
-            self.is_lap_triggered = False
+        print(f"Finish count: {self.finish_count}\n" * 100)
 
+        # if self.was_on_finish_color:
+        #     if self.has_started_race:
+        #         if not backwards:
+        #             self.is_finish_triggered = True
+        #         else:
+        #             self.is_lap_triggered = True
+        #         print(f"Finish triggered: {self.is_finish_triggered}\n"
+        #               f"Lap triggered: {self.is_lap_triggered}\n"
+        #               f"Finish count: {self.finish_count}\n" * 100)
+
+        # if self.is_finish_triggered:
+        #     self.finish_count += 1
+        #     self.is_finish_triggered = False
+        #     self.handle_finish()
+        #
+        # if self.is_lap_triggered:
+        #     self.is_lap_triggered = False
+        #     self.handle_lap()
+
+        pygame.draw.rect(self.screen, (255, 0, 0), finish_rect)
+
+    # Define how handle_finish and handle_lap works, replace `camera` with your camera instance.
     def handle_finish(self):
+        print("Handle finish")
         self.finish_sound.play()
 
     def handle_lap(self):
+        print("Handle lap")
         self.lap_sound.play()
 
 
