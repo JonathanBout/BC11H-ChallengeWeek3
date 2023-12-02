@@ -58,75 +58,83 @@ class RespawnEvent(CustomEvent):
 class FinishEvent(CustomEvent):
     def __init__(self, screen, player_position, finish_sound):
         super().__init__()
+        # Display / Render
         self.screen = screen
         self.player_position = player_position
+        # Sound
         self.finish_sound = Music(finish_sound, 2)
         self.lap_sound = Music(config.LAP_SOUND, 1)
+        # Flags
         self.is_finish_triggered = False
         self.is_lap_triggered = False
-        self.finish_count = 0
-        self.previous_color = None
-        self.was_on_finish_color = True
         self.has_started_race = False
-
-    def handle_finish(self):
-        # You need to define the implementation of handle_finish
-        pass
-
-    def handle_lap(self):
-        # You need to define the implementation of handle_lap
-        pass
+        self.was_on_finish = False
+        self.is_on_finish = False
+        # Counters
+        self.finish_count = 0
 
     def trigger(self):
-        player_rect = pygame.Rect(*self.player_position, config.PLAYER_SPRITE_WIDTH * 2,
-                                  config.PLAYER_SPRITE_HEIGHT * 2)
-
-        camera_inst = camera
+        # Update the position of the finish area relative to the map
         map_pos_x, map_pos_y = config.MAP_POSITION
         finish_area_position = (map_pos_x + 60, map_pos_y + 630)
         finish_area_size = (130, 40)
 
-        finish_rect = pygame.Rect(*finish_area_position, *finish_area_size)
+        # Adjust the player position to the bottom of the player sprite
+        adjusted_player_position = (
+            self.player_position[0],
+            self.player_position[1] + config.PLAYER_SPRITE_HEIGHT * 1.5,
+        )
 
+        # Create the player hitbox (rect)
+        player_rect = pygame.Rect(
+            *adjusted_player_position,
+            config.PLAYER_SPRITE_WIDTH * 2,
+            config.PLAYER_SPRITE_HEIGHT * 0.5
+        )
+
+        # Create the finish area hitbox (rect)
+        finish_rect = pygame.Rect(
+            *finish_area_position,
+            *finish_area_size
+        )
+
+        # Check if the player is on the finish area
         keys = pygame.key.get_pressed()
         backwards = keys[pygame.K_s]
 
         # If we are not on the finish rect (we started racing),
         # reset the finish trigger and race start trigger
-        if not finish_rect.colliderect(player_rect):
-            if not self.was_on_finish_color:
-                self.was_on_finish_color = True
-            if not self.has_started_race:
+        if finish_rect.colliderect(player_rect):
+            if not self.was_on_finish:
                 self.has_started_race = True
 
+        if self.has_started_race:
+            if not finish_rect.colliderect(player_rect):
+                self.was_on_finish = True
+
+        if self.was_on_finish:
+            if finish_rect.colliderect(player_rect):
+                self.is_finish_triggered = True
+
+        if self.is_finish_triggered:
+            self.handle_finish()
+        else:
+            self.is_finish_triggered = False
+
+        print(f"Was on Finish {self.was_on_finish}\n"
+              f"Started {self.has_started_race}\n" * 100)
+
         if finish_rect.colliderect(player_rect):
-            if self.was_on_finish_color:
+            if self.was_on_finish:
                 if self.has_started_race:
                     self.finish_count += 1
                     self.finish_sound.play()
 
         print(f"Finish count: {self.finish_count}\n" * 100)
 
-        # if self.was_on_finish_color:
-        #     if self.has_started_race:
-        #         if not backwards:
-        #             self.is_finish_triggered = True
-        #         else:
-        #             self.is_lap_triggered = True
-        #         print(f"Finish triggered: {self.is_finish_triggered}\n"
-        #               f"Lap triggered: {self.is_lap_triggered}\n"
-        #               f"Finish count: {self.finish_count}\n" * 100)
-
-        # if self.is_finish_triggered:
-        #     self.finish_count += 1
-        #     self.is_finish_triggered = False
-        #     self.handle_finish()
-        #
-        # if self.is_lap_triggered:
-        #     self.is_lap_triggered = False
-        #     self.handle_lap()
-
+        # Draw hitboxes
         pygame.draw.rect(self.screen, (255, 0, 0), finish_rect)
+        pygame.draw.rect(self.screen, (0, 255, 0), player_rect)
 
     # Define how handle_finish and handle_lap works, replace `camera` with your camera instance.
     def handle_finish(self):
