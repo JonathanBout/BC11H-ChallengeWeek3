@@ -188,7 +188,17 @@ class Game:
 
             # Update key states
             self.keys = pygame.key.get_pressed()
-            self.display.screen.blits([(pygame.Surface(x.size), x) for x in self.map_rects])
+
+            map_rects = [
+                pygame.Rect(
+                    rect.left + config.MAP_POSITION[0],
+                    rect.top + config.MAP_POSITION[1],
+                    *rect.size,
+                )
+                for rect in self.map_rects
+            ]
+
+            self.display.screen.blits([(pygame.Surface(x.size), x) for x in map_rects])
             # Move player 1
             self.player1.move(
                 self.display.screen,
@@ -219,7 +229,7 @@ class Game:
             self.display.draw()
 
             # Check for events related to the player, such as collisions with the respawn area
-            self.player1.check_for_events(self.display.screen, self.map_rects)
+            self.player1.check_for_events(self.display.screen, map_rects)
             # self.player2.check_for_events(self.display.screen)
 
         # Set game state to game over, regardless of whether the player won or lost
@@ -311,4 +321,6 @@ class Game:
         self.score_manager.resume()
 
     def load_map_rects(self):
-        self.map_rects = rect_from_image.load_rect(config.MAP_SPRITE)
+        self.map_rects = rect_from_image.load_rect(
+            config.WORLD_BACKGROUND, (1.7, 1.53)
+        )

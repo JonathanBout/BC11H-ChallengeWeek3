@@ -29,9 +29,12 @@ class CustomEvent:
 
 
 class RespawnEvent(CustomEvent):
-    def __init__(self, map_rects: list[pygame.Rect], player_position, respawn_sound: str):
+    def __init__(
+        self, map_rects: list[pygame.Rect], player_position, respawn_sound: str
+    ):
         super().__init__(player_position)
         self.map_rects = map_rects
+
         self.respawn_sound = Music(respawn_sound, 1)
         self.is_respawn_triggered = False
 

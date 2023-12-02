@@ -28,7 +28,7 @@ def merge_rects(rects, threshold):
     return merged_rects
 
 
-def load_rect(image_path: str) -> list[pygame.Rect]:
+def load_rect(image_path: str, scale: tuple[float, float]) -> list[pygame.Rect]:
     # Load image
     image = cv2.imread(image_path, 0)
     size = pygame.image.load(image_path).get_size()
@@ -44,8 +44,8 @@ def load_rect(image_path: str) -> list[pygame.Rect]:
     )
 
     # For every contour, get bounding rect and scale it according to new screen size
-    scale_x = size[0] / image.shape[1]
-    scale_y = size[1] / image.shape[0]
+    scale_x = size[0] * scale[0] / image.shape[0]
+    scale_y = size[1] * scale[1] / image.shape[1]
     rects = [
         pygame.Rect(
             cv2.boundingRect(contour)[0] * scale_x,
