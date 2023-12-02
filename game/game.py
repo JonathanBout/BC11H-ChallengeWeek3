@@ -4,6 +4,7 @@ import game.config as c
 from game.camera import Camera
 from game.display import Display
 from game.game_over import GameOver
+from game.game_won import GameWon
 from game.menu import Menu
 from game.score_manager import ScoreManager
 from game.stats import Stats
@@ -39,12 +40,14 @@ class Game:
         self.stats_menu_font = pygame.font.Font("assets/fonts/SuperMario256.ttf", 40)
         self.credits_font = self.stats_menu_font
         self.game_over_font = self.stats_menu_font
+        self.game_won_font = self.stats_menu_font
 
         # Setup menu and stats
         self.menu = Menu()
         self.stats = Stats(self.stats_menu_font)
         self.credits = Credits(self.credits_font)
         self.game_over = GameOver(self.game_over_font)
+        self.game_won = GameWon(self.game_won_font)
         self.score_manager = ScoreManager()
 
         # Initialize game objects
@@ -85,17 +88,26 @@ class Game:
         run_game, did_win, should_show_main_menu = self.init_game()
 
         # Play the music
-        if run_game:
-            self.rainbow_road_music.set_volume(0.1)
-            self.rainbow_road_music.play(-1)
-
+        self.rainbow_road_music.set_volume(0.1)
+        self.rainbow_road_music.play(-1)
+        self.player1.reset()
+        self.player2.reset()
+        self.camera.reset()
         # Main game loop
         while run_game:
             # Set the current window caption
             pygame.display.set_caption(f"{c.WORLD_NAME} - {c.CURRENT_FPS:.2f}")
 
-            # Check for events
-            for event in pygame.event.get():
+            # Check for events and only get the events we want
+            for event in pygame.event.get(
+                    (
+                            pygame.KEYDOWN,
+                            c.GAME_PAUSE_CHANGED,
+                            c.PLAYER_GAMEOVER_EVENT,
+                            c.PLAYER_WON_EVENT,
+                            pygame.QUIT,
+                    )
+            ):
                 # If player presses a button
                 if event.type == pygame.KEYDOWN:
                     # And if the button is escape
@@ -112,7 +124,7 @@ class Game:
                         self.resume()
                         c.GAME_PAUSED = False
                 # If the pause state is changed
-                if event.type == c.GAME_PAUSE_CHANGED:
+                elif event.type == c.GAME_PAUSE_CHANGED:
                     # And it is now paused
                     if c.GAME_PAUSED:
                         # Pause the game
@@ -121,7 +133,7 @@ class Game:
                         # Otherwise, resume the game
                         self.resume()
                 # If the player died
-                if event.type == c.PLAYER_GAMEOVER_EVENT:
+                elif event.type == c.PLAYER_GAMEOVER_EVENT:
                     # Reset the camera and player
                     self.camera.reset()
                     self.player_one.reset()
@@ -131,7 +143,7 @@ class Game:
                     did_win = False
                     break
                 # If the player won
-                if event.type == c.PLAYER_WON_EVENT:
+                elif event.type == c.PLAYER_WON_EVENT:
                     # Reset the camera and player
                     self.camera.reset()
                     self.player_one.reset()
@@ -140,6 +152,8 @@ class Game:
                     run_game = False
                     did_win = True
                     break
+                elif event.type == pygame.QUIT:
+                    exit()
 
             # Check if the player died or won
             if not run_game:
@@ -232,13 +246,15 @@ class Game:
         # If the player won, show the win screen, otherwise show the game over screen.
         if did_win:
             # Show win screen
-            ...
+            if self.game_won.show(self.score_manager, self.stats) == 1:
+                return self.update()
         else:
             # Show gameover screen
             if not should_show_main_menu and self.game_over.show() == 1:
                 return self.update()
-            # (Not so) temporary solution for a weird bug
-            pygame.mouse.set_pos(c.SCREEN_CENTER)
+
+        # (Not so) temporary solution for a weird bug
+        pygame.mouse.set_pos(c.SCREEN_CENTER)
 
     # Pause the music and score manager if the game is paused
     def pause(self):

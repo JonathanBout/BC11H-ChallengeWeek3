@@ -1,13 +1,9 @@
 import math
-
 import pygame
 from pygame.surface import Surface
-
 from game.camera import Camera
-
 import game.config as c
 from util.eventHandler import EventManager, RespawnEvent, FinishEvent
-from util.text import TextRenderer
 from game.world import World
 from game.display import Display
 
@@ -126,7 +122,9 @@ class Player(World):
 
         # Adjust player speed based on acceleration and friction
         if c.PLAYER_CURRENT_SPEED <= c.PLAYER_MAX_SPEED:
-            player_speed = (initial_player_speed + player_acceleration * self.display.dt) * player_friction
+            player_speed = (
+                initial_player_speed + player_acceleration * self.display.dt
+            ) * player_friction
 
         # Adjust player position based on key presses and adjust frame accordingly
         if key["w"]:
@@ -158,7 +156,13 @@ class Player(World):
             player_speed = player_speed / math.sqrt(2)
 
         # If no keys are pressed, set the frame to idle.
-        any_keys = [key["w"], key["s"], key["a"], key["d"]]
+        any_keys = [
+            key["w"],
+            key["s"],
+            key["a"],
+            key["d"]
+        ]
+
         if not any(any_keys):
             player_speed = 0
             c.PLAYER_CURRENT_FRAME = frame_idle
@@ -254,7 +258,7 @@ class Player(World):
         else:
             for var_name in dir(self.config):
                 if (
-                        var_name.isupper()
+                    var_name.isupper()
                 ):  # Checking if it's constant (by convention constants are upper-case)
                     if var_name.startswith("PLAYER_"):
                         print(f"{var_name}: {getattr(self.config, var_name)}")
