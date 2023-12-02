@@ -188,7 +188,7 @@ class Game:
 
             # Update key states
             self.keys = pygame.key.get_pressed()
-            self.display.screen.blits([(pygame.Surface(x.size, masks="red"), x) for x in self.map_rects])
+            self.display.screen.blits([(pygame.Surface(x.size), x) for x in self.map_rects])
             # Move player 1
             self.player1.move(
                 self.display.screen,
