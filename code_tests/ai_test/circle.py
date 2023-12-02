@@ -1,7 +1,7 @@
-'''
+"""
 File: pygame_ai_integration.py
 Description: A program that demonstrates how to implement AI in a Pygame project.
-'''
+"""
 import math
 
 # Import the required modules and libraries
@@ -34,20 +34,17 @@ class Game:
         self.enemies = pygame.sprite.Group()
         self.ai = AI(self.player, self.enemies)
 
-
     def new(self):
         # Create enemy instances
         for i in range(1):
             enemy = Enemy()
             self.enemies.add(enemy)
 
-
     def events(self):
         # Process game events
         for event in pygame.event.get():
             if event.type == QUIT:
                 self.quit()
-
 
     def update(self):
         # Update game state
@@ -58,17 +55,17 @@ class Game:
     def render(self):
         # Render game objects
         self.screen.fill(BLACK)
-        pygame.draw.circle(self.screen, WHITE, self.ai.center, self.ai.radius, 1)  # Draw AI path
+        pygame.draw.circle(
+            self.screen, WHITE, self.ai.center, self.ai.radius, 1
+        )  # Draw AI path
         self.all_sprites.draw(self.screen)
         self.enemies.draw(self.screen)
 
         pygame.display.flip()
 
-
     def quit(self):
         # Quit the game
         self.running = False
-
 
     def run(self):
         # Game loop
@@ -89,7 +86,6 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = WIDTH / 2
         self.rect.y = HEIGHT / 2
 
-
     def update(self):
         # Update player state based on user input
         keys = pygame.key.get_pressed()
@@ -105,15 +101,15 @@ class Player(pygame.sprite.Sprite):
 
 # Create the Enemy class
 class Enemy(pygame.sprite.Sprite):
-
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((30, 30))
-        self.image.fill((random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
+        self.image.fill(
+            (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        )
         self.rect = self.image.get_rect()
         self.rect.x = random.randint(0, WIDTH)
         self.rect.y = random.randint(0, HEIGHT)
-
 
     def update(self):
         # Update enemy state
@@ -143,7 +139,7 @@ class AI:
 
 
 # Create and run the game
-if __name__ == '__main__':
+if __name__ == "__main__":
     game = Game()
     game.new()
     game.run()

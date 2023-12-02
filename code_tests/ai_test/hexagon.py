@@ -33,7 +33,9 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, target_point_index=0):
         super().__init__()
         self.image = pygame.Surface((30, 30))
-        self.image.fill((random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
+        self.image.fill(
+            (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        )
         self.rect = self.image.get_rect()
         self.rect.x = random.randint(0, WIDTH)
         self.rect.y = random.randint(0, HEIGHT)
@@ -80,9 +82,15 @@ class AI:
         (horizontal_margin + third_width, vertical_margin),  # Top left point
         (horizontal_margin + 2 * third_width, vertical_margin),  # Top right point
         (WIDTH - horizontal_margin, HEIGHT / 2),  # Middle right point
-        (horizontal_margin + 2 * third_width, HEIGHT - vertical_margin),  # Bottom right point
-        (horizontal_margin + third_width, HEIGHT - vertical_margin),  # Bottom left point
-        (horizontal_margin, HEIGHT / 2)  # Middle left point
+        (
+            horizontal_margin + 2 * third_width,
+            HEIGHT - vertical_margin,
+        ),  # Bottom right point
+        (
+            horizontal_margin + third_width,
+            HEIGHT - vertical_margin,
+        ),  # Bottom left point
+        (horizontal_margin, HEIGHT / 2),  # Middle left point
     ]
 
     def __init__(self, path_surface, player, enemies):
@@ -109,7 +117,10 @@ class AI:
             elif enemy.rect.y > target_y:
                 enemy.rect.y -= speed
             # If the enemy is close enough to the current point, go to the next point.
-            if abs(enemy.rect.x - target_x) < speed and abs(enemy.rect.y - target_y) < speed:
+            if (
+                abs(enemy.rect.x - target_x) < speed
+                and abs(enemy.rect.y - target_y) < speed
+            ):
                 enemy.rect.x = target_x
                 enemy.rect.y = target_y
                 enemy.update_target_point_index()
@@ -131,7 +142,9 @@ class Game:
         self.all_sprites = pygame.sprite.Group()
         self.player = Player()
         self.all_sprites.add(self.player)
-        self.enemies = pygame.sprite.Group()  # Create enemies group before initializing the AI
+        self.enemies = (
+            pygame.sprite.Group()
+        )  # Create enemies group before initializing the AI
         self.ai = AI(self.path_surface, self.player, self.enemies)
         for enemy in self.enemies:
             self.all_sprites.add(enemy)
@@ -178,7 +191,7 @@ class Game:
 
 
 # Create and run the game
-if __name__ == '__main__':
+if __name__ == "__main__":
     game = Game()
     game.new()
     game.run()
