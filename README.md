@@ -17,5 +17,7 @@ Challenge Week 3
 ## Extra
 - [ ] Two-player controls (WASD & ↑←↓→)
 - [ ] Multiple tracks
+  - [x] Dynamic track colision
+  - [ ] Dynamic map loading
 - [ ] Improve framerate
 - [ ] Multiple NPC's

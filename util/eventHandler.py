@@ -32,6 +32,7 @@ class RespawnEvent(CustomEvent):
     def __init__(self, map_rects: list[pygame.Rect], player_position, respawn_sound: str):
         super().__init__(player_position)
         self.map_rects = map_rects
+
         self.respawn_sound = Music(respawn_sound, 1)
         self.is_respawn_triggered = False
 
@@ -39,23 +40,7 @@ class RespawnEvent(CustomEvent):
         if config.SKIP_TRACK_CHECK:
             return
 
-        # # Get the color of the pixel at the player's position
-        # color = self.screen.get_at(
-        #     (
-        #         int(self.player_position[0] + config.PLAYER_SPRITE_HEIGHT * 2),
-        #         int(self.player_position[1] + config.PLAYER_SPRITE_WIDTH * 2),
-        #     )
-        # )
-
-        # # The color of the respawn area
-        # respawn_color = (0, 0, 96, 255)
-
-        # # If the player is on the road, reset the respawn trigger
-        # if color != respawn_color:
-        #     self.is_respawn_triggered = False
-
-        # # If the player is not on the road, trigger the respawn event
-        if not self.rect_from_player_position().collidelist(self.map_rects):
+        if self.rect_from_player_position().collidelist(self.map_rects) == -1:
             if not self.is_respawn_triggered:
                 self.is_respawn_triggered = True
                 self.handle_respawn()
