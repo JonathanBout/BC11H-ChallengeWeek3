@@ -31,7 +31,10 @@ def merge_rects(rects, threshold):
 def load_rect(image_path: str) -> list[pygame.Rect]:
     # Load image
     image = cv2.imread(image_path, 0)
+
+    # Get size of image
     size = pygame.image.load(image_path).get_size()
+
     # Apply Gaussian blur to the image
     blurred = cv2.GaussianBlur(image, (15, 15), 0)
 
@@ -44,8 +47,8 @@ def load_rect(image_path: str) -> list[pygame.Rect]:
     )
 
     # For every contour, get bounding rect and scale it according to new screen size
-    scale_x = size[0] / image.shape[1]
-    scale_y = size[1] / image.shape[0]
+    scale_x = (size[0] / image.shape[1]) * 2
+    scale_y = (size[1] / image.shape[0]) * 1.5
     rects = [
         pygame.Rect(
             cv2.boundingRect(contour)[0] * scale_x,
@@ -59,5 +62,6 @@ def load_rect(image_path: str) -> list[pygame.Rect]:
     # Merge rects
     threshold_distance = 50
     merged_rects = merge_rects(rects, threshold_distance)
+
 
     return merged_rects

@@ -311,4 +311,4 @@ class Game:
         self.score_manager.resume()
 
     def load_map_rects(self):
-        self.map_rects = rect_from_image.load_rect(config.MAP_SPRITE)
+        self.map_rects = rect_from_image.load_rect(config.WORLD_BACKGROUND)
