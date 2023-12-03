@@ -10,7 +10,7 @@ from game.score_manager import ScoreManager
 from game.stats import Stats
 from game.world import World
 from game.map import Map
-from game.player import Player
+from game.player import PlayerBase, Player1, Player2
 from game.credits import Credits
 from util.music import Music
 from util import rect_from_image
@@ -69,22 +69,29 @@ class Game:
         self.rainbow_road_music = Music(config.MUSIC_RAINBOW_ROAD, 0)
 
     def init_players(self):
-        self.player1 = Player(
+        # Player 1
+        self.player1 = Player1(
             config,
-            config.PLAYER_NAME,
-            config.PLAYER_DESCRIPTION,
-            config.PLAYER_POSITION,
+            config.PLAYER_1_NAME,
+            config.PLAYER_1_DESCRIPTION,
+            config.PLAYER_1_POSITION,
             config.PLAYER_1_SPRITE,
         )
-        self.player2 = Player(
+
+        # Player 2
+        self.player2 = Player2(
             config,
-            config.PLAYER_NAME,
-            config.PLAYER_DESCRIPTION,
-            config.PLAYER_POSITION,
+            config.PLAYER_2_NAME,
+            config.PLAYER_2_DESCRIPTION,
+            config.PLAYER_2_POSITION,
             config.PLAYER_2_SPRITE,
         )
-        self.player_one = self.player1.prepare(config.PLAYER_CURRENT_FRAME)
-        self.player_two = self.player2.prepare(config.PLAYER_CURRENT_FRAME)
+
+        # Prepare the player sprites
+        self.player_one = self.player1.prepare(config.PLAYER_1_CURRENT_FRAME)
+        self.player_two = self.player2.prepare(config.PLAYER_2_CURRENT_FRAME)
+
+        # Print player configuration
         self.player1.print_config()
         self.player2.print_config()
 
@@ -107,15 +114,20 @@ class Game:
         # Start the score manager
         self.score_manager.start()
         self.load_map_rects()
+
         # Setup game variables
         run_game, did_win, should_show_main_menu = self.init_game()
         self.init_players()
+
         # Play the music
         self.rainbow_road_music.set_volume(0.1)
         self.rainbow_road_music.play(-1)
+
+        # Reset the camera and player
         self.player1.reset()
         self.player2.reset()
         self.camera.reset()
+
         # Main game loop
         while run_game:
             # Set the current window caption
@@ -189,6 +201,7 @@ class Game:
             # Update key states
             self.keys = pygame.key.get_pressed()
 
+            # Position the collision map correctly
             map_rects = [
                 pygame.Rect(
                     rect.left + config.MAP_POSITION[0],
@@ -212,10 +225,12 @@ class Game:
                     self.keys[pygame.K_d],
                     self.keys[pygame.K_LSHIFT],
                 ],
+                config.PLAYER_1_CURRENT_POSITION,
+                config.PLAYER_1_CURRENT_FRAME,
             )
 
             # Move player 2
-            self.player_two = self.player2.move(
+            self.player2.move(
                 self.display.screen,
                 self.camera,
                 [
@@ -225,14 +240,16 @@ class Game:
                     self.keys[pygame.K_RIGHT],
                     self.keys[pygame.K_RSHIFT],
                 ],
+                config.PLAYER_2_CURRENT_POSITION,
+                config.PLAYER_2_CURRENT_FRAME,
             )
 
             # Refresh the display and frame rate
             self.display.draw()
 
             # Check for events related to the player, such as collisions with the respawn area
-            self.player1.check_for_events(self.display.screen, map_rects)
-            # self.player2.check_for_events(self.display.screen)
+            self.player1.check_for_events(self.display.screen, map_rects, config.PLAYER_1_CURRENT_POSITION)
+            self.player2.check_for_events(self.display.screen, map_rects, config.PLAYER_2_CURRENT_POSITION)
 
         # Set game state to game over, regardless of whether the player won or lost
         self.game_over_state(did_win, should_show_main_menu)

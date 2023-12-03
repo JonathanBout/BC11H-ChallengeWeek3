@@ -55,10 +55,12 @@ WORLD_HEIGHT = SCREEN_HEIGHT
 
 # PLAYER CONFIGURATION
 # What's the player's name?
-PLAYER_NAME = "Wario"
+PLAYER_1_NAME = "Wario"
+PLAYER_2_NAME = "Bowser"
 
 # What's the player like?
-PLAYER_DESCRIPTION = "A fat, yellow, greedy, and smelly character."
+PLAYER_1_DESCRIPTION = "A fat, yellow, greedy, and smelly character."
+PLAYER_2_DESCRIPTION = "Short-tempered, big, and bad."
 
 # Player position, relative to the screen
 PLAYER_POSITION = [SCREEN_CENTER_X, SCREEN_CENTER_Y]
@@ -69,7 +71,8 @@ PLAYER_2_POSITION = [SCREEN_CENTER_X, SCREEN_CENTER_Y]
 PLAYER_RESPAWN_POSITION = [127, 494]
 
 # Player current position starts at the respawn position
-PLAYER_CURRENT_POSITION = PLAYER_RESPAWN_POSITION[:]
+PLAYER_1_CURRENT_POSITION = PLAYER_RESPAWN_POSITION[:]
+PLAYER_2_CURRENT_POSITION = PLAYER_RESPAWN_POSITION[:]
 
 # Player sprite
 PLAYER_SPRITE = None
@@ -92,7 +95,8 @@ PLAYER_SPRITE_HORIZONTAL_FLIP = False
 PLAYER_SPRITE_VERTICAL_FLIP = False
 
 # Player's current sprite frame
-PLAYER_CURRENT_FRAME = 0
+PLAYER_1_CURRENT_FRAME = 0
+PLAYER_2_CURRENT_FRAME = 0
 
 # Player's frame update interval
 PLAYER_FRAME_UPDATE_INTERVAL = 5
@@ -110,7 +114,8 @@ PLAYER_AVG_SPEED = (PLAYER_MIN_SPEED + PLAYER_MAX_SPEED) / 2
 PLAYER_FRICTION = 0.2
 
 # Player's current speed
-PLAYER_CURRENT_SPEED = 100
+PLAYER_1_CURRENT_SPEED = 100
+PLAYER_2_CURRENT_SPEED = 100
 
 # MAP CONFIGURATION
 # Map name is the same as the world name
