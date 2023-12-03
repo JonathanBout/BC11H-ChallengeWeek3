@@ -57,8 +57,7 @@ class Stats:
             text_to_show = ""
             place = 1
             for stat in self.get_stats(top=10):
-                text_to_show += f"{str(place).rjust(2)}. {stat.date.strftime('%b %d %Y, %H:%M')}: \
-{stat.score} points\r\n"
+                text_to_show += f"{str(place).rjust(2)}. {stat.date.strftime('%b %d %Y, %H:%M')}: {stat.score} points\r\n"
                 place += 1
 
             if text_to_show == "":
@@ -73,7 +72,7 @@ class Stats:
         last_y = 10
         for line in text.split("\n"):
             text_to_blit = self.font.render(line, True, "white")
-            lines_to_blit.append((text_to_blit, (30, last_y)))
+            lines_to_blit.append((text_to_blit, (config.SCREEN_CENTER_X/2-80, last_y)))
             last_y += text_to_blit.get_height() + 10
 
         self.screen.blits([*self.to_blit, *lines_to_blit])
