@@ -215,17 +215,17 @@ class Game:
             )
 
             # Move player 2
-            # self.player_two = self.player2.move(
-            #     self.display.screen,
-            #     self.camera,
-            #     [
-            #         self.keys[pygame.K_UP],
-            #         self.keys[pygame.K_DOWN],
-            #         self.keys[pygame.K_LEFT],
-            #         self.keys[pygame.K_RIGHT],
-            #         self.keys[pygame.K_RSHIFT],
-            #     ],
-            # )
+            self.player_two = self.player2.move(
+                self.display.screen,
+                self.camera,
+                [
+                    self.keys[pygame.K_UP],
+                    self.keys[pygame.K_DOWN],
+                    self.keys[pygame.K_LEFT],
+                    self.keys[pygame.K_RIGHT],
+                    self.keys[pygame.K_RSHIFT],
+                ],
+            )
 
             # Refresh the display and frame rate
             self.display.draw()
