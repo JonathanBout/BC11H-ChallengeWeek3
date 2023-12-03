@@ -77,7 +77,7 @@ PLAYER_2_CURRENT_POSITION = PLAYER_RESPAWN_POSITION[:]
 # Player sprite
 PLAYER_SPRITE = None
 PLAYER_1_SPRITE = "assets/sprites/wario.png"
-PLAYER_2_SPRITE = "assets/sprites/bowser.png"
+PLAYER_2_SPRITE = "assets/sprites/waluigi.png"
 
 # Player sprite width
 PLAYER_SPRITE_WIDTH = 32
