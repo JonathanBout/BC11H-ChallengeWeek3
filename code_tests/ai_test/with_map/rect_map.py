@@ -5,7 +5,9 @@ import math
 
 
 class ImageProcessor:
-    def __init__(self, map_size: list[int, int], map_scale: int, screen: pygame.Surface):
+    def __init__(
+        self, map_size: list[int, int], map_scale: int, screen: pygame.Surface
+    ):
         pygame.init()
         self.map_width = map_size[0]
         self.map_height = map_size[1]
@@ -37,10 +39,10 @@ class ImageProcessor:
 
     def get_lines(self):
         image = cv2.imread(
-            "assets/sprites/rainbow_road_heat_map.png", 0
+            "assets/sprites/rainbow_road_heat_map.png", cv2.IMREAD_GRAYSCALE
         )  # Confirm the image path is correct
-        blurred = cv2.GaussianBlur(image, (21, 21), 0)
-        return cv2.Canny(blurred, 10, 20), image
+        blurred = cv2.GaussianBlur(image, (9, 9), 0)
+        return cv2.Canny(blurred, 200, 400), image
 
     def load_image(self, screen: pygame.Surface):
         edges, image = self.get_lines()
@@ -61,7 +63,7 @@ class ImageProcessor:
             for contour in contours
         ]
 
-        threshold_distance = 40 * self.map_scale
+        threshold_distance = 20 * self.map_scale
         merged_rects = self.merge_rects(rects, threshold_distance)
 
         non_overlapping_rects = []

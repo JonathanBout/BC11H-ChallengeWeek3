@@ -28,7 +28,7 @@ SCREEN_HEIGHT = 720
 
 SCREEN_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT)
 
-MAP_SCALEUP = 2
+MAP_SCALEUP = 1
 
 
 class Game:
@@ -46,7 +46,7 @@ class Game:
         self.window.fill("black")
         self.window.blit(self.map, (0, 0))
         for rect in self.rect_map:
-            pygame.draw.rect(self.window, (255, 255, 255), rect, 10)
+            pygame.draw.rect(self.window, (255, 255, 255), rect, 5 * MAP_SCALEUP)
         pygame.draw.rect(self.window, (255, 0, 0), self.npc.rect)
         pygame.display.flip()
 
