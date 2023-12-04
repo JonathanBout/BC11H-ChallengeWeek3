@@ -120,7 +120,7 @@ class Game:
         self.init_players()
 
         # Play the music
-        self.rainbow_road_music.set_volume(0.1)
+        self.rainbow_road_music.set_volume(1)
         self.rainbow_road_music.play(-1)
 
         # Reset the camera and player

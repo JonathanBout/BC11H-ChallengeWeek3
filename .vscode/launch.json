@@ -30,6 +30,15 @@
       "cwd": "${workspaceFolder}",
       "console": "externalTerminal",
       "justMyCode": true
+    },
+    {
+      "name": "Python: Game AI Test",
+      "type": "python",
+      "request": "launch",
+      "program": "code_tests/ai_test/with_map/game.py",
+    //   "cwd": "../code_tests/ai_test/with_map",
+      "console": "externalTerminal",
+      "justMyCode": true
     }
   ]
 }

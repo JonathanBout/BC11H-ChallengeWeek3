@@ -9,7 +9,9 @@ class Npc:
         if not path_points:
             raise ValueError("path_points cannot be empty")
         try:
-            self.rect = pygame.Rect((path_points[0][0] - 25, path_points[0][1] - 25), (50, 50))
+            self.rect = pygame.Rect(
+                (path_points[0][0] - 25, path_points[0][1] - 25), (50, 50)
+            )
         except IndexError:
             raise ValueError("path_points does not contain enough elements")
 
@@ -65,13 +67,17 @@ class Npc:
                 speed = self.speed
 
                 if dist_to_nearest > 100:  # choose your own distance threshold
-                    speed = self.speed * 2  # speed is twice as fast if distance is more than threshold
+                    # speed is twice as fast if distance is more than threshold
+                    speed = self.speed * 2
 
-                self.move_towards(self.path[nearest_point_index], speed)
+                self.move_towards(self.path[nearest_point_index + 1], speed)
 
     def get_nearest_point_index(self):
         npc_center = self.rect.center
         # Calculate the distances to the path points
-        distances = [math.hypot(npc_center[0] - point[0], npc_center[1] - point[1]) for point in self.path]
+        distances = [
+            math.hypot(npc_center[0] - point[0], npc_center[1] - point[1])
+            for point in self.path
+        ]
         # Return the index of the nearest path point
         return distances.index(min(distances))

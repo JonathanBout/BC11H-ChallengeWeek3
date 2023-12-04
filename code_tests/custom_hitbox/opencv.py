@@ -21,7 +21,7 @@ def merge_rects(rects, threshold):
     return merged_rects
 
 # Load image
-image = cv2.imread('../../assets/sprites/rainbow_road_map_old.png', 0)
+image = cv2.imread('assets/sprites/rainbow_road_map_old.png', 0)
 
 # Apply Gaussian blur to the image
 blurred = cv2.GaussianBlur(image, (13, 13), 0)
