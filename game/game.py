@@ -229,6 +229,7 @@ class Game:
                 for x in map.waypoints
             ]
 
+            self.enemy.update()
 
             # Move player 1
             self.player1.move(

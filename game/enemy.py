@@ -4,8 +4,10 @@ import numpy as np
 import math
 from pygame import Surface, Rect, image
 
+from game.player import PlayerBase
 
-class Enemy:
+
+class Enemy(PlayerBase):
     NEXT_POINT_THRESHOlD = 20
 
     def __init__(self, map: MapConfig, sprite: str, screen: Surface, max_speed=300):
@@ -39,7 +41,7 @@ class Enemy:
             self.target_point_index %= len(self.map.waypoints)
 
         self.screen.blit(
-            self.sprite, Rect(*current_point, self.width, self.height)
+            self.prepare(), Rect(*current_point, self.width, self.height)
         )
 
         print(current_point)
