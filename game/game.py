@@ -309,7 +309,7 @@ class Game:
         if did_win:
             self.score_manager.pause()
             score = self.score_manager.get_score()
-            self.stats.add_stat(score, map)
+            self.stats.add_stat(score, map.name)
             # Show win screen
             if self.game_won.show() == 1:
                 return self.show_map_choice_menu()
