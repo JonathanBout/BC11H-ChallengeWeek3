@@ -18,9 +18,17 @@ Challenge Week 3
 - [x] Two-player controls (WASD & ↑←↓→)
 - [ ] Multiple tracks
   - [x] Dynamic track colision
-  - [ ] Better map loading
-- [ ] Improve framerate
+  - [x] Better map loading
+  - [ ] Extra map sprites 
+- [x] Improve framerate
 - [ ] Multiple NPC's
+- [ ] Powerups
+  - [ ] Powerups respawn
+  - [ ] Powerups are random
+  - [ ] Random effects of powerups
+    - [x] Boost
+    - [ ] Slow
+
 
 ## How to install and run the game
 - Download the latest release from [here](https://github.com/JonathanBout/BC11H-ChallengeWeek3/releases)
