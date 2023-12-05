@@ -2,7 +2,7 @@ import pygame
 from game import config, helper, sprites
 from game.score_manager import ScoreManager
 from game.stats import Stats
-from util.sprite_overrides import SurfaceSprite
+from util.sprite_overrides import create
 from pygame.font import Font
 
 
@@ -20,7 +20,7 @@ class GameWon:
             target_size=(config.SCREEN_SIZE[0] * 1.3, config.SCREEN_SIZE[1] * 1.4),
         )
 
-        self.game_over_text = SurfaceSprite(
+        self.game_over_text = create(
             self.font.render("You won!", True, "white"),
             x_center=config.SCREEN_CENTER_X,
             top=config.SCREEN_HEIGHT / 10,
