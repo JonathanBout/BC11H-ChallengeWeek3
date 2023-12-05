@@ -4,13 +4,17 @@ from pygame.surface import Surface
 from game.camera import Camera
 from game import config
 from util.eventHandler import EventManager, RespawnEvent, FinishEvent
-from game.world import World
 from game.display import Display
 
 
-class PlayerBase(World):
-    def __init__(self, config: config, player_number, name, description, position, player_sprite):
-        super().__init__(config, name, description, position)
+class PlayerBase:
+    def __init__(
+        self, config: config, player_number, name, description, position, player_sprite
+    ):
+        self.config = config
+        self.name = name
+        self.description = description
+        self.position = position
         self.display = Display()
         self.player_number = player_number
         self.player_sprite = player_sprite
@@ -41,7 +45,19 @@ class PlayerBase(World):
             sprites.append(sprite)
         return self.check_flip(sprites[frame])
 
-    def move(self, screen: Surface, camera: Camera, controls: list, current_position, current_frame):
+    def move(
+        self,
+        screen: Surface,
+        camera: Camera,
+        controls: dict,
+        current_position: list[int],
+    ):
+        left = controls[pygame.K_a]
+        right = controls[pygame.K_d]
+        up = controls[pygame.K_w]
+        down = controls[pygame.K_s]
+        boost = controls[pygame.K_LSHIFT] or controls[pygame.K_RSHIFT]
+
         player_cnt = str(self.player_number)
         if config.CURRENT_FPS == 0:
             print("CURRENT_FPS value is Zero! Please, check the value.")
@@ -57,13 +73,6 @@ class PlayerBase(World):
         player_acceleration = config.PLAYER_MAX_SPEED
         player_friction = config.PLAYER_FRICTION
 
-        key = dict()
-        key["w"] = controls[0]
-        key["s"] = controls[1]
-        key["a"] = controls[2]
-        key["d"] = controls[3]
-        key["shift"] = controls[4]
-
         player_rect = pygame.Rect(
             current_position,
             (config.PLAYER_SPRITE_WIDTH, config.PLAYER_SPRITE_HEIGHT),
@@ -71,40 +80,42 @@ class PlayerBase(World):
 
         frame_idle = self.num_sprites // 2
         current_frame = frame_idle
-        frame_delta = 1 if key["a"] or key["d"] else 0
+        frame_delta = 1 if left or right else 0
 
         initial_player_speed = player_speed
 
         if initial_player_speed <= config.PLAYER_MAX_SPEED:
-            player_speed = (initial_player_speed + player_acceleration * self.display.dt) * player_friction
+            player_speed = (
+                initial_player_speed + player_acceleration * self.display.dt
+            ) * player_friction
 
-        if key["w"]:
+        if up:
             player_rect.y -= int(player_speed)
             current_frame = 0
-        if key["s"]:
+        if down:
             player_rect.y += int(player_speed)
             current_frame = 10
-        if key["a"]:
+        if left:
             config.PLAYER_SPRITE_HORIZONTAL_FLIP = True
             player_rect.x -= int(player_speed)
             current_frame = min(current_frame + frame_delta, self.num_sprites - 4)
-        if key["d"]:
+        if right:
             config.PLAYER_SPRITE_HORIZONTAL_FLIP = False
             player_rect.x += int(player_speed)
             current_frame = min(current_frame + frame_delta, self.num_sprites - 4)
 
         store_speed = player_speed
-        if key["shift"]:
+        if boost:
             player_speed = player_speed * 2.5
         else:
             player_speed = store_speed
 
-        if (key["w"] or key["s"]) and (key["a"] or key["d"]):
+        if (up or down) and (left or right):
             player_speed = player_speed / math.sqrt(2)
 
-        any_keys = [key["w"], key["s"], key["a"], key["d"]]
+        any_keys = up or down or left or right
 
-        if not any(any_keys):
+        if not any_keys:
             player_speed = 0
             config.PLAYER_CURRENT_FRAME = frame_idle
 
@@ -132,7 +143,9 @@ class PlayerBase(World):
         screen.blit(self.prepare(current_frame), current_position)
         pygame.display.flip()
 
-    def check_for_events(self, screen: Surface, map_rects: list[pygame.Rect], current_position):
+    def check_for_events(
+        self, screen: Surface, map_rects: list[pygame.Rect], current_position
+    ):
         # Create event manager
         event_manager = EventManager()
 
@@ -175,9 +188,7 @@ class PlayerBase(World):
             return False
         else:
             for var_name in dir(self.config):
-                if (
-                        var_name.isupper()
-                ):
+                if var_name.isupper():
                     if var_name.startswith("PLAYER_"):
                         print(f"{var_name}: {getattr(self.config, var_name)}")
 

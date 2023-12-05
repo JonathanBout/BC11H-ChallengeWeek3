@@ -35,17 +35,9 @@ MAX_FPS = 120
 CURRENT_FPS = 0
 
 # WORLD CONFIGURATION
-# World name
-WORLD_NAME = "Rainbow Road"
-
-# World description
-WORLD_DESCRIPTION = "A colorful track in the sky."
 
 # World position, relative to the screen
 WORLD_POSITION = [0, 0]
-
-# World background
-WORLD_BACKGROUND = "assets/sprites/rainbow_road_map_old.png"
 
 # World width = screen width
 WORLD_WIDTH = SCREEN_WIDTH
@@ -116,13 +108,7 @@ PLAYER_FRICTION = 0.2
 # Player's current speed
 PLAYER_1_CURRENT_SPEED = 100
 PLAYER_2_CURRENT_SPEED = 100
-
 # MAP CONFIGURATION
-# Map name is the same as the world name
-MAP_NAME = WORLD_NAME
-
-# Map description is the same as the world description
-MAP_DESCRIPTION = WORLD_DESCRIPTION
 
 # Map respawn position, relative to the screen
 MAP_RESPAWN_POSITION = [5.0, -131.0]
@@ -153,9 +139,6 @@ FINISH_SOUND = "assets/sounds/mk64_announcer11_jp_congratiolation.wav"
 # Powerup sound for credits button
 POWERUP_SOUND = "assets/sounds/smb3_power-up.wav"
 
-# Rainbow Road music for the map
-MUSIC_RAINBOW_ROAD = "assets/sounds/music/Mario_Kart_64_Rainbow_Road.mp3"
-
 # CAMERA CONFIGURATION
 # How close the player has to be to the edge of the screen for the screen to move
 SCREEN_MOVE_OFFSET = 100
@@ -179,3 +162,6 @@ RACE_CURRENT_LAP = 0
 
 # Cheats
 SKIP_TRACK_CHECK = False
+
+# Map Loading
+MAP_DIRECTORY = "assets/maps"

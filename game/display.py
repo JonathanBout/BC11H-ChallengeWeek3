@@ -1,5 +1,6 @@
 import pygame
 from game import config
+from game.map_manager import MapConfig
 from util.text import TextRenderer
 
 
@@ -37,13 +38,13 @@ class Display:
         )
         return self.screen
 
-    def draw(self):
+    def draw(self, map: MapConfig):
         """
         Update the display and clear the screen.
         :return: None
         """
         self.update_display_and_fps()
-        self.clear_and_fill_screen()
+        self.clear_and_fill_screen(map)
 
     def update_display_and_fps(self):
         """
@@ -59,7 +60,7 @@ class Display:
         # Printing the frames per second (fps) rate
         config.CURRENT_FPS = self.clock.get_fps()
 
-    def clear_and_fill_screen(self):
+    def clear_and_fill_screen(self, map: MapConfig):
         """
         Clears the screen and fills it with a custom background.
         :return: None
@@ -68,7 +69,7 @@ class Display:
         self.screen.fill((0, 0, 96))
 
         # Fill the screen with a custom background
-        background = pygame.image.load(config.WORLD_BACKGROUND)
+        background = pygame.image.load(map.background_image)
         background = pygame.transform.scale(
             background, (config.SCREEN_WIDTH * 2, config.SCREEN_HEIGHT * 2)
         )

@@ -4,7 +4,7 @@ import pygame
 # Exit the game if the user wants to
 def exit_if_user_wants():
     """
-    Helper to close the window whenever the X is clicked.
+    Pumps the pygame events and closes the window whenever the X is clicked.
     """
     if len(pygame.event.get(eventtype=pygame.QUIT)) > 0:
         exit()

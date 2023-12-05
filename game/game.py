@@ -5,11 +5,11 @@ from game.camera import Camera
 from game.display import Display
 from game.game_over import GameOver
 from game.game_won import GameWon
+from game.map_chooser import MapChooser
+from game.map_manager import MapConfig, MapManager
 from game.menu import Menu
 from game.score_manager import ScoreManager
 from game.stats import Stats
-from game.world import World
-from game.map import Map
 from game.player import PlayerBase, Player1, Player2
 from game.credits import Credits
 from util.music import Music
@@ -44,6 +44,7 @@ class Game:
         self.credits_font = self.stats_menu_font
         self.game_over_font = self.stats_menu_font
         self.game_won_font = self.stats_menu_font
+        self.map_chooser_font = self.stats_menu_font
 
         # Setup menu and stats
         self.menu = Menu()
@@ -52,21 +53,16 @@ class Game:
         self.game_over = GameOver(self.game_over_font)
         self.game_won = GameWon(self.game_won_font)
         self.score_manager = ScoreManager()
+        self.map_manager = MapManager()
+        self.map_chooser = MapChooser(self.map_chooser_font, self.map_manager)
 
-        # Initialize game objects
-        self.world = World(
-            config, config.WORLD_NAME, config.WORLD_DESCRIPTION, config.WORLD_POSITION
-        )
-        self.race_track = Map(
-            config, config.MAP_NAME, config.MAP_DESCRIPTION, config.MAP_POSITION
-        )
         self.camera = Camera()
 
         # Player properties
         self.keys = None
 
         # Music
-        self.rainbow_road_music = Music(config.MUSIC_RAINBOW_ROAD, 0)
+        self.music: Music = None
 
     def init_players(self):
         # Player 1
@@ -105,7 +101,7 @@ class Game:
         self.show_menu(False)
 
     # Actions to perform when the game updates
-    def update(self):
+    def update(self, map: MapConfig):
         """
         This method updates the game state and display.
         This is needed to run and play the game.
@@ -113,15 +109,16 @@ class Game:
         """
         # Start the score manager
         self.score_manager.start()
-        self.load_map_rects()
+        self.load_map_rects(map)
 
         # Setup game variables
         run_game, did_win, should_show_main_menu = self.init_game()
         self.init_players()
 
         # Play the music
-        self.rainbow_road_music.set_volume(1)
-        self.rainbow_road_music.play(-1)
+        self.music = Music(map.music_file, 1)
+        self.music.set_volume(1)
+        self.music.play(-1)
 
         # Reset the camera and player
         self.player1.reset()
@@ -130,9 +127,14 @@ class Game:
 
         # Main game loop
         while run_game:
+            map_relative_position = (
+                -config.MAP_POSITION[0] + config.PLAYER_1_CURRENT_POSITION[0],
+                -config.MAP_POSITION[1] + config.PLAYER_1_CURRENT_POSITION[1],
+            )
+
             # Set the current window caption
             pygame.display.set_caption(
-                f"{config.WORLD_NAME} - {config.CURRENT_FPS:.2f}"
+                f"{map.name} - {map_relative_position} - {config.CURRENT_FPS}"
             )
 
             # Check for events and only get the events we want
@@ -211,45 +213,35 @@ class Game:
                 for rect in self.map_rects
             ]
 
-            # Show dynamic collision map
-            # self.display.screen.blits([(pygame.Surface(x.size), x) for x in map_rects])
+            [
+                pygame.draw.circle(
+                    self.display.screen,
+                    "red",
+                    (x[0] + config.MAP_POSITION[0], x[1] + config.MAP_POSITION[1]),
+                    50,
+                    50,
+                )
+                for x in map.waypoints
+            ]
 
             # Move player 1
             self.player1.move(
                 self.display.screen,
                 self.camera,
-                [
-                    self.keys[pygame.K_w],
-                    self.keys[pygame.K_s],
-                    self.keys[pygame.K_a],
-                    self.keys[pygame.K_d],
-                    self.keys[pygame.K_LSHIFT],
-                ],
+                self.keys,
                 config.PLAYER_1_CURRENT_POSITION,
-                config.PLAYER_1_CURRENT_FRAME,
-            )
-
-            # Move player 2
-            self.player2.move(
-                self.display.screen,
-                self.camera,
-                [
-                    self.keys[pygame.K_UP],
-                    self.keys[pygame.K_DOWN],
-                    self.keys[pygame.K_LEFT],
-                    self.keys[pygame.K_RIGHT],
-                    self.keys[pygame.K_RSHIFT],
-                ],
-                config.PLAYER_2_CURRENT_POSITION,
-                config.PLAYER_2_CURRENT_FRAME,
             )
 
             # Refresh the display and frame rate
-            self.display.draw()
+            self.display.draw(map)
 
             # Check for events related to the player, such as collisions with the respawn area
-            self.player1.check_for_events(self.display.screen, map_rects, config.PLAYER_1_CURRENT_POSITION)
-            self.player2.check_for_events(self.display.screen, map_rects, config.PLAYER_2_CURRENT_POSITION)
+            self.player1.check_for_events(
+                self.display.screen, map_rects, config.PLAYER_1_CURRENT_POSITION
+            )
+            # self.player2.check_for_events(
+            #     self.display.screen, map_rects, config.PLAYER_2_CURRENT_POSITION
+            # )
 
         # Set game state to game over, regardless of whether the player won or lost
         self.game_over_state(did_win, should_show_main_menu)
@@ -264,7 +256,7 @@ class Game:
                         config.GAME_PAUSED = False
                         return True
                     else:
-                        self.update()
+                        self.show_map_choice_menu()
                 case 2:  # 2=quit
                     return False
                 case 3:  # 3=stats
@@ -274,15 +266,9 @@ class Game:
                     self.credits.show()
                     continue
 
-    # Print the world, map and player configuration for debugging purposes
-    def print_config(self):
-        """
-        Prints game configuration details.
-        This includes the world, racetrack, and player configurations.
-        :return: None
-        """
-        self.world.print_config()
-        self.race_track.print_config()
+    def show_map_choice_menu(self):
+        if map := self.map_chooser.show():
+            self.update(map)
 
     # Initialize game variables
     def init_game(self):
@@ -306,17 +292,17 @@ class Game:
         # If the game is over, reset the camera and player and stop the music.
         self.camera.reset()
         self.player1.reset()
-        self.rainbow_road_music.stop_on_channel(0)
+        self.music.stop_on_channel(0)
 
         # If the player won, show the win screen, otherwise show the game over screen.
         if did_win:
             # Show win screen
             if self.game_won.show(self.score_manager, self.stats) == 1:
-                return self.update()
+                return self.show_map_choice_menu()
         else:
             # Show gameover screen
             if not should_show_main_menu and self.game_over.show() == 1:
-                return self.update()
+                return self.show_map_choice_menu()
 
         # (Not so) temporary solution for a weird bug
         pygame.mouse.set_pos(config.SCREEN_CENTER)
@@ -327,7 +313,7 @@ class Game:
         Pauses the game by pausing the music and score manager.
         :return: None
         """
-        self.rainbow_road_music.pause()
+        self.music.pause()
         self.score_manager.pause()
 
     # Resume the music and score manager if the game is resumed
@@ -336,10 +322,10 @@ class Game:
         Resumes the game by unpausing the music and resuming the score manager.
         :return: None
         """
-        self.rainbow_road_music.unpause()
+        self.music.unpause()
         self.score_manager.resume()
 
-    def load_map_rects(self):
+    def load_map_rects(self, map: MapConfig):
         self.map_rects = rect_from_image.load_rect(
-            config.WORLD_BACKGROUND, (1.7, 1.53)
+            map.background_image, map.collider_scale
         )

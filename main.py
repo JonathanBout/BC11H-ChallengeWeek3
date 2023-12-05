@@ -1,4 +1,4 @@
-from game import Game, helper
+from game import Game, helper, map_manager
 import atexit
 
 
@@ -6,7 +6,6 @@ def main():
     # This is the main function
     atexit.register(__at_exit)  # Register the at_exit function
     game = Game()  # Initialize game
-    game.print_config()  # Print game config
     game.start()  # Start the game
 
 

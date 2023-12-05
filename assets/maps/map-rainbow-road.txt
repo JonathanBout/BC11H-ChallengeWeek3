@@ -1,0 +1,8 @@
+Rainbow Road
+A colorful track in the sky.
+assets/sprites/rainbow_road_map_old.png
+assets/sounds/music/Mario_Kart_64_Rainbow_Road.mp3
+2x2
+1.7x1.53
+<92,585> <90,193> <235,106> <1380,106> <1471,360> <1380,601> <681,601> <570,769> <681,898>
+<1826,898> <1894,1097> <1826,1248> <950,1248> <831,1209> <471,1209> <261,1248> <138,1248> <92,1166>
