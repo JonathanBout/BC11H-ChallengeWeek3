@@ -10,7 +10,7 @@ Challenge Week 3
 - [x] Working highscore system
 - [x] Player can steer the car
 - [ ] Player can race against NPC
-  - [x] Play can finish
+  - [x] Player can finish
   - [ ] NPC can finish
   
 - [x] Player races on a track and gets punished for leaving the track
