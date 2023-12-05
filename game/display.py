@@ -23,6 +23,7 @@ class Display:
         self.screen = None  # Initialize display/screen
         self.clock = pygame.time.Clock()  # Initialize clock
         self.dt = 0  # add delta time
+        self.score_font = pygame.font.Font(config.SUPER_MARIO_FONT, 30)
 
         # Initialize text renderer
         self.text_renderer = TextRenderer()
@@ -73,4 +74,10 @@ class Display:
         background = pygame.transform.scale(
             background, (config.SCREEN_WIDTH * 2, config.SCREEN_HEIGHT * 2)
         )
+        current_lap = config.RACE_CURRENT_LAP
+
+        text = self.score_font.render(
+            f"{current_lap}/{config.RACE_LAPS}", True, "white", "gray"
+        )
         self.screen.blit(background, config.MAP_POSITION)
+        self.screen.blit(text, (10, 10))

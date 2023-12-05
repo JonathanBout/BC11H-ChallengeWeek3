@@ -134,13 +134,14 @@ PLAYER_GAMEOVER_EVENT = pygame.event.custom_type()
 
 # Player won event
 PLAYER_WON_EVENT = pygame.event.custom_type()
+ENEMY_WON_EVENT = pygame.event.custom_type()
 
 # Game pause changed event
 GAME_PAUSE_CHANGED = pygame.event.custom_type()
 
 # RACE TRACK CONFIGURATION
 # Set laps until finish
-RACE_LAPS = 3
+RACE_LAPS = 1
 
 # Keep track of the current lap
 RACE_CURRENT_LAP = 0
@@ -150,3 +151,5 @@ SKIP_TRACK_CHECK = False
 
 # Map Loading
 MAP_DIRECTORY = "assets/maps"
+
+SUPER_MARIO_FONT = "assets/fonts/SuperMario256.ttf"

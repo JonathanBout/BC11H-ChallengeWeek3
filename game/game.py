@@ -39,7 +39,7 @@ class Game:
         self.display.set_display_size()
 
         # Set up font for text rendering - TODO: use text.py instead
-        self.stats_menu_font = pygame.font.Font("assets/fonts/SuperMario256.ttf", 40)
+        self.stats_menu_font = pygame.font.Font(config.SUPER_MARIO_FONT, 40)
         self.credits_font = self.stats_menu_font
         self.game_over_font = self.stats_menu_font
         self.game_won_font = self.stats_menu_font
@@ -114,7 +114,7 @@ class Game:
         self.load_map_rects(map)
 
         # Setup game variables
-        run_game, did_win, should_show_main_menu = self.init_game()
+        run_game, did_win, enemy_won, should_show_main_menu = self.init_game()
         self.init_players()
 
         # Play the music
@@ -144,60 +144,72 @@ class Game:
 
             # Check for events and only get the events we want
             for event in pygame.event.get(
-                    (
-                            pygame.KEYDOWN,
-                            config.GAME_PAUSE_CHANGED,
-                            config.PLAYER_GAMEOVER_EVENT,
-                            config.PLAYER_WON_EVENT,
-                            pygame.QUIT,
-                    )
+                (
+                    pygame.KEYDOWN,
+                    config.GAME_PAUSE_CHANGED,
+                    config.PLAYER_GAMEOVER_EVENT,
+                    config.PLAYER_WON_EVENT,
+                    config.ENEMY_WON_EVENT,
+                    pygame.QUIT,
+                )
             ):
-                # If player presses a button
-                if event.type == pygame.KEYDOWN:
-                    # And if the button is escape
-                    if event.key == pygame.K_ESCAPE:
-                        # Pause the game
-                        config.GAME_PAUSED = True
-                        self.pause()
-                        # And show the menu
-                        if not self.show_menu(True):
-                            run_game = False
-                            should_show_main_menu = True
-                            break
-                        # And if the menu is closed, resume the game
-                        self.resume()
-                        config.GAME_PAUSED = False
-                # If the pause state is changed
-                elif event.type == config.GAME_PAUSE_CHANGED:
-                    # And it is now paused
-                    if config.GAME_PAUSED:
-                        # Pause the game
-                        self.pause()
-                    else:
-                        # Otherwise, resume the game
-                        self.resume()
-                # If the player died
-                elif event.type == config.PLAYER_GAMEOVER_EVENT:
-                    # Reset the camera and player
-                    self.camera.reset()
-                    self.player1.reset()
-                    self.player2.reset()
-                    # Stop the game and set the win state to false
-                    run_game = False
-                    did_win = False
-                    break
-                # If the player won
-                elif event.type == config.PLAYER_WON_EVENT:
-                    # Reset the camera and player
-                    self.camera.reset()
-                    self.player1.reset()
-                    self.player2.reset()
-                    # Stop the game and set the win state to true
-                    run_game = False
-                    did_win = True
-                    break
-                elif event.type == pygame.QUIT:
-                    exit()
+                match event.type:
+                    # If player presses a button
+                    case pygame.KEYDOWN:
+                        # And if the button is escape
+                        if event.key == pygame.K_ESCAPE:
+                            # Pause the game
+                            config.GAME_PAUSED = True
+                            self.pause()
+                            # And show the menu
+                            if not self.show_menu(True):
+                                run_game = False
+                                should_show_main_menu = True
+                                break
+                            # And if the menu is closed, resume the game
+                            self.resume()
+                            config.GAME_PAUSED = False
+                    # If the pause state is changed
+                    case config.GAME_PAUSE_CHANGED:
+                        # And it is now paused
+                        if config.GAME_PAUSED:
+                            # Pause the game
+                            self.pause()
+                        else:
+                            # Otherwise, resume the game
+                            self.resume()
+                    # If the player died
+                    case config.PLAYER_GAMEOVER_EVENT:
+                        # Reset the camera and player
+                        self.camera.reset()
+                        self.player1.reset()
+                        self.player2.reset()
+                        # Stop the game and set the win state to false
+                        run_game = False
+                        did_win = False
+                        break
+                    # If the player won
+                    case config.PLAYER_WON_EVENT:
+                        # Reset the camera and player
+                        self.camera.reset()
+                        self.player1.reset()
+                        self.player2.reset()
+                        # Stop the game and set the win state to true
+                        run_game = False
+                        did_win = True
+                        break
+                    case config.ENEMY_WON_EVENT:
+                        # Reset the camera and player
+                        self.camera.reset()
+                        self.player1.reset()
+                        self.player2.reset()
+                        # Stop the game and set the win state to true
+                        run_game = False
+                        did_win = False
+                        enemy_won = True
+                        break
+                    case pygame.QUIT:
+                        exit()
 
             # Check if the player died or won
             if not run_game:
@@ -252,7 +264,7 @@ class Game:
             # )
 
         # Set game state to game over, regardless of whether the player won or lost
-        self.game_over_state(did_win, should_show_main_menu, map)
+        self.game_over_state(did_win, should_show_main_menu, enemy_won, map)
 
     # Show the main menu
     def show_menu(self, is_pause_menu: bool):
@@ -294,10 +306,17 @@ class Game:
 
         run_game = True
         did_win = False
+        enemy_won = False
         should_show_main_menu = False
-        return run_game, did_win, should_show_main_menu
+        return run_game, did_win, enemy_won, should_show_main_menu
 
-    def game_over_state(self, did_win: bool, should_show_main_menu: bool, map: MapConfig):
+    def game_over_state(
+        self,
+        did_win: bool,
+        should_show_main_menu: bool,
+        did_enemy_win: bool,
+        map: MapConfig,
+    ):
         # If the game is over, reset the camera and player and stop the music.
         self.camera.reset()
         self.player1.reset()
@@ -315,7 +334,7 @@ class Game:
                 return self.show_map_choice_menu()
         else:
             # Show gameover screen
-            if not should_show_main_menu and self.game_over.show() == 1:
+            if not should_show_main_menu and self.game_over.show(did_enemy_win) == 1:
                 return self.show_map_choice_menu()
 
     # Pause the music and score manager if the game is paused

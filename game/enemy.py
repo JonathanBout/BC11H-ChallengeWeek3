@@ -3,15 +3,18 @@ from game.map_manager import MapConfig
 from game import config
 import numpy as np
 import math
+from random import randint
 from pygame import Surface, Rect, image
 
 from game.player import PlayerBase
+from util.eventHandler import EventManager, FinishEvent, RespawnEvent
+
+NEXT_POINT_THRESHOlD = 20
+MAX_RANDOM_OFFSET = 50
 
 
 class Enemy(PlayerBase):
-    NEXT_POINT_THRESHOlD = 20
-
-    def __init__(self, map: MapConfig, sprite: str, screen: Surface, max_speed=300):
+    def __init__(self, map: MapConfig, sprite: str, screen: Surface, max_speed=2):
         self.map = map
         self.sprite = image.load(sprite)
         self.target_point_index = 1
@@ -20,8 +23,15 @@ class Enemy(PlayerBase):
         self.max_speed = max_speed
         self.screen = screen
         self.width, self.height = self.sprite.get_size()
+        self.speed = 0.0
+        self.finish_event = FinishEvent(self.screen, [0, 0], config.FINISH_SOUND)
+        self.current_lap = 0
 
     def update(self):
+        if self.speed < self.max_speed:
+            fps = config.MAX_FPS if config.CURRENT_FPS == 0 else config.CURRENT_FPS
+            self.speed += self.max_speed / (fps)  # 5 seconds to reach full speed
+
         self.map_offset = np.array(config.MAP_POSITION)
 
         current_offset_position = self.current_position + self.map_offset
@@ -29,9 +39,18 @@ class Enemy(PlayerBase):
             np.array(self.map.waypoints[self.target_point_index]) + self.map_offset
         )
 
-        in_between = current_offset_position - next_point
+        in_between = (
+            current_offset_position
+            - next_point
+            + np.array(
+                [
+                    randint(-MAX_RANDOM_OFFSET, MAX_RANDOM_OFFSET),
+                    randint(-MAX_RANDOM_OFFSET, MAX_RANDOM_OFFSET),
+                ]
+            )
+        )
 
-        move = normalize(in_between) * 10
+        move = normalize(in_between) * self.speed
         # direction[0] = -direction[0]
         self.current_position = self.current_position - move
         current_offset_position = current_offset_position - move
@@ -44,7 +63,7 @@ class Enemy(PlayerBase):
 
         pygame.display.flip()
 
-        if np.linalg.norm(in_between) < Enemy.NEXT_POINT_THRESHOlD:
+        if np.linalg.norm(in_between) < NEXT_POINT_THRESHOlD:
             self.target_point_index += 1
             self.target_point_index %= len(self.map.waypoints)
         sprite_size = np.array(
@@ -58,6 +77,8 @@ class Enemy(PlayerBase):
                 config.PLAYER_SPRITE_HEIGHT,
             ),
         )
+
+        self.check_for_events(self.screen, current_offset_position - sprite_size)
 
     def prepare(self, move_direction: list[float]):
         game_image = self.sprite
@@ -102,9 +123,30 @@ class Enemy(PlayerBase):
     def check_flip(self, player, horizontal_flip: bool):
         return pygame.transform.flip(player, flip_x=horizontal_flip, flip_y=False)
 
+    def check_for_events(
+        self, screen: Surface, current_position: list[int, int]
+    ):
+        # Create finish event
+        self.finish_event.player_position = current_position
+        self.finish_event.screen = screen
+
+        self.current_lap = self.finish_event.manual_trigger(self.current_lap)
+
+        if self.current_lap > config.RACE_LAPS:
+            pygame.event.post(pygame.event.Event(config.ENEMY_WON_EVENT))
+
 
 def normalize(v: list[int]):
     vx, vy = v
-    n = math.sqrt(vx**2 + vy**2)
-    f = min(n, 1) / n
-    return np.array([f * vx, f * vy])
+
+    result: list[int]
+
+    if vx == 0:
+        result = [0, 1]
+    elif vy == 0:
+        result = [1, 0]
+    else:
+        n = math.sqrt(vx**2 + vy**2)
+        f = min(n, 1) / n
+        result = [f * vx, f * vy]
+    return np.array(result)
