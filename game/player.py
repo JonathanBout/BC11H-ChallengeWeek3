@@ -1,15 +1,18 @@
 import math
+import time
+
 import pygame
 from pygame.surface import Surface
 from game.camera import Camera
 from game import config
+from game import powerup
 from util.eventHandler import EventManager, RespawnEvent, FinishEvent
 from game.display import Display
 
 
 class PlayerBase:
     def __init__(
-        self, config: config, player_number, name, description, position, player_sprite
+            self, config: config, player_number, name, description, position, player_sprite
     ):
         self.config = config
         self.name = name
@@ -22,6 +25,8 @@ class PlayerBase:
         self.finish_event = FinishEvent(
             None, config.PLAYER_1_POSITION, config.FINISH_SOUND
         )
+        self.POWERUP_RESPAWN_TIME = 5000
+        self.powerup_respawn_time = None
 
     def prepare(self, frame=0):
         game_image = pygame.image.load(self.player_sprite).convert_alpha()
@@ -46,11 +51,12 @@ class PlayerBase:
         return self.check_flip(sprites[frame])
 
     def move(
-        self,
-        screen: Surface,
-        camera: Camera,
-        controls: dict,
-        current_position: list[int],
+            self,
+            screen: Surface,
+            camera: Camera,
+            controls: dict,
+            current_position: list[int],
+            powerup_list: pygame.sprite.Group,
     ):
         left = controls[pygame.K_a]
         right = controls[pygame.K_d]
@@ -84,10 +90,13 @@ class PlayerBase:
 
         initial_player_speed = player_speed
 
+        # Check if player is on a powerup and update accordingly
+        powerup.Powerup(-1).update(player_rect, powerup_list)
+
         if initial_player_speed <= config.PLAYER_MAX_SPEED:
             player_speed = (
-                initial_player_speed + player_acceleration * self.display.dt
-            ) * player_friction
+                                   initial_player_speed + player_acceleration * self.display.dt
+                           ) * player_friction
 
         if up:
             player_rect.y -= int(player_speed)
@@ -133,7 +142,7 @@ class PlayerBase:
             config.SCREEN_HEIGHT - config.PLAYER_SPRITE_HEIGHT,
         )
 
-        player_rect, screen_rect = camera.do_movement(player_rect, screen_rect)
+        player_rect, screen_rect = camera.do_movement(player_rect, screen_rect, powerup_list)
 
         (
             current_position[0],
@@ -144,7 +153,7 @@ class PlayerBase:
         pygame.display.flip()
 
     def check_for_events(
-        self, screen: Surface, map_rects: list[pygame.Rect], current_position
+            self, screen: Surface, map_rects: list[pygame.Rect], current_position
     ):
         # Create event manager
         event_manager = EventManager()
