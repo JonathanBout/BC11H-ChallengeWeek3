@@ -32,20 +32,29 @@ class Powerup(pygame.sprite.Sprite):
                     self.amount_powerups * self.rect.width) - 10
 
     def update(self, player_rect, powerups):
+        """
+        :return: picked_up_item
+        :rtype: list
+        """
         self.powerups = powerups
         self.current_time = pygame.time.get_ticks()
-        print(self.powerup_respawn_time)
+        picked_up_item = []
+        # print(self.powerup_respawn_time)
 
         for powerup in self.powerups:
             if player_rect.colliderect(powerup):
                 self.powerup_respawn_time = self.current_time
                 self.remove_powerup(powerup)
+                picked_up_item.append("Boost")
+                print("Picked up powerup")
 
             if self.powerup_respawn_time is not None:
                 if self.current_time - self.powerup_respawn_time > self.POWERUP_RESPAWN_TIME:
                     self.powerup_respawn_time = None
                     self.respawn_powerup(powerup)
-        print(self.current_time, self.powerup_respawn_time)
+        # print(self.current_time, self.powerup_respawn_time)
+        print(picked_up_item)
+        return picked_up_item
 
     def respawn_powerup(self, powerup):
         self.powerup_respawn_list.remove(powerup)

@@ -54,6 +54,10 @@ PLAYER_2_NAME = "Bowser"
 PLAYER_1_DESCRIPTION = "A fat, yellow, greedy, and smelly character."
 PLAYER_2_DESCRIPTION = "Short-tempered, big, and bad."
 
+# Inventory
+PLAYER_1_INVENTORY = []
+PLAYER_2_INVENTORY = []
+
 # Player position, relative to the screen
 PLAYER_POSITION = [SCREEN_CENTER_X, SCREEN_CENTER_Y]
 PLAYER_1_POSITION = [SCREEN_CENTER_X, SCREEN_CENTER_Y]
@@ -70,46 +74,27 @@ PLAYER_2_CURRENT_POSITION = PLAYER_RESPAWN_POSITION[:]
 PLAYER_SPRITE = None
 PLAYER_1_SPRITE = "assets/sprites/wario.png"
 PLAYER_2_SPRITE = "assets/sprites/waluigi.png"
-
-# Player sprite width
 PLAYER_SPRITE_WIDTH = 32
-
-# Player sprite height
 PLAYER_SPRITE_HEIGHT = 32
-
-# Player sprite scale
 PLAYER_SPRITE_SCALE = 2
 
-# Whether the player sprite should be horizontally flipped
+# Should we flip the player's sprite?
 PLAYER_SPRITE_HORIZONTAL_FLIP = False
-
-# Whether the player sprite should be vertically flipped
 PLAYER_SPRITE_VERTICAL_FLIP = False
 
-# Player's current sprite frame
+# Which animation frame is the player currently on?
 PLAYER_1_CURRENT_FRAME = 0
 PLAYER_2_CURRENT_FRAME = 0
 
-# Player's frame update interval
-PLAYER_FRAME_UPDATE_INTERVAL = 5
-
-# Player's max speed
+# Player's speed
 PLAYER_MAX_SPEED = 500
-
-# Player's min speed
 PLAYER_MIN_SPEED = PLAYER_MAX_SPEED / 1.5
-
-# Player's average speed
 PLAYER_AVG_SPEED = (PLAYER_MIN_SPEED + PLAYER_MAX_SPEED) / 2
-
-# Player's friction
 PLAYER_FRICTION = 0.2
-
-# Player's current speed
 PLAYER_1_CURRENT_SPEED = 100
 PLAYER_2_CURRENT_SPEED = 100
-# MAP CONFIGURATION
 
+# MAP CONFIGURATION
 # Map respawn position, relative to the screen
 MAP_RESPAWN_POSITION = [5.0, -131.0]
 

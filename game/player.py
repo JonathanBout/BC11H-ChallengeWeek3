@@ -27,6 +27,7 @@ class PlayerBase:
         )
         self.POWERUP_RESPAWN_TIME = 5000
         self.powerup_respawn_time = None
+        self.item_inventory = []
 
     def prepare(self, frame=0):
         game_image = pygame.image.load(self.player_sprite).convert_alpha()
@@ -70,6 +71,11 @@ class PlayerBase:
         else:
             self.display.dt = 1.0 / config.CURRENT_FPS
 
+        player_rect = pygame.Rect(
+            current_position,
+            (config.PLAYER_SPRITE_WIDTH, config.PLAYER_SPRITE_HEIGHT),
+        )
+
         player_speed = 0
         if player_cnt == "1":
             player_speed = config.PLAYER_1_CURRENT_SPEED
@@ -79,11 +85,6 @@ class PlayerBase:
         player_acceleration = config.PLAYER_MAX_SPEED
         player_friction = config.PLAYER_FRICTION
 
-        player_rect = pygame.Rect(
-            current_position,
-            (config.PLAYER_SPRITE_WIDTH, config.PLAYER_SPRITE_HEIGHT),
-        )
-
         frame_idle = self.num_sprites // 2
         current_frame = frame_idle
         frame_delta = 1 if left or right else 0
@@ -91,7 +92,8 @@ class PlayerBase:
         initial_player_speed = player_speed
 
         # Check if player is on a powerup and update accordingly
-        powerup.Powerup(-1).update(player_rect, powerup_list)
+        items = powerup.Powerup(-1).update(player_rect, powerup_list)
+        self.item_inventory.extend(items)
 
         if initial_player_speed <= config.PLAYER_MAX_SPEED:
             player_speed = (
@@ -114,9 +116,14 @@ class PlayerBase:
             current_frame = min(current_frame + frame_delta, self.num_sprites - 4)
 
         store_speed = player_speed
-        if boost:
-            player_speed = player_speed * 2.5
+        print(self.item_inventory)
+        if boost and "Boost" in self.item_inventory:
+            player_speed = player_speed * 3
         else:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYUP:
+                    if event.key == boost:
+                        self.item_inventory.remove("Boost")
             player_speed = store_speed
 
         if (up or down) and (left or right):

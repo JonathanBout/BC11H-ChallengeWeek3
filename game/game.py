@@ -37,9 +37,6 @@ class Game:
         self.display = Display()
         self.display.set_display_size()
 
-        # Initialize frame_update_interval using config variable
-        self.frame_update_interval = config.PLAYER_FRAME_UPDATE_INTERVAL
-
         # Set up font for text rendering - TODO: use text.py instead
         self.stats_menu_font = pygame.font.Font("assets/fonts/SuperMario256.ttf", 40)
         self.credits_font = self.stats_menu_font
