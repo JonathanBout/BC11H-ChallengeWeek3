@@ -10,8 +10,9 @@ Challenge Week 3
 - [x] Working highscore system
 - [x] Player can steer the car
 - [ ] Player can race against NPC
-  - [x] Finish line works
-  - [ ] AI can steer its own car
+  - [x] Play can finish
+  - [ ] NPC can finish
+  
 - [x] Player races on a track and gets punished for leaving the track
 
 ## Extra
@@ -22,6 +23,9 @@ Challenge Week 3
   - [ ] Extra map sprites 
 - [x] Improve framerate
 - [ ] Multiple NPC's
+- [x] Difficulty settings
+  - [x] Normal
+  - [x] Hard
 - [x] Powerups
   - [ ] Powerups respawn
   - [x] Powerups are random

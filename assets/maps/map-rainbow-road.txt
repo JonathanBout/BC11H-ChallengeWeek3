@@ -1,5 +1,5 @@
 Rainbow Road
-A colorful track in the sky.
+Hard difficulty.
 assets/sprites/rainbow_road_map_old.png
 assets/sounds/music/Mario_Kart_64_Rainbow_Road.mp3
 2x2

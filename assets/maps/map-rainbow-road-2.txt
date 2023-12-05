@@ -1,5 +1,5 @@
-Rainbow Road 2
-Version 2 of Rainbow Road.
+Rainbow Road
+Normal difficulty.
 assets/sprites/rainbow_road_map.png
 assets/sounds/mk64_boo_laugh.wav
 2x2
