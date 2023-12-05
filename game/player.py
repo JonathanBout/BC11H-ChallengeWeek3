@@ -120,10 +120,13 @@ class PlayerBase:
         if boost and "Boost" in self.item_inventory:
             player_speed = player_speed * 3
         else:
-            for event in pygame.event.get():
+            for event in pygame.event.get(
+                    pygame.KEYUP
+            ):
                 if event.type == pygame.KEYUP:
-                    if event.key == boost:
-                        self.item_inventory.remove("Boost")
+                    if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
+                        if "Boost" in self.item_inventory:
+                            self.item_inventory.remove("Boost")
             player_speed = store_speed
 
         if (up or down) and (left or right):
