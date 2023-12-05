@@ -29,6 +29,7 @@ class MapManager:
         [map background file]\n
         [map music file]\n
         [render scale X x render scale Y]\n
+        [collider scale X x collider scale Y]\n
         [<waypoint 1 X, waypoint 1 Y> <waypoint 2 X, waypoint 2 Y> ...]
         """
         lines = map_config.split("\n")

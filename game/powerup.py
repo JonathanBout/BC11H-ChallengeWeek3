@@ -62,6 +62,7 @@ class Powerup(pygame.sprite.Sprite):
             self.powerups.add(p)
         self.powerup_respawn_list.clear()
 
+
     def on_pick_up(self, powerup):
         self.powerups.remove(powerup)
         self.picked_up_item.append(random.choice(self.effects))

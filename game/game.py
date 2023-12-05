@@ -3,6 +3,7 @@ import pygame
 from game import config, helper
 from game.camera import Camera
 from game.display import Display
+from game.enemy import Enemy
 from game.game_over import GameOver
 from game.game_won import GameWon
 from game.map_chooser import MapChooser
@@ -117,7 +118,8 @@ class Game:
         self.init_players()
 
         # Play the music
-        self.music = Music(map.music_file, 1)
+        self.music = Music(map.music_file, 0)
+        self.enemy = Enemy(map, config.PLAYER_2_SPRITE, self.display.screen)
         self.music.set_volume(1)
         self.music.play(-1)
 
@@ -201,7 +203,7 @@ class Game:
             if not run_game:
                 break
 
-            print("current lap:", config.RACE_CURRENT_LAP)
+            # print("current lap:", config.RACE_CURRENT_LAP)
 
             # Update key states
             self.keys = pygame.key.get_pressed()
@@ -227,6 +229,7 @@ class Game:
                 for x in map.waypoints
             ]
 
+            self.enemy.update()
 
             # Move player 1
             self.player1.move(
@@ -249,7 +252,7 @@ class Game:
             # )
 
         # Set game state to game over, regardless of whether the player won or lost
-        self.game_over_state(did_win, should_show_main_menu)
+        self.game_over_state(did_win, should_show_main_menu, map)
 
     # Show the main menu
     def show_menu(self, is_pause_menu: bool):
@@ -294,7 +297,7 @@ class Game:
         should_show_main_menu = False
         return run_game, did_win, should_show_main_menu
 
-    def game_over_state(self, did_win, should_show_main_menu):
+    def game_over_state(self, did_win: bool, should_show_main_menu: bool, map: MapConfig):
         # If the game is over, reset the camera and player and stop the music.
         self.camera.reset()
         self.player1.reset()
@@ -304,8 +307,11 @@ class Game:
 
         # If the player won, show the win screen, otherwise show the game over screen.
         if did_win:
+            self.score_manager.pause()
+            score = self.score_manager.get_score()
+            self.stats.add_stat(score, map.name)
             # Show win screen
-            if self.game_won.show(self.score_manager, self.stats) == 1:
+            if self.game_won.show() == 1:
                 return self.show_map_choice_menu()
         else:
             # Show gameover screen

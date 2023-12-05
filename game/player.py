@@ -12,7 +12,7 @@ from game.display import Display
 
 class PlayerBase:
     def __init__(
-            self, config: config, player_number, name, description, position, player_sprite
+        self, config: config, player_number, name, description, position, player_sprite
     ):
         self.config = config
         self.name = name
@@ -52,12 +52,12 @@ class PlayerBase:
         return self.check_flip(sprites[frame])
 
     def move(
-            self,
-            screen: Surface,
-            camera: Camera,
-            controls: dict,
-            current_position: list[int],
-            powerup_list: pygame.sprite.Group,
+        self,
+        screen: Surface,
+        camera: Camera,
+        controls: dict,
+        current_position: list[int],
+        powerup_list: pygame.sprite.Group,
     ):
         left = controls[pygame.K_a]
         right = controls[pygame.K_d]
@@ -99,8 +99,8 @@ class PlayerBase:
 
         if initial_player_speed <= config.PLAYER_MAX_SPEED:
             player_speed = (
-                                   initial_player_speed + player_acceleration * self.display.dt
-                           ) * player_friction
+                initial_player_speed + player_acceleration * self.display.dt
+            ) * player_friction
 
         if up:
             player_rect.y -= int(player_speed)
@@ -118,11 +118,13 @@ class PlayerBase:
             current_frame = min(current_frame + frame_delta, self.num_sprites - 4)
 
         store_speed = player_speed
+
         if boost and self.item_inventory is not None:
             if "Boost" in self.item_inventory:
                 player_speed = player_speed * 3
             if "Slow" in self.item_inventory:
                 player_speed = player_speed / 5
+
         else:
             for event in pygame.event.get(
                     pygame.KEYUP
@@ -158,7 +160,9 @@ class PlayerBase:
             config.SCREEN_HEIGHT - config.PLAYER_SPRITE_HEIGHT,
         )
 
-        player_rect, screen_rect = camera.do_movement(player_rect, screen_rect, powerup_list)
+        player_rect, screen_rect = camera.do_movement(
+            player_rect, screen_rect, powerup_list
+        )
 
         (
             current_position[0],
@@ -166,10 +170,9 @@ class PlayerBase:
         ) = player_rect.topleft
 
         screen.blit(self.prepare(current_frame), current_position)
-        pygame.display.flip()
 
     def check_for_events(
-            self, screen: Surface, map_rects: list[pygame.Rect], current_position
+        self, screen: Surface, map_rects: list[pygame.Rect], current_position
     ):
         # Create event manager
         event_manager = EventManager()

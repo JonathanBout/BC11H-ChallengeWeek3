@@ -70,6 +70,7 @@ class FinishEvent(CustomEvent):
         self.has_started_race = False
         self.was_on_finish = False
         self.is_on_finish = False
+        self.was_backwards = False
         # Counters
         self.finish_count = 0
 
@@ -86,6 +87,9 @@ class FinishEvent(CustomEvent):
         # Check if the player is on the finish area
         keys = pygame.key.get_pressed()
         backwards = keys[pygame.K_s]
+
+        if self.was_backwards != backwards:
+            self.is_on_finish = False
 
         # If we are not on the finish rect (we started racing),
         # reset the finish trigger and race start trigger
@@ -116,6 +120,7 @@ class FinishEvent(CustomEvent):
         else:
             self.is_on_finish = False
 
+        self.was_backwards = backwards
         # Draw hitboxes
         # pygame.draw.rect(self.screen, (255, 0, 0), finish_rect)
         # pygame.draw.rect(self.screen, (0, 255, 0), player_rect)

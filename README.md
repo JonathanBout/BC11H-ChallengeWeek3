@@ -15,14 +15,14 @@ Challenge Week 3
 - [x] Player races on a track and gets punished for leaving the track
 
 ## Extra
-- [x] Two-player controls (WASD & ↑←↓→)
-- [ ] Multiple tracks
+<!-- [x] Two-player controls (WASD & ↑←↓→)-->
+- [x] Multiple tracks
   - [x] Dynamic track colision
   - [x] Better map loading
   - [ ] Extra map sprites 
 - [x] Improve framerate
 - [ ] Multiple NPC's
-- [ ] Powerups
+- [x] Powerups
   - [ ] Powerups respawn
   - [x] Powerups are random
   - [x] Random effects of powerups
