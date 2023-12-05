@@ -60,6 +60,7 @@ class Powerup(pygame.sprite.Sprite):
         print(self.picked_up_item)
         return self.picked_up_item
 
+
     def respawn_powerup(self, powerup):
         self.powerup_respawn_list.remove(powerup)
         self.powerups.add(powerup)

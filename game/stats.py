@@ -5,22 +5,31 @@ from game import config, sprites, helper
 import json
 from os.path import isfile, getsize
 
+from game.map_chooser import MapChooser
+from game.map_manager import MapManager
+
 
 class Stat:
-    def __init__(self, score: int, date: datetime) -> None:
+    def __init__(self, score: int, map: str, date: datetime) -> None:
         self.score = score
         self.date = date
+        self.map = map
 
     def get_json_dict(self):
         return {
             "score": self.score,
             "date": self.date.strftime(config.STATS_DATE_FORMAT),
+            "map": self.map,
         }
 
     @staticmethod
-    def from_json_dict(json_dict):
+    def from_json_dict(json_dict: dict):
+        map_name = "unknown"
+        if "map" in json_dict:
+            map_name = json_dict["map"]
         return Stat(
             json_dict["score"],
+            map_name,
             datetime.strptime(json_dict["date"], config.STATS_DATE_FORMAT),
         )
 
@@ -51,21 +60,24 @@ class Stats:
             (x.image, x.rect) for x in [self.background_image, self.button_back]
         ]
 
+        self.map_chooser = MapChooser(self.font, MapManager())
+
     def show(self):
-        while not self.button_back.is_clicked():
-            helper.exit_if_user_wants()
-            text_to_show = ""
-            place = 1
-            for stat in self.get_stats(top=10):
-                text_to_show += f"{str(place).rjust(2)}. {stat.date.strftime('%b %d %Y, %H:%M')}: {stat.score} points\n"
-                place += 1
+        if map_config := self.map_chooser.show():
+            while not self.button_back.is_clicked():
+                helper.exit_if_user_wants()
+                text_to_show = ""
+                place = 1
+                for stat in self.get_stats(top=10, map_name=map_config.name):
+                    text_to_show += f"{str(place).rjust(2)}. {stat.date.strftime('%b %d %Y, %H:%M')}: {stat.score} points\n"
+                    place += 1
 
-            if text_to_show == "":
-                text_to_show = "No scores yet!"
+                if text_to_show == "":
+                    text_to_show = "No scores yet!"
 
-            self.__write_to_screen(text_to_show)
-            pygame.display.flip()
-            self.clock.tick(config.MAX_FPS)
+                self.__write_to_screen(text_to_show)
+                pygame.display.flip()
+                self.clock.tick(config.MAX_FPS)
 
     def __write_to_screen(self, text: str):
         lines_to_blit = []
@@ -81,21 +93,25 @@ class Stats:
 
         self.screen.blits([*self.to_blit, *lines_to_blit])
 
-    def get_stats(self, top=-1) -> list[Stat]:
+    def get_stats(self, top=-1, map_name="") -> list[Stat]:
         if not isfile(config.STATS_FILE) or getsize(config.STATS_FILE) == 0:
             return []
 
         with open(config.STATS_FILE, "r") as stats_file:
             stored_scores = json.load(stats_file)
             scores = [Stat.from_json_dict(score) for score in stored_scores]
+            if map_name != "":
+                scores = [
+                    score for score in scores if score.map.lower() == map_name.lower() or score.map.lower() == "unknown"
+                ]
             scores.sort(key=lambda i: i.get_order())
             if top > 0:
                 scores = scores[:top]
             return scores
 
-    def add_stat(self, score: int):
+    def add_stat(self, score: int, map: str):
         current_stats = self.get_stats()
-        current_stats.append(Stat(score, datetime.now()))
+        current_stats.append(Stat(score, map, datetime.now()))
 
         current_stats = [stat.get_json_dict() for stat in current_stats]
 
