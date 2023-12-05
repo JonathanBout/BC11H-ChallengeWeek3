@@ -29,18 +29,20 @@ class MapChooser:
             (x.image, x.rect) for x in [self.background_image, self.button_back]
         ]
         text, (width, height) = self.__render_text("Choose Your Map\n")
-        self.to_blit.append((text, pygame.Rect(0, 10, width, height)))
+
+        left = config.SCREEN_CENTER_X - width / 2
+
+        self.to_blit.append((text, pygame.Rect(left, 10, width, height)))
         self.maps_starting_point = height + 20
 
     def show(self):
-        helper.exit_if_user_wants()
-
+        helper.wait_for_mouse_up()  # wait for mouse up to prevent multiple button clicks
         visible_maps: dict[SurfaceSprite, MapConfig] = {}
         y_pos = self.maps_starting_point
         for map in self.map_manager.loaded_maps:
-            map_text = f"{map.name}:\n{map.description}\n--------------------"
-            surface, (width, height) = self.__render_text(map_text)
-            sprite = create_sprite(surface, x_center=width / 2, top=y_pos)
+            map_text = f"{map.name}:\n{map.description}\n"
+            surface, (width, height) = self.__render_text(map_text, "white")
+            sprite = create_sprite(surface, x_center=config.SCREEN_CENTER_X, top=y_pos)
             visible_maps[sprite] = map
             y_pos += height + 10
 
@@ -50,16 +52,26 @@ class MapChooser:
             ]
             self.screen.blits([*self.to_blit, *maps_to_blit])
             helper.exit_if_user_wants()
-            pygame.display.flip()
 
             for sprite, map_config in visible_maps.items():
-                if sprite.is_clicked():
-                    return map_config
+                if sprite.is_hovering():
+                    surface = pygame.Surface(
+                        sprite.rect.size, flags=pygame.SRCALPHA, depth=32
+                    )
+                    surface = surface.convert_alpha()
+                    surface.fill((0, 0, 0, 200))
+                    self.screen.blit(surface, sprite.rect)
+                    # pygame.draw.rect(self.screen, "white", sprite.rect)
+                    self.screen.blit(sprite.image, sprite.rect)
+                    if sprite.is_clicked():
+                        return map_config
+
+            pygame.display.flip()
 
             self.clock.tick(config.MAX_FPS)
 
     def __render_text(self, text: str, color: str = "black"):
-        destination_surface: pygame.Surface = None
+        destination_surface = pygame.Surface((0, 10), flags=pygame.SRCALPHA, depth=32)
         for line in text.split("\n"):
             text_to_blit = self.font.render(line, True, color)
             if destination_surface:
@@ -72,7 +84,7 @@ class MapChooser:
                     destination_surface.get_height() + text_to_blit.get_height() + 10
                 )
                 new_surface = pygame.Surface(
-                    (new_width, new_height), pygame.SRCALPHA, 32
+                    (new_width, new_height), flags=pygame.SRCALPHA, depth=32
                 )
                 new_surface.blit(
                     destination_surface, (half_new_width - dest_width / 2, 0)

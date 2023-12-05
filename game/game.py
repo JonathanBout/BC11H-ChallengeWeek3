@@ -1,6 +1,6 @@
 import pygame
 
-from game import config
+from game import config, helper
 from game.camera import Camera
 from game.display import Display
 from game.game_over import GameOver
@@ -10,7 +10,7 @@ from game.map_manager import MapConfig, MapManager
 from game.menu import Menu
 from game.score_manager import ScoreManager
 from game.stats import Stats
-from game.player import PlayerBase, Player1, Player2
+from game.player import Player1, Player2
 from game.credits import Credits
 from util.music import Music
 from util import rect_from_image
@@ -267,6 +267,7 @@ class Game:
                     continue
 
     def show_map_choice_menu(self):
+        helper.wait_for_mouse_up()  # wait for mouse up to prevent multiple button clicks
         if map := self.map_chooser.show():
             self.update(map)
 
@@ -303,9 +304,6 @@ class Game:
             # Show gameover screen
             if not should_show_main_menu and self.game_over.show() == 1:
                 return self.show_map_choice_menu()
-
-        # (Not so) temporary solution for a weird bug
-        pygame.mouse.set_pos(config.SCREEN_CENTER)
 
     # Pause the music and score manager if the game is paused
     def pause(self):
