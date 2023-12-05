@@ -9,7 +9,7 @@ from game.display import Display
 
 class PlayerBase:
     def __init__(
-        self, config: config, player_number, name, description, position, player_sprite
+            self, config: config, player_number, name, description, position, player_sprite
     ):
         self.config = config
         self.name = name
@@ -46,12 +46,13 @@ class PlayerBase:
         return self.check_flip(sprites[frame])
 
     def move(
-        self,
-        screen: Surface,
-        camera: Camera,
-        controls: dict,
-        current_position: list[int],
-    ):
+            self,
+            screen: Surface,
+            camera: Camera,
+            controls: dict,
+            current_position: list[int],
+            powerup_list: pygame.sprite.Group,
+        ):
         left = controls[pygame.K_a]
         right = controls[pygame.K_d]
         up = controls[pygame.K_w]
@@ -86,8 +87,8 @@ class PlayerBase:
 
         if initial_player_speed <= config.PLAYER_MAX_SPEED:
             player_speed = (
-                initial_player_speed + player_acceleration * self.display.dt
-            ) * player_friction
+                                   initial_player_speed + player_acceleration * self.display.dt
+                           ) * player_friction
 
         if up:
             player_rect.y -= int(player_speed)
@@ -133,7 +134,7 @@ class PlayerBase:
             config.SCREEN_HEIGHT - config.PLAYER_SPRITE_HEIGHT,
         )
 
-        player_rect, screen_rect = camera.do_movement(player_rect, screen_rect)
+        player_rect, screen_rect = camera.do_movement(player_rect, screen_rect, powerup_list)
 
         (
             current_position[0],
@@ -144,7 +145,7 @@ class PlayerBase:
         pygame.display.flip()
 
     def check_for_events(
-        self, screen: Surface, map_rects: list[pygame.Rect], current_position
+            self, screen: Surface, map_rects: list[pygame.Rect], current_position
     ):
         # Create event manager
         event_manager = EventManager()

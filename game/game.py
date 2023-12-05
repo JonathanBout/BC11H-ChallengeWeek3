@@ -8,6 +8,7 @@ from game.game_won import GameWon
 from game.map_chooser import MapChooser
 from game.map_manager import MapConfig, MapManager
 from game.menu import Menu
+from game.powerup import Powerup
 from game.score_manager import ScoreManager
 from game.stats import Stats
 from game.player import PlayerBase, Player1, Player2
@@ -56,13 +57,16 @@ class Game:
         self.map_manager = MapManager()
         self.map_chooser = MapChooser(self.map_chooser_font, self.map_manager)
 
+        # Player objects and properties
         self.camera = Camera()
-
-        # Player properties
         self.keys = None
 
         # Music
         self.music: Music = None
+
+        # Map rects
+        self.powerup_group = pygame.sprite.Group()
+        self.create_powerups(3)
 
     def init_players(self):
         # Player 1
@@ -127,6 +131,8 @@ class Game:
 
         # Main game loop
         while run_game:
+            self.powerup_group.draw(self.display.screen)
+
             map_relative_position = (
                 -config.MAP_POSITION[0] + config.PLAYER_1_CURRENT_POSITION[0],
                 -config.MAP_POSITION[1] + config.PLAYER_1_CURRENT_POSITION[1],
@@ -139,13 +145,13 @@ class Game:
 
             # Check for events and only get the events we want
             for event in pygame.event.get(
-                (
-                    pygame.KEYDOWN,
-                    config.GAME_PAUSE_CHANGED,
-                    config.PLAYER_GAMEOVER_EVENT,
-                    config.PLAYER_WON_EVENT,
-                    pygame.QUIT,
-                )
+                    (
+                            pygame.KEYDOWN,
+                            config.GAME_PAUSE_CHANGED,
+                            config.PLAYER_GAMEOVER_EVENT,
+                            config.PLAYER_WON_EVENT,
+                            pygame.QUIT,
+                    )
             ):
                 # If player presses a button
                 if event.type == pygame.KEYDOWN:
@@ -224,12 +230,14 @@ class Game:
                 for x in map.waypoints
             ]
 
+
             # Move player 1
             self.player1.move(
-                self.display.screen,
-                self.camera,
-                self.keys,
-                config.PLAYER_1_CURRENT_POSITION,
+                screen=self.display.screen,
+                camera=self.camera,
+                controls=self.keys,
+                current_position=config.PLAYER_1_CURRENT_POSITION,
+                powerup_list=self.powerup_group,
             )
 
             # Refresh the display and frame rate
@@ -292,7 +300,7 @@ class Game:
         # If the game is over, reset the camera and player and stop the music.
         self.camera.reset()
         self.player1.reset()
-        self.music.stop_on_channel(1)
+        self.music.stop_on_channel(0)
 
         # If the player won, show the win screen, otherwise show the game over screen.
         if did_win:
@@ -329,3 +337,8 @@ class Game:
         self.map_rects = rect_from_image.load_rect(
             map.background_image, map.collider_scale
         )
+
+    def create_powerups(self, num_powerups):
+        for _ in range(num_powerups):
+            powerup = Powerup(_, self.display.screen.get_width(), self.display.screen.get_height())
+            self.powerup_group.add(powerup)
