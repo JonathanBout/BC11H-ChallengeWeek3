@@ -27,7 +27,7 @@ Challenge Week 3
   - [x] Powerups are random
   - [x] Random effects of powerups
     - [x] Boost
-    - [ ] Slow
+    - [x] Slow
 
 
 ## How to install and run the game
