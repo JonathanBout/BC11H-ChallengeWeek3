@@ -292,7 +292,7 @@ class Game:
         # If the game is over, reset the camera and player and stop the music.
         self.camera.reset()
         self.player1.reset()
-        self.music.stop_on_channel(0)
+        self.music.stop_on_channel(1)
 
         # If the player won, show the win screen, otherwise show the game over screen.
         if did_win:
