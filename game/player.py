@@ -1,8 +1,11 @@
 import math
+import time
+
 import pygame
 from pygame.surface import Surface
 from game.camera import Camera
 from game import config
+from game import powerup
 from util.eventHandler import EventManager, RespawnEvent, FinishEvent
 from game.display import Display
 
@@ -22,6 +25,8 @@ class PlayerBase:
         self.finish_event = FinishEvent(
             None, config.PLAYER_1_POSITION, config.FINISH_SOUND
         )
+        self.POWERUP_RESPAWN_TIME = 5000
+        self.powerup_respawn_time = None
 
     def prepare(self, frame=0):
         game_image = pygame.image.load(self.player_sprite).convert_alpha()
@@ -52,7 +57,7 @@ class PlayerBase:
             controls: dict,
             current_position: list[int],
             powerup_list: pygame.sprite.Group,
-        ):
+    ):
         left = controls[pygame.K_a]
         right = controls[pygame.K_d]
         up = controls[pygame.K_w]
@@ -84,6 +89,9 @@ class PlayerBase:
         frame_delta = 1 if left or right else 0
 
         initial_player_speed = player_speed
+
+        # Check if player is on a powerup and update accordingly
+        powerup.Powerup(-1).update(player_rect, powerup_list)
 
         if initial_player_speed <= config.PLAYER_MAX_SPEED:
             player_speed = (

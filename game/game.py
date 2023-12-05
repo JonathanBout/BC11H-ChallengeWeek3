@@ -301,6 +301,8 @@ class Game:
         self.camera.reset()
         self.player1.reset()
         self.music.stop_on_channel(0)
+        self.powerup_group.empty()
+        self.create_powerups(3)
 
         # If the player won, show the win screen, otherwise show the game over screen.
         if did_win:
@@ -340,5 +342,5 @@ class Game:
 
     def create_powerups(self, num_powerups):
         for _ in range(num_powerups):
-            powerup = Powerup(_, self.display.screen.get_width(), self.display.screen.get_height())
+            powerup = Powerup(_)
             self.powerup_group.add(powerup)
