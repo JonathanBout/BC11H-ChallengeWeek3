@@ -14,58 +14,73 @@ class Enemy(PlayerBase):
     def __init__(self, map: MapConfig, sprite: str, screen: Surface, max_speed=300):
         self.map = map
         self.sprite = image.load(sprite)
-        self.target_point_index = 0
+        self.target_point_index = 1
+        self.map_offset = np.array(config.MAP_POSITION)
         self.current_position = np.array(self.map.waypoints[0])
         self.max_speed = max_speed
         self.screen = screen
         self.width, self.height = self.sprite.get_size()
 
     def update(self):
-        map_position = np.array(config.MAP_POSITION)
+        self.map_offset = np.array(config.MAP_POSITION)
 
+        current_offset_position = self.current_position + self.map_offset
         next_point = (
-            np.array(self.map.waypoints[self.target_point_index]) + map_position
+            np.array(self.map.waypoints[self.target_point_index]) + self.map_offset
         )
 
-        current_point = np.array(
-            self.current_position
-            + map_position
-            - np.array([self.width / 2, self.height / 2])
+        in_between = current_offset_position - next_point
+
+        move = normalize(in_between) * 10
+        # direction[0] = -direction[0]
+        self.current_position = self.current_position - move
+        current_offset_position = current_offset_position - move
+
+        pygame.draw.circle(self.screen, "green", next_point, 10, 10)
+        pygame.draw.circle(self.screen, "purple", current_offset_position, 10, 10)
+        pygame.draw.circle(
+            self.screen, "yellow", self.current_position + self.map_offset, 10, 10
         )
-        # last_point = np.array(self.map.waypoints[self.current_point_index])
 
-        direction = np.array(normalize(next_point - current_point))
-        move = np.array(direction * self.max_speed)
+        pygame.display.flip()
 
-        self.current_position = np.array(
-            [self.current_position[0] + move[0], self.current_position[1] + move[1]]
-        )
-
-        if abs(np.linalg.norm(current_point - next_point)) < self.NEXT_POINT_THRESHOlD:
+        if np.linalg.norm(in_between) < Enemy.NEXT_POINT_THRESHOlD:
             self.target_point_index += 1
             self.target_point_index %= len(self.map.waypoints)
-
-        self.screen.blit(self.prepare(direction), Rect(*current_point, self.width, self.height))
-
-        print(current_point)
+        sprite_size = np.array(
+            [config.PLAYER_SPRITE_WIDTH, config.PLAYER_SPRITE_HEIGHT]
+        )
+        self.screen.blit(
+            self.prepare(normalize(-move)),
+            Rect(
+                *(current_offset_position - sprite_size),
+                config.PLAYER_SPRITE_WIDTH,
+                config.PLAYER_SPRITE_HEIGHT,
+            ),
+        )
 
     def prepare(self, move_direction: list[float]):
         game_image = self.sprite
         sprite_width = config.PLAYER_SPRITE_WIDTH
         sprite_height = config.PLAYER_SPRITE_HEIGHT
         num_sprites = game_image.get_width() // sprite_width
-        up = move_direction[1] < 0
+        right = move_direction[0] > 0.5
+        left = move_direction[0] < -0.5
+        down = move_direction[1] > 0.5
+        up = move_direction[1] < -0.5
         frame = 0
-        if -1 < move_direction[0] < 1:
-            if not up:
-                frame = num_sprites - 1
-        else:
-            if up:
-                frame = 3
-            elif abs(move_direction[1]) < 1:
-                frame = 7
-            else:
+        if down:
+            if right or left:
                 frame = 9
+            else:
+                frame = 11
+        elif up:
+            if right or left:
+                frame = 3
+            else:
+                frame = 0
+        elif right or left:
+            frame = 7
 
         sprites = []
         for i in range(num_sprites):
@@ -82,14 +97,14 @@ class Enemy(PlayerBase):
             )
             sprites.append(sprite)
 
-        return self.check_flip(sprites[frame], move_direction[0])
+        return self.check_flip(sprites[frame], left)
 
-    def check_flip(self, player, x_movement: int):
-        return pygame.transform.flip(player, flip_x=x_movement < 0, flip_y=False)
+    def check_flip(self, player, horizontal_flip: bool):
+        return pygame.transform.flip(player, flip_x=horizontal_flip, flip_y=False)
 
 
 def normalize(v: list[int]):
     vx, vy = v
     n = math.sqrt(vx**2 + vy**2)
     f = min(n, 1) / n
-    return [f * vx, f * vy]
+    return np.array([f * vx, f * vy])

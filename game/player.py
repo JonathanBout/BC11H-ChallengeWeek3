@@ -170,6 +170,8 @@ class PlayerBase:
 
         screen.blit(self.prepare(current_frame), current_position)
 
+        pygame.display.flip()
+
     def check_for_events(
         self, screen: Surface, map_rects: list[pygame.Rect], current_position
     ):
