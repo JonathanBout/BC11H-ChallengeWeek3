@@ -1,6 +1,6 @@
 from game import config, helper, sprites
 from pygame.font import Font
-from util.sprite_overrides import SurfaceSprite
+from util.sprite_overrides import create
 import pygame
 
 
@@ -15,10 +15,10 @@ class GameOver:
         self.background_image = sprites.get_menu_background_sprite(
             left=0,
             top=0,
-            target_size=(config.SCREEN_SIZE[0] * 1.3, config.SCREEN_SIZE[1] * 1.4),
+            target_size=(config.SCREEN_SIZE[0], config.SCREEN_SIZE[1]),
         )
 
-        self.game_over_text = SurfaceSprite(
+        self.game_over_text = create(
             self.font.render("game over", True, "white"),
             x_center=config.SCREEN_CENTER_X,
             top=config.SCREEN_HEIGHT / 10,

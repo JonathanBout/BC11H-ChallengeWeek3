@@ -2,7 +2,7 @@ from game.map_manager import MapManager, MapConfig
 from pygame.font import Font
 import pygame
 from game import config, sprites, helper
-from util.sprite_overrides import SurfaceSprite
+from util.sprite_overrides import SurfaceSprite, create as create_sprite
 
 
 class MapChooser:
@@ -14,9 +14,9 @@ class MapChooser:
         )
 
         self.background_image = sprites.get_menu_background_sprite(
-            x_center=0,
-            y_center=0,
-            target_size=(config.SCREEN_SIZE[0] * 1.3, config.SCREEN_SIZE[1] * 1.4),
+            left=0,
+            top=0,
+            target_size=(config.SCREEN_SIZE[0], config.SCREEN_SIZE[1]),
         )
 
         self.button_back = sprites.get_button_back_sprite(
@@ -28,7 +28,7 @@ class MapChooser:
         self.to_blit = [
             (x.image, x.rect) for x in [self.background_image, self.button_back]
         ]
-        text, (width, height) = self.__render_text("Choose Your Map")
+        text, (width, height) = self.__render_text("Choose Your Map\n")
         self.to_blit.append((text, pygame.Rect(0, 10, width, height)))
         self.maps_starting_point = height + 20
 
@@ -38,19 +38,9 @@ class MapChooser:
         visible_maps: dict[SurfaceSprite, MapConfig] = {}
         y_pos = self.maps_starting_point
         for map in self.map_manager.loaded_maps:
-            pygame.draw.circle(
-                self.screen,
-                "red",
-                (
-                    100,
-                    self.maps_starting_point,
-                ),
-                10,
-                10,
-            )
             map_text = f"{map.name}:\n{map.description}\n--------------------"
             surface, (width, height) = self.__render_text(map_text)
-            sprite = SurfaceSprite(surface, x_center=width / 2, top=y_pos)
+            sprite = create_sprite(surface, x_center=width / 2, top=y_pos)
             visible_maps[sprite] = map
             y_pos += height + 10
 
@@ -58,7 +48,7 @@ class MapChooser:
             maps_to_blit = [
                 (sprite.image, sprite.rect) for sprite in visible_maps.keys()
             ]
-            self.screen.blits([*maps_to_blit, *self.to_blit])
+            self.screen.blits([*self.to_blit, *maps_to_blit])
             helper.exit_if_user_wants()
             pygame.display.flip()
 
@@ -68,10 +58,10 @@ class MapChooser:
 
             self.clock.tick(config.MAX_FPS)
 
-    def __render_text(self, text: str):
+    def __render_text(self, text: str, color: str = "black"):
         destination_surface: pygame.Surface = None
         for line in text.split("\n"):
-            text_to_blit = self.font.render(line, True, "white")
+            text_to_blit = self.font.render(line, True, color)
             if destination_surface:
                 dest_width = destination_surface.get_width()
                 dest_height = destination_surface.get_height()
