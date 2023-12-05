@@ -15,7 +15,7 @@ class GameOver:
         self.background_image = sprites.get_menu_background_sprite(
             left=0,
             top=0,
-            target_size=(config.SCREEN_SIZE[0] * 1.3, config.SCREEN_SIZE[1] * 1.4),
+            target_size=(config.SCREEN_SIZE[0], config.SCREEN_SIZE[1]),
         )
 
         self.game_over_text = create(

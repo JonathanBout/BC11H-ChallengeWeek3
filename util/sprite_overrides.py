@@ -22,10 +22,10 @@ def create(
 
         image = pygame.transform.scale(image, target_size)
 
-    if not top:
+    if top is None:
         top = y_center - image.get_height() // 2
 
-    if not left:
+    if left is None:
         left = x_center - image.get_width() // 2
 
     return SurfaceSprite(
