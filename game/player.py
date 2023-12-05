@@ -133,7 +133,7 @@ class PlayerBase:
                     if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
                         if "Boost" in self.item_inventory:
                             self.item_inventory.remove("Boost")
-                        if "Slow" in self.item_inventory:
+                        elif "Slow" in self.item_inventory:
                             self.item_inventory.remove("Slow")
             player_speed = store_speed
 
