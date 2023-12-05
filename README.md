@@ -24,10 +24,10 @@ Challenge Week 3
 - [ ] Multiple NPC's
 - [ ] Powerups
   - [ ] Powerups respawn
-  - [ ] Powerups are random
-  - [ ] Random effects of powerups
+  - [x] Powerups are random
+  - [x] Random effects of powerups
     - [x] Boost
-    - [ ] Slow
+    - [x] Slow
 
 
 ## How to install and run the game

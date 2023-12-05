@@ -93,7 +93,9 @@ class PlayerBase:
 
         # Check if player is on a powerup and update accordingly
         items = powerup.Powerup(-1).update(player_rect, powerup_list)
-        self.item_inventory.extend(items)
+        if items:
+            self.item_inventory.extend(items)
+        print("Inventory: ", self.item_inventory)
 
         if initial_player_speed <= config.PLAYER_MAX_SPEED:
             player_speed = (
@@ -116,7 +118,6 @@ class PlayerBase:
             current_frame = min(current_frame + frame_delta, self.num_sprites - 4)
 
         store_speed = player_speed
-        print(self.item_inventory)
         if boost and self.item_inventory is not None:
             if "Boost" in self.item_inventory:
                 player_speed = player_speed * 3
