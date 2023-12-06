@@ -104,7 +104,7 @@ class Stats:
                 scores = [
                     score for score in scores if score.map.lower() == map_name.lower() or score.map.lower() == "unknown"
                 ]
-            scores.sort(key=lambda i: i.get_order())
+            scores.sort(key=lambda i: i.get_order(), reverse=True)
             if top > 0:
                 scores = scores[:top]
             return scores

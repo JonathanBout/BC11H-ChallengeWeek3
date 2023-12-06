@@ -5,10 +5,11 @@ from game.display import Display
 from util.music import Music
 from time import sleep
 
+PIXELS_PER_SECOND = 100
+
 
 class Credits:
     def __init__(self, font: Font) -> None:
-
         self.clock = Display().clock
         self.screen = Display().set_display_size()
         self.font = font
@@ -25,44 +26,46 @@ class Credits:
         Music(config.POWERUP_SOUND).play()
         sleep(1)
         y_pos = config.SCREEN_HEIGHT / 10
+        current_speed = 0
         while self.__write_to_screen(
-                """\n\n\n\n\n\n\n\n\n\n\n
-    programming
-    ----------------------------------
-    Ruben Flinterman
-    Jonathan Bout
-    \n\n\n\n
-    project management
-    ----------------------------------
-    Ruben Flinterman
-    Jonathan Bout
-    \n\n\n\n
-    planning
-    ----------------------------------
-    Ruben Flinterman
-    Jonathan Bout
-    \n\n\n\n
-    sounds
-    ----------------------------------
-    FROM
-    themushroomkingdom.net
-    \n\n\n\n
-    sprites
-    ----------------------------------
-    FROM
-    pygame.org/project/3596
-    spriters-resource.com
-    
-    MODIFIED BY
-    Ruben Flinterman
-    Jonathan Bout
-    \n\n\n\n
-    Thank you for playing (or at least installing)!
-    """,
-                y_pos,
+            """\n\n\n\n\n\n\n\n\n\n\n
+programming
+----------------------------------
+Ruben Flinterman
+Jonathan Bout
+\n\n\n\n
+project management
+----------------------------------
+Ruben Flinterman
+Jonathan Bout
+\n\n\n\n
+planning
+----------------------------------
+Ruben Flinterman
+Jonathan Bout
+\n\n\n\n
+sounds
+----------------------------------
+FROM
+themushroomkingdom.net
+\n\n\n\n
+sprites
+----------------------------------
+FROM
+pygame.org/project/3596
+spriters-resource.com
+\n
+MODIFIED BY
+Ruben Flinterman
+Jonathan Bout
+\n\n\n\n
+Thank you for playing!""",
+            y_pos,
         ):
-            y_pos -= 1
-            self.clock.tick(120)
+            dt = self.clock.tick(120) / 1000
+            if current_speed < PIXELS_PER_SECOND:
+                current_speed += dt * 5
+            y_pos -= dt * current_speed
             pygame.display.flip()
             helper.exit_if_user_wants()
             keys = pygame.key.get_pressed()

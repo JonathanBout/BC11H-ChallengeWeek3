@@ -126,9 +126,7 @@ class PlayerBase:
                 player_speed = player_speed / 5
 
         else:
-            for event in pygame.event.get(
-                    pygame.KEYUP
-            ):
+            for event in pygame.event.get(pygame.KEYUP):
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
                         if "Boost" in self.item_inventory:
@@ -223,11 +221,6 @@ class PlayerBase:
                         print(f"{var_name}: {getattr(self.config, var_name)}")
 
 
-class Player1(PlayerBase):
+class Player(PlayerBase):
     def __init__(self, config: config, name, description, position, player_sprite):
         super().__init__(config, 1, name, description, position, player_sprite)
-
-
-class Player2(PlayerBase):
-    def __init__(self, config: config, name, description, position, player_sprite):
-        super().__init__(config, 2, name, description, position, player_sprite)

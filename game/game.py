@@ -12,7 +12,7 @@ from game.menu import Menu
 from game.powerup import Powerup
 from game.score_manager import ScoreManager
 from game.stats import Stats
-from game.player import Player1, Player2
+from game.player import Player
 from game.credits import Credits
 from util.music import Music
 from util import rect_from_image
@@ -68,7 +68,7 @@ class Game:
 
     def init_players(self):
         # Player 1
-        self.player1 = Player1(
+        self.player = Player(
             config,
             config.PLAYER_1_NAME,
             config.PLAYER_1_DESCRIPTION,
@@ -76,22 +76,11 @@ class Game:
             config.PLAYER_1_SPRITE,
         )
 
-        # Player 2
-        self.player2 = Player2(
-            config,
-            config.PLAYER_2_NAME,
-            config.PLAYER_2_DESCRIPTION,
-            config.PLAYER_2_POSITION,
-            config.PLAYER_2_SPRITE,
-        )
-
         # Prepare the player sprites
-        self.player_one = self.player1.prepare(config.PLAYER_1_CURRENT_FRAME)
-        self.player_two = self.player2.prepare(config.PLAYER_2_CURRENT_FRAME)
+        self.player.prepare(config.PLAYER_1_CURRENT_FRAME)
 
         # Print player configuration
-        self.player1.print_config()
-        self.player2.print_config()
+        self.player.print_config()
 
     # Actions to perform when the game starts
     def start(self):
@@ -124,8 +113,7 @@ class Game:
         self.music.play(-1)
 
         # Reset the camera and player
-        self.player1.reset()
-        self.player2.reset()
+        self.player.reset()
         self.camera.reset()
 
         # Main game loop
@@ -182,8 +170,7 @@ class Game:
                     case config.PLAYER_GAMEOVER_EVENT:
                         # Reset the camera and player
                         self.camera.reset()
-                        self.player1.reset()
-                        self.player2.reset()
+                        self.player.reset()
                         # Stop the game and set the win state to false
                         run_game = False
                         did_win = False
@@ -192,8 +179,7 @@ class Game:
                     case config.PLAYER_WON_EVENT:
                         # Reset the camera and player
                         self.camera.reset()
-                        self.player1.reset()
-                        self.player2.reset()
+                        self.player.reset()
                         # Stop the game and set the win state to true
                         run_game = False
                         did_win = True
@@ -201,8 +187,7 @@ class Game:
                     case config.ENEMY_WON_EVENT:
                         # Reset the camera and player
                         self.camera.reset()
-                        self.player1.reset()
-                        self.player2.reset()
+                        self.player.reset()
                         # Stop the game and set the win state to true
                         run_game = False
                         did_win = False
@@ -244,7 +229,7 @@ class Game:
             self.enemy.update()
 
             # Move player 1
-            self.player1.move(
+            self.player.move(
                 screen=self.display.screen,
                 camera=self.camera,
                 controls=self.keys,
@@ -256,12 +241,9 @@ class Game:
             self.display.draw(map)
 
             # Check for events related to the player, such as collisions with the respawn area
-            self.player1.check_for_events(
+            self.player.check_for_events(
                 self.display.screen, map_rects, config.PLAYER_1_CURRENT_POSITION
             )
-            # self.player2.check_for_events(
-            #     self.display.screen, map_rects, config.PLAYER_2_CURRENT_POSITION
-            # )
 
         # Set game state to game over, regardless of whether the player won or lost
         self.game_over_state(did_win, should_show_main_menu, enemy_won, map)
@@ -298,6 +280,7 @@ class Game:
         :return: A tuple containing the following values:
             - run_game (bool): Indicates whether the game should continue running.
             - did_win (bool): Indicates whether the player won the game.
+            - enemy_won (bool): Indicates whether the enemy won the game.
             - should_show_main_menu (bool): Indicates whether the main menu should be displayed.
         """
         global config
@@ -319,7 +302,7 @@ class Game:
     ):
         # If the game is over, reset the camera and player and stop the music.
         self.camera.reset()
-        self.player1.reset()
+        self.player.reset()
         self.music.stop_on_channel(0)
         self.powerup_group.empty()
         self.create_powerups(3)
