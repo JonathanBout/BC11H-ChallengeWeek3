@@ -28,6 +28,12 @@ class Player:
         self.powerup_respawn_time = None
         self.item_inventory = []
 
+        self.left = None
+        self.right = None
+        self.up = None
+        self.down = None
+        self.boost = None
+
     def prepare(self, frame=0):
         game_image = pygame.image.load(self.player_sprite).convert_alpha()
         sprite_width = config.PLAYER_SPRITE_WIDTH
@@ -51,18 +57,28 @@ class Player:
         return self.check_flip(sprites[frame])
 
     def move(
-        self,
-        screen: Surface,
-        camera: Camera,
-        controls: dict,
-        current_position: list[int],
-        powerup_list: pygame.sprite.Group,
+            self,
+            screen: Surface,
+            camera: Camera,
+            controls,
+            current_position: list[int],
+            powerup_list: pygame.sprite.Group,
     ):
-        left = controls[pygame.K_a]
-        right = controls[pygame.K_d]
-        up = controls[pygame.K_w]
-        down = controls[pygame.K_s]
-        boost = controls[pygame.K_LSHIFT] or controls[pygame.K_RSHIFT]
+        print("Controls: ", controls)
+        if len(controls) == 5:
+            self.left = controls[1]
+            self.right = controls[0]
+            self.up = controls[3]
+            self.down = controls[2]
+            self.boost = controls[4]
+        else:
+            self.left = controls[pygame.K_a]
+            self.right = controls[pygame.K_d]
+            self.up = controls[pygame.K_w]
+            self.down = controls[pygame.K_s]
+            self.boost = controls[pygame.K_LSHIFT] or controls[pygame.K_RSHIFT]
+
+        print(self.left, self.right, self.up, self.down, self.boost)
 
         if config.CURRENT_FPS == 0:
             print("CURRENT_FPS value is Zero! Please, check the value.")
@@ -81,7 +97,7 @@ class Player:
 
         frame_idle = self.num_sprites // 2
         current_frame = frame_idle
-        frame_delta = 1 if left or right else 0
+        frame_delta = 1 if self.left or self.right else 0
 
         initial_player_speed = player_speed
 
@@ -93,46 +109,49 @@ class Player:
 
         if initial_player_speed <= config.PLAYER_MAX_SPEED:
             player_speed = (
-                initial_player_speed + player_acceleration * self.display.dt
-            ) * player_friction
+                                   initial_player_speed + player_acceleration * self.display.dt
+                           ) * player_friction
 
-        if up:
+        if self.up:
             player_rect.y -= int(player_speed)
             current_frame = 0
-        if down:
+        if self.down:
             player_rect.y += int(player_speed)
             current_frame = 10
-        if left:
+        if self.left:
             config.PLAYER_SPRITE_HORIZONTAL_FLIP = True
             player_rect.x -= int(player_speed)
             current_frame = min(current_frame + frame_delta, self.num_sprites - 4)
-        if right:
+        if self.right:
             config.PLAYER_SPRITE_HORIZONTAL_FLIP = False
             player_rect.x += int(player_speed)
             current_frame = min(current_frame + frame_delta, self.num_sprites - 4)
 
         store_speed = player_speed
 
-        if boost and self.item_inventory is not None:
+        if (self.boost or controls[4]) and self.item_inventory is not None:
+            print("Using powerup!")
             if "Boost" in self.item_inventory:
                 player_speed = player_speed * 3
-            if "Slow" in self.item_inventory:
+            elif "Slow" in self.item_inventory:
                 player_speed = player_speed / 5
 
         else:
-            for event in pygame.event.get(pygame.KEYUP):
-                if event.type == pygame.KEYUP:
-                    if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
+            for event in pygame.event.get(
+                    pygame.KEYUP
+            ):
+                if event.type == pygame.KEYUP or event.type == pygame.JOYAXISMOTION:
+                    if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT or controls[4] is True:
                         if "Boost" in self.item_inventory:
                             self.item_inventory.remove("Boost")
                         elif "Slow" in self.item_inventory:
                             self.item_inventory.remove("Slow")
             player_speed = store_speed
 
-        if (up or down) and (left or right):
+        if (self.up or self.down) and (self.left or self.right):
             player_speed = player_speed / math.sqrt(2)
 
-        any_keys = up or down or left or right
+        any_keys = self.up or self.down or self.left or self.right
 
         if not any_keys:
             player_speed = 0
@@ -160,7 +179,7 @@ class Player:
         screen.blit(self.prepare(current_frame), current_position)
 
     def check_for_events(
-        self, screen: Surface, map_rects: list[pygame.Rect], current_position
+            self, screen: Surface, map_rects: list[pygame.Rect], current_position
     ):
         # Create event manager
         event_manager = EventManager()
