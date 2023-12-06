@@ -20,7 +20,7 @@ class Enemy(Player):
         sprite: str,
         screen: Surface,
         starting_position: int,
-        max_speed=100,
+        max_speed=60,
     ):
         self.map = map
         self.sprite = image.load(sprite)
@@ -48,7 +48,8 @@ class Enemy(Player):
 
         move = (
             normalize(in_between)
-            * self.speed
+            * min(self.speed, self.max_speed)
+            * self.map.enemy_speed_multiplier
             * config.SECONDS_PER_FRAME
             * (random() / 5 + 0.6)
         )  # in range .8 -> 1

@@ -34,6 +34,11 @@ class Game:
         # Initialize pygame
         pygame.init()
 
+        self.joystick_count = pygame.joystick.get_count()
+        self.joystick_keys = [False, False, False, False, False]
+        if self.joystick_count > 0:
+            self.joystick = pygame.joystick.Joystick(0)
+
         # Initialize screen and clock
         self.display = Display()
         self.display.set_display_size()
@@ -66,18 +71,18 @@ class Game:
         self.powerup_group = pygame.sprite.Group()
         self.create_powerups(3)
 
-    def init_players(self):
+    def init_players(self, map: MapConfig):
         # Player 1
         self.player = Player(
             config,
-            config.PLAYER_1_NAME,
+            config.PLAYER_NAME,
             config.PLAYER_1_DESCRIPTION,
-            config.PLAYER_1_POSITION,
-            config.PLAYER_1_SPRITE,
+            map.player_start,
+            config.PLAYER_SPRITE,
         )
 
         # Prepare the player sprites
-        self.player.prepare(config.PLAYER_1_CURRENT_FRAME)
+        self.player.prepare(config.PLAYER_CURRENT_FRAME)
 
         # Print player configuration
         self.player.print_config()
@@ -104,11 +109,14 @@ class Game:
 
         # Setup game variables
         run_game, did_win, enemy_won, should_show_main_menu = self.init_game()
-        self.init_players()
+        self.init_players(map)
 
         # Play the music
         self.music = Music(map.music_file, 0)
-        self.enemies = [Enemy(map, config.PLAYER_2_SPRITE, self.display.screen, i) for i in range(config.ENEMY_COUNT)]
+        self.enemies = [
+            Enemy(map, config.ENEMY_SPRITE, self.display.screen, i)
+            for i in range(config.ENEMY_COUNT)
+        ]
         self.music.set_volume(1)
         self.music.play(-1)
 
@@ -121,8 +129,8 @@ class Game:
             self.powerup_group.draw(self.display.screen)
 
             map_relative_position = (
-                -config.MAP_POSITION[0] + config.PLAYER_1_CURRENT_POSITION[0],
-                -config.MAP_POSITION[1] + config.PLAYER_1_CURRENT_POSITION[1],
+                -config.MAP_POSITION[0] + config.PLAYER_CURRENT_POSITION[0],
+                -config.MAP_POSITION[1] + config.PLAYER_CURRENT_POSITION[1],
             )
 
             # Set the current window caption
@@ -134,6 +142,7 @@ class Game:
             for event in pygame.event.get(
                 (
                     pygame.KEYDOWN,
+                    pygame.JOYAXISMOTION,
                     config.GAME_PAUSE_CHANGED,
                     config.PLAYER_GAMEOVER_EVENT,
                     config.PLAYER_WON_EVENT,
@@ -157,6 +166,26 @@ class Game:
                             # And if the menu is closed, resume the game
                             self.resume()
                             config.GAME_PAUSED = False
+                    case pygame.JOYAXISMOTION:
+                        # self.joystick_keys[0] = self.joystick.get_axis(0)
+                        # self.joystick_keys[1] = self.joystick.get_axis(1)
+                        # self.joystick_keys[3] = self.joystick.get_axis(5)
+                        self.joystick_keys = [False, False, False, False, False]
+                        if self.joystick.get_axis(0) >= 0.5:
+                            print("Right")
+                            self.joystick_keys[0] = True
+                        if self.joystick.get_axis(0) <= -0.5:
+                            print("Left")
+                            self.joystick_keys[1] = True
+                        if self.joystick.get_axis(1) >= 0.5:
+                            print("Down")
+                            self.joystick_keys[2] = True
+                        if self.joystick.get_axis(1) <= -0.5:
+                            print("Up")
+                            self.joystick_keys[3] = True
+                        if self.joystick.get_axis(5) >= 0.5:
+                            print("Right Trigger")
+                            self.joystick_keys[4] = True
                     # If the pause state is changed
                     case config.GAME_PAUSE_CHANGED:
                         # And it is now paused
@@ -217,21 +246,32 @@ class Game:
 
             [enemy.update() for enemy in self.enemies]
 
-            # Move player 1
-            self.player.move(
-                screen=self.display.screen,
-                camera=self.camera,
-                controls=self.keys,
-                current_position=config.PLAYER_1_CURRENT_POSITION,
-                powerup_list=self.powerup_group,
-            )
+            if self.joystick_count == 0:
+                self.player.move(
+                    screen=self.display.screen,
+                    camera=self.camera,
+                    controls=self.keys,
+                    current_position=config.PLAYER_CURRENT_POSITION,
+                    powerup_list=self.powerup_group,
+                    is_controller=False,
+                )
+            else:
+                # Move player 1
+                self.player.move(
+                    screen=self.display.screen,
+                    camera=self.camera,
+                    controls=self.joystick_keys,
+                    current_position=config.PLAYER_CURRENT_POSITION,
+                    powerup_list=self.powerup_group,
+                    is_controller=True,
+                )
 
             # Refresh the display and frame rate
             self.display.draw(map)
 
             # Check for events related to the player, such as collisions with the respawn area
             self.player.check_for_events(
-                self.display.screen, map_rects, config.PLAYER_1_CURRENT_POSITION
+                self.display.screen, map_rects, config.PLAYER_CURRENT_POSITION
             )
 
         # Set game state to game over, regardless of whether the player won or lost

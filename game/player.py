@@ -11,18 +11,16 @@ from game.display import Display
 
 
 class Player:
-    def __init__(
-        self, config: config, name, description, position, player_sprite
-    ):
+    def __init__(self, config: config, name, description, position, player_sprite):
         self.config = config
         self.name = name
         self.description = description
-        self.position = position
+        self.position = [*position]  # to make sure it's an array
         self.display = Display()
         self.player_sprite = player_sprite
         self.num_sprites = 0
         self.finish_event = FinishEvent(
-            None, config.PLAYER_1_POSITION, config.FINISH_SOUND
+            None, config.PLAYER_POSITION, config.FINISH_SOUND
         )
         self.POWERUP_RESPAWN_TIME = 5000
         self.powerup_respawn_time = None
@@ -57,15 +55,16 @@ class Player:
         return self.check_flip(sprites[frame])
 
     def move(
-            self,
-            screen: Surface,
-            camera: Camera,
-            controls,
-            current_position: list[int],
-            powerup_list: pygame.sprite.Group,
+        self,
+        screen: Surface,
+        camera: Camera,
+        controls: list,
+        current_position: list[int],
+        powerup_list: pygame.sprite.Group,
+        is_controller: bool,
     ):
         print("Controls: ", controls)
-        if len(controls) == 5:
+        if is_controller:
             self.left = controls[1]
             self.right = controls[0]
             self.up = controls[3]
@@ -80,17 +79,14 @@ class Player:
 
         print(self.left, self.right, self.up, self.down, self.boost)
 
-        if config.CURRENT_FPS == 0:
-            print("CURRENT_FPS value is Zero! Please, check the value.")
-        else:
-            self.display.dt = 1.0 / config.CURRENT_FPS
+        self.display.dt = config.SECONDS_PER_FRAME
 
         player_rect = pygame.Rect(
             current_position,
             (config.PLAYER_SPRITE_WIDTH, config.PLAYER_SPRITE_HEIGHT),
         )
 
-        player_speed = config.PLAYER_1_CURRENT_SPEED
+        player_speed = config.PLAYER_CURRENT_SPEED
 
         player_acceleration = config.PLAYER_MAX_SPEED
         player_friction = config.PLAYER_FRICTION
@@ -105,30 +101,31 @@ class Player:
         items = powerup.Powerup(-1).update(player_rect, powerup_list)
         if items:
             self.item_inventory.extend(items)
-        print("Inventory: ", self.item_inventory)
 
         if initial_player_speed <= config.PLAYER_MAX_SPEED:
             player_speed = (
-                                   initial_player_speed + player_acceleration * self.display.dt
-                           ) * player_friction
+                initial_player_speed + player_acceleration * self.display.dt
+            ) * player_friction
 
         if self.up:
-            player_rect.y -= int(player_speed)
+            self.position[1] -= player_speed * config.SECONDS_PER_FRAME
             current_frame = 0
         if self.down:
-            player_rect.y += int(player_speed)
+            self.position[1] += player_speed * config.SECONDS_PER_FRAME
             current_frame = 10
         if self.left:
             config.PLAYER_SPRITE_HORIZONTAL_FLIP = True
-            player_rect.x -= int(player_speed)
+            self.position[0] -= player_speed * config.SECONDS_PER_FRAME
             current_frame = min(current_frame + frame_delta, self.num_sprites - 4)
         if self.right:
             config.PLAYER_SPRITE_HORIZONTAL_FLIP = False
-            player_rect.x += int(player_speed)
+            self.position[0] += player_speed * config.SECONDS_PER_FRAME
             current_frame = min(current_frame + frame_delta, self.num_sprites - 4)
 
-        store_speed = player_speed
+        player_rect.x = self.position[0] + config.MAP_POSITION[0]
+        player_rect.y = self.position[1] + config.MAP_POSITION[1]
 
+        store_speed = player_speed
         if (self.boost or controls[4]) and self.item_inventory is not None:
             print("Using powerup!")
             if "Boost" in self.item_inventory:
@@ -137,11 +134,13 @@ class Player:
                 player_speed = player_speed / 5
 
         else:
-            for event in pygame.event.get(
-                    pygame.KEYUP
-            ):
+            for event in pygame.event.get(pygame.KEYUP):
                 if event.type == pygame.KEYUP or event.type == pygame.JOYAXISMOTION:
-                    if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT or controls[4] is True:
+                    if (
+                        event.key == pygame.K_LSHIFT
+                        or event.key == pygame.K_RSHIFT
+                        or controls[4] is True
+                    ):
                         if "Boost" in self.item_inventory:
                             self.item_inventory.remove("Boost")
                         elif "Slow" in self.item_inventory:
@@ -157,8 +156,8 @@ class Player:
             player_speed = 0
             config.PLAYER_CURRENT_FRAME = frame_idle
 
-        config.PLAYER_1_CURRENT_SPEED = round(player_speed, 0)
-        config.PLAYER_1_CURRENT_FRAME = current_frame
+        config.PLAYER_CURRENT_SPEED = round(player_speed, 0)
+        config.PLAYER_CURRENT_FRAME = current_frame
 
         screen_rect = pygame.Rect(
             0,
@@ -179,7 +178,7 @@ class Player:
         screen.blit(self.prepare(current_frame), current_position)
 
     def check_for_events(
-            self, screen: Surface, map_rects: list[pygame.Rect], current_position
+        self, screen: Surface, map_rects: list[pygame.Rect], current_position
     ):
         # Create event manager
         event_manager = EventManager()
@@ -226,4 +225,3 @@ class Player:
                 if var_name.isupper():
                     if var_name.startswith("PLAYER_"):
                         print(f"{var_name}: {getattr(self.config, var_name)}")
-

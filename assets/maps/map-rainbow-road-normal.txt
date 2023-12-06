@@ -1,11 +1,30 @@
-Rainbow Road # name
-Hard difficulty. # description
-assets/sprites/rainbow_road_map_old.png # background image
-assets/sounds/music/Mario_Kart_64_Rainbow_Road.mp3 # music file
-2x2 # background image scale
-1.7x1.53 # collider scale
+# name
+Rainbow Road
+
+# description
+Difficulty: Normal
+
+# background image
+assets/sprites/rainbow_road_map_old.png
+
+# music file
+assets/sounds/music/Mario_Kart_64_Rainbow_Road.mp3
+
+# background image scale
+2x2
+
+# collider scale
+1.7x1.53
+
+# enemy speed multiplier
+1
+
+# player start
+<122,617>
+
 # start points
 <97,683> <157,716> <97,748> <157,779> <97,809> <157,840> <97,871>
+
 # finish points
 <128,434> <139,259> <190,162> <333,150> <557,138> <1348,138>
 <1478,192> <1508,377> <1465,578> <1412,626> <864,632> <641,675>

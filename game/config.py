@@ -50,33 +50,29 @@ WORLD_HEIGHT = SCREEN_HEIGHT
 
 # PLAYER CONFIGURATION
 # What's the player's name?
-PLAYER_1_NAME = "Wario"
-PLAYER_2_NAME = "Bowser"
+PLAYER_NAME = "Wario"
+ENEMY_NAME = "Waluigi"
 
 # What's the player like?
 PLAYER_1_DESCRIPTION = "A fat, yellow, greedy, and smelly character."
-PLAYER_2_DESCRIPTION = "Short-tempered, big, and bad."
+ENEMY_DESCRIPTION = "Short-tempered, big, and bad."
 
 # Inventory
-PLAYER_1_INVENTORY = []
-PLAYER_2_INVENTORY = []
+PLAYER_INVENTORY = []
 
 # Player position, relative to the screen
 PLAYER_POSITION = [SCREEN_CENTER_X, SCREEN_CENTER_Y]
-PLAYER_1_POSITION = [SCREEN_CENTER_X, SCREEN_CENTER_Y]
-PLAYER_2_POSITION = [SCREEN_CENTER_X, SCREEN_CENTER_Y]
 
 # Player respawn position, relative to the screen
 PLAYER_RESPAWN_POSITION = [127, 494]
 
 # Player current position starts at the respawn position
-PLAYER_1_CURRENT_POSITION = PLAYER_RESPAWN_POSITION[:]
-PLAYER_2_CURRENT_POSITION = PLAYER_RESPAWN_POSITION[:]
+PLAYER_CURRENT_POSITION = PLAYER_RESPAWN_POSITION[:]
 
 # Player sprite
 PLAYER_SPRITE = None
-PLAYER_1_SPRITE = "assets/sprites/wario.png"
-PLAYER_2_SPRITE = "assets/sprites/waluigi.png"
+PLAYER_SPRITE = "assets/sprites/wario.png"
+ENEMY_SPRITE = "assets/sprites/waluigi.png"
 PLAYER_SPRITE_WIDTH = 32
 PLAYER_SPRITE_HEIGHT = 32
 PLAYER_SPRITE_SCALE = 2
@@ -86,16 +82,14 @@ PLAYER_SPRITE_HORIZONTAL_FLIP = False
 PLAYER_SPRITE_VERTICAL_FLIP = False
 
 # Which animation frame is the player currently on?
-PLAYER_1_CURRENT_FRAME = 0
-PLAYER_2_CURRENT_FRAME = 0
+PLAYER_CURRENT_FRAME = 0
 
 # Player's speed
-PLAYER_MAX_SPEED = 500
+PLAYER_MAX_SPEED = 20000
 PLAYER_MIN_SPEED = PLAYER_MAX_SPEED / 1.5
 PLAYER_AVG_SPEED = (PLAYER_MIN_SPEED + PLAYER_MAX_SPEED) / 2
 PLAYER_FRICTION = 0.2
-PLAYER_1_CURRENT_SPEED = 100
-PLAYER_2_CURRENT_SPEED = 100
+PLAYER_CURRENT_SPEED = 1000
 
 # MAP CONFIGURATION
 # Map respawn position, relative to the screen

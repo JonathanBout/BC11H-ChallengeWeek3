@@ -28,14 +28,21 @@ class MapManager:
         [map music file]\n
         [render scale X x render scale Y]\n
         [collider scale X x collider scale Y]\n
+        [enemy speed multiplier]
+        [<player start point X, player start point Y>]\n
+        [<enemy start point 1 X, enemy start point 1 Y> <enemy start point 2 X, enemy start point 2 Y> ...]\n
         [<waypoint 1 X, waypoint 1 Y> <waypoint 2 X, waypoint 2 Y> ...]
         """
         lines = map_config.splitlines()
-        lines = [line for line in [
-            line.split("#")[0].strip()
-            for line in lines
-            if not line.strip().startswith("#")
-        ] if len(line) > 0]
+        lines = [
+            line
+            for line in [
+                line.split("#")[0].strip()
+                for line in lines
+                if not line.strip().startswith("#")
+            ]
+            if len(line) > 0
+        ]
 
         map_name = lines[0]
         map_description = lines[1]
@@ -43,8 +50,10 @@ class MapManager:
         map_music_file = lines[3]
         map_render_scale = self.__scale_from_str(lines[4])
         map_collider_scale = self.__scale_from_str(lines[5])
-        map_starting_points = self.__coords_from_str(lines[6])
-        map_waypoints = self.__coords_from_str(" ".join(lines[7:]))
+        enemy_speed_multiplier = float(lines[6])
+        player_starting_point = self.__coords_from_str(lines[7])[0]
+        map_starting_points = self.__coords_from_str(lines[8])
+        map_waypoints = self.__coords_from_str(" ".join(lines[9:]))
 
         return MapConfig(
             map_name,
@@ -55,6 +64,8 @@ class MapManager:
             map_music_file,
             map_render_scale,
             map_collider_scale,
+            player_starting_point,
+            enemy_speed_multiplier
         )
 
     def __scale_from_str(self, scale_str: str):
@@ -83,6 +94,8 @@ class MapConfig:
         music_file: str,
         render_scale: tuple[float, float],
         collider_scale: tuple[float, float],
+        player_start: tuple[int, int],
+        enemy_speed_multiplier: int
     ):
         self.name = name
         self.description = description
@@ -92,3 +105,5 @@ class MapConfig:
         self.music_file = music_file
         self.render_scale = render_scale
         self.collider_scale = collider_scale
+        self.player_start = player_start
+        self.enemy_speed_multiplier = enemy_speed_multiplier
