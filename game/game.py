@@ -33,7 +33,10 @@ class Game:
         """
         # Initialize pygame
         pygame.init()
-
+        self.joystick_count = pygame.joystick.get_count()
+        self.joystick_keys = [False, False, False, False, False]
+        if self.joystick_count > 0:
+            self.joystick = pygame.joystick.Joystick(0)
         # Initialize screen and clock
         self.display = Display()
         self.display.set_display_size()
@@ -150,6 +153,7 @@ class Game:
                             config.PLAYER_GAMEOVER_EVENT,
                             config.PLAYER_WON_EVENT,
                             pygame.QUIT,
+                            pygame.JOYAXISMOTION,
                     )
             ):
                 # If player presses a button
@@ -167,6 +171,25 @@ class Game:
                         # And if the menu is closed, resume the game
                         self.resume()
                         config.GAME_PAUSED = False
+                elif event.type == pygame.JOYAXISMOTION:
+                    if self.joystick.get_axis(0) >= 0.5:
+                        print("Right")
+                        self.joystick_keys[0] = True
+                    elif self.joystick.get_axis(0) <= -0.5:
+                        print("Left")
+                        self.joystick_keys[1] = True
+                    elif self.joystick.get_axis(1) >= 0.5:
+                        print("Down")
+                        self.joystick_keys[2] = True
+                    elif self.joystick.get_axis(1) <= -0.5:
+                        print("Up")
+                        self.joystick_keys[3] = True
+                    elif self.joystick.get_axis(5) >= 0.5:
+                        print("Right Trigger")
+                        self.joystick_keys[4] = True
+                    else:
+                        self.joystick_keys = [False, False, False, False, False]
+
                 # If the pause state is changed
                 elif event.type == config.GAME_PAUSE_CHANGED:
                     # And it is now paused
@@ -232,13 +255,22 @@ class Game:
             self.enemy.update()
 
             # Move player 1
-            self.player1.move(
-                screen=self.display.screen,
-                camera=self.camera,
-                controls=self.keys,
-                current_position=config.PLAYER_1_CURRENT_POSITION,
-                powerup_list=self.powerup_group,
-            )
+            if self.joystick_count == 0:
+                self.player1.move(
+                    screen=self.display.screen,
+                    camera=self.camera,
+                    controls=self.keys,
+                    current_position=config.PLAYER_1_CURRENT_POSITION,
+                    powerup_list=self.powerup_group,
+                )
+            else:
+                self.player1.move(
+                    screen=self.display.screen,
+                    camera=self.camera,
+                    controls=self.joystick_keys,
+                    current_position=config.PLAYER_1_CURRENT_POSITION,
+                    powerup_list=self.powerup_group,
+                )
 
             # Refresh the display and frame rate
             self.display.draw(map)
