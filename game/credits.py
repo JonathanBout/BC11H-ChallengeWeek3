@@ -62,7 +62,7 @@ Jonathan Bout
 Thank you for playing!""",
             y_pos,
         ):
-            dt = self.clock.tick(120) / 1000
+            dt = self.clock.tick(30) / 1000
             if current_speed < PIXELS_PER_SECOND:
                 current_speed += dt * 10
             y_pos -= dt * current_speed
