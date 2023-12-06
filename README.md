@@ -16,7 +16,6 @@ Challenge Week 3
 - [x] Player races on a track and gets punished for leaving the track
 
 ## Extra
-<!-- [x] Two-player controls (WASD & ↑←↓→)-->
 - [ ] Collision between player and NPC
 - [x] Multiple tracks
   - [x] Dynamic track colision

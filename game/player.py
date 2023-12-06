@@ -72,10 +72,10 @@ class Player:
             self.down = controls[2]
             self.boost = controls[4]
         else:
-            self.left = controls[pygame.K_a]
-            self.right = controls[pygame.K_d]
-            self.up = controls[pygame.K_w]
-            self.down = controls[pygame.K_s]
+            self.left = controls[pygame.K_a] or controls[pygame.K_LEFT]
+            self.right = controls[pygame.K_d] or controls[pygame.K_RIGHT]
+            self.up = controls[pygame.K_w] or controls[pygame.K_UP]
+            self.down = controls[pygame.K_s] or controls[pygame.K_DOWN]
             self.boost = controls[pygame.K_LSHIFT] or controls[pygame.K_RSHIFT]
 
         print(self.left, self.right, self.up, self.down, self.boost)
