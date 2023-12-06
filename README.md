@@ -33,6 +33,10 @@ Challenge Week 3
   - [x] Random effects of powerups
     - [x] Boost
     - [x] Slow
+- [ ] Controller support
+    - [x] Player can steer can use both keyboard and controller (restart needed)
+    - [ ] Player can trigger powerups using controller
+- [x] Sound effects
 
 
 ## How to install and run the game
