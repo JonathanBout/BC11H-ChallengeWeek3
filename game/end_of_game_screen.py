@@ -20,7 +20,6 @@ class EndOfGame:
             target_size=(config.SCREEN_SIZE[0], config.SCREEN_SIZE[1]),
         )
 
-
         # self.to_menu_button = sprites
         self.play_again_button = sprites.get_button_playagain_sprite(
             config.SCREEN_CENTER_X, top=config.SCREEN_CENTER_Y

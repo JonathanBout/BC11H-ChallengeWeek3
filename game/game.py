@@ -33,10 +33,7 @@ class Game:
         """
         # Initialize pygame
         pygame.init()
-        self.joystick_count = pygame.joystick.get_count()
-        self.joystick_keys = [False, False, False, False, False]
-        if self.joystick_count > 0:
-            self.joystick = pygame.joystick.Joystick(0)
+
         # Initialize screen and clock
         self.display = Display()
         self.display.set_display_size()
@@ -111,7 +108,7 @@ class Game:
 
         # Play the music
         self.music = Music(map.music_file, 0)
-        self.enemy = Enemy(map, config.PLAYER_2_SPRITE, self.display.screen)
+        self.enemies = [Enemy(map, config.PLAYER_2_SPRITE, self.display.screen, i) for i in range(config.ENEMY_COUNT)]
         self.music.set_volume(1)
         self.music.play(-1)
 
@@ -137,7 +134,6 @@ class Game:
             for event in pygame.event.get(
                 (
                     pygame.KEYDOWN,
-                    pygame.JOYAXISMOTION,
                     config.GAME_PAUSE_CHANGED,
                     config.PLAYER_GAMEOVER_EVENT,
                     config.PLAYER_WON_EVENT,
@@ -161,24 +157,6 @@ class Game:
                             # And if the menu is closed, resume the game
                             self.resume()
                             config.GAME_PAUSED = False
-                    case pygame.JOYAXISMOTION:
-                        if self.joystick.get_axis(0) >= 0.5:
-                            print("Right")
-                            self.joystick_keys[0] = True
-                        elif self.joystick.get_axis(0) <= -0.5:
-                            print("Left")
-                            self.joystick_keys[1] = True
-                        elif self.joystick.get_axis(1) >= 0.5:
-                            print("Down")
-                            self.joystick_keys[2] = True
-                        elif self.joystick.get_axis(1) <= -0.5:
-                            print("Up")
-                            self.joystick_keys[3] = True
-                        elif self.joystick.get_axis(5) >= 0.5:
-                            print("Right Trigger")
-                            self.joystick_keys[4] = True
-                        else:
-                            self.joystick_keys = [False, False, False, False, False]
                     # If the pause state is changed
                     case config.GAME_PAUSE_CHANGED:
                         # And it is now paused
@@ -237,25 +215,16 @@ class Game:
                 for rect in self.map_rects
             ]
 
-            self.enemy.update()
+            [enemy.update() for enemy in self.enemies]
 
             # Move player 1
-            if self.joystick_count == 0:
-                self.player.move(
-                    screen=self.display.screen,
-                    camera=self.camera,
-                    controls=self.keys,
-                    current_position=config.PLAYER_1_CURRENT_POSITION,
-                    powerup_list=self.powerup_group,
-                )
-            else:
-                self.player.move(
-                    screen=self.display.screen,
-                    camera=self.camera,
-                    controls=self.joystick_keys,
-                    current_position=config.PLAYER_1_CURRENT_POSITION,
-                    powerup_list=self.powerup_group,
-                )
+            self.player.move(
+                screen=self.display.screen,
+                camera=self.camera,
+                controls=self.keys,
+                current_position=config.PLAYER_1_CURRENT_POSITION,
+                powerup_list=self.powerup_group,
+            )
 
             # Refresh the display and frame rate
             self.display.draw(map)
@@ -272,6 +241,7 @@ class Game:
     def show_menu(self, is_pause_menu: bool):
         # Show the menu
         while True:
+            helper.wait_for_mouse_up()
             match self.menu.show(is_pause_menu):
                 case 1:  # 1=start game
                     if is_pause_menu:
@@ -330,14 +300,16 @@ class Game:
         # If the player won, show the win screen, otherwise show the game over screen.
         if did_win:
             self.score_manager.pause()
-            score = self.score_manager.get_score()
+            score = self.score_manager.get_score(config.RACE_LAPS)
             self.stats.add_stat(score, map.name)
             # Show win screen
             if self.game_won.show() == 1:
                 return self.show_map_choice_menu()
         else:
             # Show gameover screen
-            if not should_show_main_menu and self.game_over.show(did_enemy_win) == 1:
+            if should_show_main_menu:
+                return
+            if self.game_over.show(did_enemy_win) == 1:
                 return self.show_map_choice_menu()
 
     # Pause the music and score manager if the game is paused

@@ -1,4 +1,4 @@
-from game import Game, helper, map_manager
+from game import Game, helper
 import atexit
 
 

@@ -74,10 +74,25 @@ class Display:
         background = pygame.transform.scale(
             background, (config.SCREEN_WIDTH * 2, config.SCREEN_HEIGHT * 2)
         )
+        self.screen.blit(background, config.MAP_POSITION)
+
         current_lap = config.RACE_CURRENT_LAP
 
         text = self.score_font.render(
-            f"{current_lap}/{config.RACE_LAPS}", True, "white", "gray"
+            f"LAP {current_lap}/{config.RACE_LAPS}", True, "white"
         )
-        self.screen.blit(background, config.MAP_POSITION)
+
+        text_width = text.get_width()
+        text_height = text.get_height()
+
+        pygame.draw.rect(
+            self.screen,
+            "black",
+            pygame.Rect(
+                0,
+                0,
+                text_width + 20,
+                text_height + 20
+            ),
+        )
         self.screen.blit(text, (10, 10))

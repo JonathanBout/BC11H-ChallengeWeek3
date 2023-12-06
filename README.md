@@ -23,7 +23,7 @@ Challenge Week 3
   - [x] Better map loading
   - [ ] Extra map sprites 
 - [x] Improve framerate
-- [ ] Multiple NPC's
+- [x] Multiple NPC's
 - [x] Difficulty settings
   - [x] Normal
   - [x] Hard

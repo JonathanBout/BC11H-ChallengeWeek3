@@ -3,24 +3,31 @@ from game.map_manager import MapConfig
 from game import config
 import numpy as np
 import math
-from random import randint
+from random import randint, random
 from pygame import Surface, Rect, image
 
 from game.player import Player
-from util.eventHandler import EventManager, FinishEvent, RespawnEvent
+from util.eventHandler import FinishEvent
 
 NEXT_POINT_THRESHOlD = 20
-MAX_RANDOM_OFFSET = 10
+MAX_RANDOM_OFFSET = 20
 
 
 class Enemy(Player):
-    def __init__(self, map: MapConfig, sprite: str, screen: Surface, max_speed=100):
+    def __init__(
+        self,
+        map: MapConfig,
+        sprite: str,
+        screen: Surface,
+        starting_position: int,
+        max_speed=100,
+    ):
         self.map = map
         self.sprite = image.load(sprite)
         self.target_point_index = 0
         self.next_point()
         self.map_offset = np.array(config.MAP_POSITION)
-        self.current_position = np.array(self.map.waypoints[0])
+        self.current_position = np.array(self.map.starting_points[starting_position])
         self.max_speed = max_speed
         self.screen = screen
         self.width, self.height = self.sprite.get_size()
@@ -39,7 +46,12 @@ class Enemy(Player):
 
         in_between = current_offset_position - next_point
 
-        move = normalize(in_between) * self.speed * config.SECONDS_PER_FRAME
+        move = (
+            normalize(in_between)
+            * self.speed
+            * config.SECONDS_PER_FRAME
+            * (random() / 5 + 0.6)
+        )  # in range .8 -> 1
 
         self.current_position = self.current_position - move
         current_offset_position = current_offset_position - move

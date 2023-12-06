@@ -69,7 +69,9 @@ class Stats:
                 text_to_show = ""
                 place = 1
                 for stat in self.get_stats(top=10, map_name=map_config.name):
-                    text_to_show += f"{str(place).rjust(2)}. {stat.date.strftime('%b %d %Y, %H:%M')}: {stat.score} points\n"
+                    date_text = stat.date.strftime("%b %d %Y, %H:%M")
+                    place_text = str(place).rjust(2)
+                    text_to_show += f"{place_text}. {date_text}: {stat.score} points\n"
                     place += 1
 
                 if text_to_show == "":
@@ -102,7 +104,10 @@ class Stats:
             scores = [Stat.from_json_dict(score) for score in stored_scores]
             if map_name != "":
                 scores = [
-                    score for score in scores if score.map.lower() == map_name.lower() or score.map.lower() == "unknown"
+                    score
+                    for score in scores
+                    if score.map.lower() == map_name.lower()
+                    or score.map.lower() == "unknown"
                 ]
             scores.sort(key=lambda i: i.get_order(), reverse=True)
             if top > 0:

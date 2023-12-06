@@ -149,6 +149,8 @@ RACE_LAPS = 3
 # Keep track of the current lap
 RACE_CURRENT_LAP = 0
 
+ENEMY_COUNT = 3
+
 # Cheats
 SKIP_TRACK_CHECK = False
 

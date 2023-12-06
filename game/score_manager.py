@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 
-
 class ScoreManager:
     def __init__(self) -> None:
         self.__start_time = datetime.now()
@@ -30,7 +29,7 @@ class ScoreManager:
 
         return total_elapsed
 
-    def get_score(self):
+    def get_score(self, num_laps: int):
         return int(
-            max(100 - self.get_elapsed().total_seconds(), 0)
+            max(100 - (self.get_elapsed().total_seconds() / num_laps), 0)
         )

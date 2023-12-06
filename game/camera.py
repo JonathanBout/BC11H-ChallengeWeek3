@@ -5,7 +5,9 @@ from game import config
 
 class Camera:
     # Move the screen if the player is close to the edge
-    def do_movement(self, player_rect: Rect, screen_rect: Rect, powerups: sprite.Group) -> tuple[Rect, Rect]:
+    def do_movement(
+        self, player_rect: Rect, screen_rect: Rect, powerups: sprite.Group
+    ) -> tuple[Rect, Rect]:
         if player_rect.bottom + config.SCREEN_MOVE_OFFSET >= screen_rect.bottom:
             config.MAP_POSITION[1] -= config.PLAYER_1_CURRENT_SPEED
             player_rect.top -= config.PLAYER_1_CURRENT_SPEED
