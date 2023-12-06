@@ -20,7 +20,7 @@ class MapChooser:
         )
 
         self.button_back = sprites.get_button_back_sprite(
-            x_center=config.SCREEN_CENTER_X, top=config.SCREEN_HEIGHT / 10 * 9
+            x_center=config.UI_SCREEN_CENTER_X, top=config.SCREEN_HEIGHT / 10 * 9
         )
 
         self.font = font
@@ -30,7 +30,7 @@ class MapChooser:
         ]
         text, (width, height) = self.__render_text("Choose Your Map\n")
 
-        left = config.SCREEN_CENTER_X - width / 2
+        left = config.UI_SCREEN_CENTER_X - width / 2
 
         self.to_blit.append((text, pygame.Rect(left, 10, width, height)))
         self.maps_starting_point = height + 20
@@ -42,7 +42,7 @@ class MapChooser:
         for map in self.map_manager.loaded_maps:
             map_text = f"{map.name}\n{map.description}\n"
             surface, (width, height) = self.__render_text(map_text, "white")
-            sprite = create_sprite(surface, x_center=config.SCREEN_CENTER_X, top=y_pos)
+            sprite = create_sprite(surface, x_center=config.UI_SCREEN_CENTER_X, top=y_pos)
             visible_maps[sprite] = map
             y_pos += height + 10
 

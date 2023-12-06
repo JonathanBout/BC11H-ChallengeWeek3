@@ -51,7 +51,7 @@ class Stats:
         )
 
         self.button_back = sprites.get_button_back_sprite(
-            x_center=config.SCREEN_CENTER_X, top=config.SCREEN_HEIGHT / 10 * 9
+            x_center=config.UI_SCREEN_CENTER_X, top=config.SCREEN_HEIGHT / 10 * 9
         )
 
         self.font = font
@@ -85,9 +85,9 @@ class Stats:
         lines_to_blit = []
         last_y = 10
         if text == "No scores yet!":
-            center_x = config.SCREEN_CENTER_X - 182
+            center_x = config.UI_SCREEN_CENTER_X - 182
         else:
-            center_x = config.SCREEN_CENTER_X / 2 - 75
+            center_x = config.UI_SCREEN_CENTER_X / 2 - 75
         for line in text.split("\n"):
             text_to_blit = self.font.render(line, True, "white")
             lines_to_blit.append((text_to_blit, (center_x, last_y)))

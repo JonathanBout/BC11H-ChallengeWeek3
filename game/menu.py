@@ -22,30 +22,30 @@ class Menu:
         )
 
         self.logo = sprites.get_logo_menu_sprite(
-            x_center=config.SCREEN_CENTER_X, top=config.SCREEN_HEIGHT / 10
+            x_center=config.UI_SCREEN_CENTER_X, top=config.SCREEN_HEIGHT / 10
         )
 
         self.button_start_game = sprites.get_button_start_sprite(
-            x_center=config.SCREEN_CENTER_X,
+            x_center=config.UI_SCREEN_CENTER_X,
             top=self.logo.rect.bottom + 20,
         )
 
         self.button_resume_game = sprites.get_button_resume_sprite(
-            x_center=config.SCREEN_CENTER_X,
+            x_center=config.UI_SCREEN_CENTER_X,
             top=self.logo.rect.bottom + 20,
         )
 
         self.button_quit = sprites.get_button_quit_sprite(
-            x_center=config.SCREEN_CENTER_X,
+            x_center=config.UI_SCREEN_CENTER_X,
             top=self.button_start_game.rect.bottom + 20,
         )
 
         self.button_back = sprites.get_button_back_to_menu_sprite(
-            x_center=config.SCREEN_CENTER_X, top=self.button_start_game.rect.bottom + 20
+            x_center=config.UI_SCREEN_CENTER_X, top=self.button_start_game.rect.bottom + 20
         )
 
         self.button_stats = sprites.get_button_stats_sprite(
-            x_center=config.SCREEN_CENTER_X, top=self.button_quit.rect.bottom + 20
+            x_center=config.UI_SCREEN_CENTER_X, top=self.button_quit.rect.bottom + 20
         )
         self.button_credits = sprites.get_powerup_box_sprite(
             left=10,

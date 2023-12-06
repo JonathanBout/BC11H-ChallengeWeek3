@@ -5,7 +5,7 @@ from game.display import Display
 from util.music import Music
 from time import sleep
 
-PIXELS_PER_SECOND = 100
+PIXELS_PER_SECOND = 65
 
 
 class Credits:
@@ -64,7 +64,7 @@ Thank you for playing!""",
         ):
             dt = self.clock.tick(120) / 1000
             if current_speed < PIXELS_PER_SECOND:
-                current_speed += dt * 5
+                current_speed += dt * 10
             y_pos -= dt * current_speed
             pygame.display.flip()
             helper.exit_if_user_wants()
@@ -75,7 +75,7 @@ Thank you for playing!""",
     def __write_to_screen(self, text: str, distance_from_top: int) -> bool:
         last_y = distance_from_top
         lines_to_blit = [
-            (self.logo, (config.SCREEN_CENTER_X - self.logo.get_width() / 2, last_y))
+            (self.logo, (config.UI_SCREEN_CENTER_X - self.logo.get_width() / 2, last_y))
         ]
         last_y += self.logo.get_height()
         for line in text.split("\n"):
@@ -83,7 +83,7 @@ Thank you for playing!""",
             lines_to_blit.append(
                 (
                     text_to_blit,
-                    (config.SCREEN_CENTER_X - text_to_blit.get_width() / 2, last_y),
+                    (config.UI_SCREEN_CENTER_X - text_to_blit.get_width() / 2, last_y),
                 )
             )
             last_y += text_to_blit.get_height() + 10

@@ -22,11 +22,11 @@ class EndOfGame:
 
         # self.to_menu_button = sprites
         self.play_again_button = sprites.get_button_playagain_sprite(
-            config.SCREEN_CENTER_X, top=config.SCREEN_CENTER_Y
+            config.UI_SCREEN_CENTER_X, top=config.SCREEN_CENTER_Y
         )
 
         self.to_menu_button = sprites.get_button_back_to_menu_sprite(
-            config.SCREEN_CENTER_X, top=self.play_again_button.rect.bottom + 20
+            config.UI_SCREEN_CENTER_X, top=self.play_again_button.rect.bottom + 20
         )
 
         self.set_text(title)
@@ -34,7 +34,7 @@ class EndOfGame:
     def set_text(self, text: str):
         self.text = create(
             self.font.render(text, True, "black"),
-            x_center=config.SCREEN_CENTER_X,
+            x_center=config.UI_SCREEN_CENTER_X,
             top=config.SCREEN_HEIGHT / 10,
         )
 
