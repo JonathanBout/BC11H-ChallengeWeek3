@@ -17,7 +17,7 @@ Challenge Week 3
 
 ## Extra
 <!-- [x] Two-player controls (WASD & ↑←↓→)-->
-_ [ ] Collision between player and NPC
+- [ ] Collision between player and NPC
 - [x] Multiple tracks
   - [x] Dynamic track colision
   - [x] Better map loading
