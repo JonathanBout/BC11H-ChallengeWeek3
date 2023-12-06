@@ -10,16 +10,15 @@ from util.eventHandler import EventManager, RespawnEvent, FinishEvent
 from game.display import Display
 
 
-class PlayerBase:
+class Player:
     def __init__(
-        self, config: config, player_number, name, description, position, player_sprite
+        self, config: config, name, description, position, player_sprite
     ):
         self.config = config
         self.name = name
         self.description = description
         self.position = position
         self.display = Display()
-        self.player_number = player_number
         self.player_sprite = player_sprite
         self.num_sprites = 0
         self.finish_event = FinishEvent(
@@ -65,7 +64,6 @@ class PlayerBase:
         down = controls[pygame.K_s]
         boost = controls[pygame.K_LSHIFT] or controls[pygame.K_RSHIFT]
 
-        player_cnt = str(self.player_number)
         if config.CURRENT_FPS == 0:
             print("CURRENT_FPS value is Zero! Please, check the value.")
         else:
@@ -76,11 +74,7 @@ class PlayerBase:
             (config.PLAYER_SPRITE_WIDTH, config.PLAYER_SPRITE_HEIGHT),
         )
 
-        player_speed = 0
-        if player_cnt == "1":
-            player_speed = config.PLAYER_1_CURRENT_SPEED
-        if player_cnt == "2":
-            player_speed = config.PLAYER_2_CURRENT_SPEED
+        player_speed = config.PLAYER_1_CURRENT_SPEED
 
         player_acceleration = config.PLAYER_MAX_SPEED
         player_friction = config.PLAYER_FRICTION
@@ -144,12 +138,8 @@ class PlayerBase:
             player_speed = 0
             config.PLAYER_CURRENT_FRAME = frame_idle
 
-        if player_cnt == "1":
-            config.PLAYER_1_CURRENT_SPEED = round(player_speed, 0)
-            config.PLAYER_1_CURRENT_FRAME = current_frame
-        if player_cnt == "2":
-            config.PLAYER_2_CURRENT_SPEED = round(player_speed, 0)
-            config.PLAYER_2_CURRENT_FRAME = current_frame
+        config.PLAYER_1_CURRENT_SPEED = round(player_speed, 0)
+        config.PLAYER_1_CURRENT_FRAME = current_frame
 
         screen_rect = pygame.Rect(
             0,
@@ -218,7 +208,3 @@ class PlayerBase:
                     if var_name.startswith("PLAYER_"):
                         print(f"{var_name}: {getattr(self.config, var_name)}")
 
-
-class Player(PlayerBase):
-    def __init__(self, config: config, name, description, position, player_sprite):
-        super().__init__(config, 1, name, description, position, player_sprite)

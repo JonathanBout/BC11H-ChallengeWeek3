@@ -6,18 +6,19 @@ import math
 from random import randint
 from pygame import Surface, Rect, image
 
-from game.player import PlayerBase
+from game.player import Player
 from util.eventHandler import EventManager, FinishEvent, RespawnEvent
 
 NEXT_POINT_THRESHOlD = 20
-MAX_RANDOM_OFFSET = 50
+MAX_RANDOM_OFFSET = 10
 
 
-class Enemy(PlayerBase):
+class Enemy(Player):
     def __init__(self, map: MapConfig, sprite: str, screen: Surface, max_speed=100):
         self.map = map
         self.sprite = image.load(sprite)
-        self.target_point_index = 1
+        self.target_point_index = 0
+        self.next_point()
         self.map_offset = np.array(config.MAP_POSITION)
         self.current_position = np.array(self.map.waypoints[0])
         self.max_speed = max_speed
@@ -33,37 +34,24 @@ class Enemy(PlayerBase):
             self.speed += self.max_speed / (fps)  # 5 seconds to reach full speed
 
         self.map_offset = np.array(config.MAP_POSITION)
-
+        next_point = self.target_point + self.map_offset
         current_offset_position = self.current_position + self.map_offset
-        next_point = (
-            np.array(self.map.waypoints[self.target_point_index]) + self.map_offset
-        )
 
-        in_between = (
-            current_offset_position
-            - next_point
-            + np.array(
-                [
-                    randint(-MAX_RANDOM_OFFSET, MAX_RANDOM_OFFSET),
-                    randint(-MAX_RANDOM_OFFSET, MAX_RANDOM_OFFSET),
-                ]
-            )
-        )
+        in_between = current_offset_position - next_point
 
         move = normalize(in_between) * self.speed * config.SECONDS_PER_FRAME
 
         self.current_position = self.current_position - move
         current_offset_position = current_offset_position - move
 
-        pygame.draw.circle(self.screen, "green", next_point, 10, 10)
-        pygame.draw.circle(self.screen, "purple", current_offset_position, 10, 10)
-        pygame.draw.circle(
-            self.screen, "yellow", self.current_position + self.map_offset, 10, 10
-        )
+        # pygame.draw.circle(self.screen, "green", next_point, 10, 10)
+        # pygame.draw.circle(self.screen, "purple", current_offset_position, 10, 10)
+        # pygame.draw.circle(
+        #     self.screen, "yellow", self.current_position + self.map_offset, 10, 10
+        # )
 
         if np.linalg.norm(in_between) < NEXT_POINT_THRESHOlD:
-            self.target_point_index += 1
-            self.target_point_index %= len(self.map.waypoints)
+            self.next_point()
         sprite_size = np.array(
             [config.PLAYER_SPRITE_WIDTH, config.PLAYER_SPRITE_HEIGHT]
         )
@@ -77,6 +65,18 @@ class Enemy(PlayerBase):
         )
 
         self.check_for_events(self.screen, current_offset_position - sprite_size)
+
+    def next_point(self):
+        self.target_point_index += 1
+        self.target_point_index %= len(self.map.waypoints)
+        self.target_point = np.array(
+            self.map.waypoints[self.target_point_index]
+        ) + np.array(
+            [
+                randint(-MAX_RANDOM_OFFSET, MAX_RANDOM_OFFSET),
+                randint(-MAX_RANDOM_OFFSET, MAX_RANDOM_OFFSET),
+            ]
+        )
 
     def prepare(self, move_direction: list[float]):
         game_image = self.sprite

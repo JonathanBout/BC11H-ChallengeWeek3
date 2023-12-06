@@ -215,17 +215,6 @@ class Game:
                 for rect in self.map_rects
             ]
 
-            [
-                pygame.draw.circle(
-                    self.display.screen,
-                    "red",
-                    (x[0] + config.MAP_POSITION[0], x[1] + config.MAP_POSITION[1]),
-                    50,
-                    50,
-                )
-                for x in map.waypoints
-            ]
-
             self.enemy.update()
 
             # Move player 1
