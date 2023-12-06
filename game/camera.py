@@ -8,9 +8,10 @@ class Camera:
     def do_movement(
         self, player_rect: Rect, screen_rect: Rect, powerups: sprite.Group
     ) -> tuple[Rect, Rect]:
+        camera_move = config.PLAYER_CURRENT_SPEED / 100
         if player_rect.bottom + config.SCREEN_MOVE_OFFSET >= screen_rect.bottom:
-            config.MAP_POSITION[1] -= config.PLAYER_CURRENT_SPEED
-            player_rect.top -= config.PLAYER_CURRENT_SPEED
+            config.MAP_POSITION[1] -= camera_move
+            player_rect.top -= camera_move
             for powerup in powerups:
                 powerup.rect.top -= config.PLAYER_CURRENT_SPEED
         elif player_rect.top - config.SCREEN_MOVE_OFFSET <= screen_rect.top:

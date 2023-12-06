@@ -40,7 +40,7 @@ class MapChooser:
         visible_maps: dict[SurfaceSprite, MapConfig] = {}
         y_pos = self.maps_starting_point
         for map in self.map_manager.loaded_maps:
-            map_text = f"{map.name}:\n{map.description}\n"
+            map_text = f"{map.name}\n{map.description}\n"
             surface, (width, height) = self.__render_text(map_text, "white")
             sprite = create_sprite(surface, x_center=config.SCREEN_CENTER_X, top=y_pos)
             visible_maps[sprite] = map
