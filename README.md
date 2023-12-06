@@ -9,9 +9,9 @@ Challenge Week 3
 - [x] Game is well documented (Comments, README.md, etc.)
 - [x] Working highscore system
 - [x] Player can steer the car
-- [ ] Player can race against NPC
+- [x] Player can race against NPC
   - [x] Player can finish
-  - [ ] NPC can finish
+  - [x] NPC can finish
   
 - [x] Player races on a track and gets punished for leaving the track
 
@@ -43,9 +43,10 @@ Challenge Week 3
 ## How to play
 ### Controls
 - Player 1: WASD (Steer) + Left Shift (Boost)
-- Player 2: ↑←↓→ (Steer) + Right Shift (Boost)
+<!--
+- Player 2: ↑←↓→ (Steer) + Right Shift (Boost)-->
 - ESC: Pause game
 
 ### Goal
-- Finish 3 laps before your opponent does, without leaving the track.
+- Finish 3 laps before (one of) your opponent(s) does, without leaving the track.
 
