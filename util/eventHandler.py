@@ -70,12 +70,10 @@ class FinishEvent(CustomEvent):
         self.has_started_race = False
         self.was_on_finish = False
         self.is_on_finish = False
-        self.was_backwards = False
         # Counters
         self.finish_count = 0
 
-    def trigger(self):
-        # Update the position of the finish area relative to the map
+    def manual_trigger(self, current_lap: int):
         map_pos_x, map_pos_y = config.MAP_POSITION
         finish_area_position = (map_pos_x + 60, map_pos_y + 630)
         finish_area_size = (130, 40)
@@ -88,9 +86,6 @@ class FinishEvent(CustomEvent):
         keys = pygame.key.get_pressed()
         backwards = keys[pygame.K_s]
 
-        if self.was_backwards != backwards:
-            self.is_on_finish = False
-
         # If we are not on the finish rect (we started racing),
         # reset the finish trigger and race start trigger
 
@@ -98,32 +93,30 @@ class FinishEvent(CustomEvent):
             if not self.was_on_finish:
                 self.has_started_race = True
             else:
-                config.RACE_CURRENT_LAP -= 1
+                return current_lap - 1
 
         if finish_rect.colliderect(player_rect):
             if not backwards:
                 if not self.is_on_finish:
                     self.is_on_finish = True
-                    config.RACE_CURRENT_LAP += 1
-                    if config.RACE_CURRENT_LAP >= config.RACE_LAPS:
-                        self.handle_finish()
-                    else:
-                        self.handle_lap()
+                    return current_lap + 1
             else:
                 if not self.is_on_finish:
                     self.is_on_finish = True
-                    config.RACE_CURRENT_LAP -= 1
-                    print(
-                        "REVERSING OVER THE FINISH DOESN'T COUNT! NOW AT LAP",
-                        config.RACE_CURRENT_LAP,
-                    )
+                    return current_lap - 1
         else:
             self.is_on_finish = False
 
-        self.was_backwards = backwards
-        # Draw hitboxes
-        # pygame.draw.rect(self.screen, (255, 0, 0), finish_rect)
-        # pygame.draw.rect(self.screen, (0, 255, 0), player_rect)
+        return current_lap
+
+    def trigger(self):
+        old_lap = config.RACE_CURRENT_LAP
+        # Update the position of the finish area relative to the map
+        config.RACE_CURRENT_LAP = self.manual_trigger(config.RACE_CURRENT_LAP)
+        if config.RACE_CURRENT_LAP > config.RACE_LAPS:
+            self.handle_finish()
+        elif old_lap < config.RACE_CURRENT_LAP:  # if lap increased
+            self.handle_lap()
 
     # Define how handle_finish and handle_lap works, replace `camera` with your camera instance.
     def handle_finish(self):

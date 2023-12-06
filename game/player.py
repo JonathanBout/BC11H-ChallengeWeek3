@@ -191,8 +191,6 @@ class PlayerBase:
 
         screen.blit(self.prepare(current_frame), current_position)
 
-        pygame.display.flip()
-
     def check_for_events(
             self, screen: Surface, map_rects: list[pygame.Rect], current_position
     ):
@@ -243,11 +241,6 @@ class PlayerBase:
                         print(f"{var_name}: {getattr(self.config, var_name)}")
 
 
-class Player1(PlayerBase):
+class Player(PlayerBase):
     def __init__(self, config: config, name, description, position, player_sprite):
         super().__init__(config, 1, name, description, position, player_sprite)
-
-
-class Player2(PlayerBase):
-    def __init__(self, config: config, name, description, position, player_sprite):
-        super().__init__(config, 2, name, description, position, player_sprite)
