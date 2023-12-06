@@ -32,7 +32,10 @@ SCREEN_CENTER = (SCREEN_CENTER_X, SCREEN_CENTER_Y)
 MAX_FPS = 120
 
 # Current FPS
-CURRENT_FPS = 0
+CURRENT_FPS = MAX_FPS
+
+# Seconds per frame, to make speeds frame-independent
+SECONDS_PER_FRAME = 1 / MAX_FPS
 
 # WORLD CONFIGURATION
 

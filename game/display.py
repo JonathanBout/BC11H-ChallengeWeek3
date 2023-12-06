@@ -55,8 +55,8 @@ class Display:
         # Update the full display surface to the screen
         pygame.display.flip()
 
-        # Set target fps
-        self.clock.tick(config.MAX_FPS)
+        # Set target fps and seconds per frame (see https://www.reddit.com/r/pygame/comments/k7677j/comment/gep295w/)
+        config.SECONDS_PER_FRAME = self.clock.tick(config.MAX_FPS) / 1000
 
         # Printing the frames per second (fps) rate
         config.CURRENT_FPS = self.clock.get_fps()

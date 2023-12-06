@@ -14,7 +14,7 @@ MAX_RANDOM_OFFSET = 50
 
 
 class Enemy(PlayerBase):
-    def __init__(self, map: MapConfig, sprite: str, screen: Surface, max_speed=2):
+    def __init__(self, map: MapConfig, sprite: str, screen: Surface, max_speed=100):
         self.map = map
         self.sprite = image.load(sprite)
         self.target_point_index = 1
@@ -50,8 +50,8 @@ class Enemy(PlayerBase):
             )
         )
 
-        move = normalize(in_between) * self.speed
-        # direction[0] = -direction[0]
+        move = normalize(in_between) * self.speed * config.SECONDS_PER_FRAME
+
         self.current_position = self.current_position - move
         current_offset_position = current_offset_position - move
 
@@ -60,8 +60,6 @@ class Enemy(PlayerBase):
         pygame.draw.circle(
             self.screen, "yellow", self.current_position + self.map_offset, 10, 10
         )
-
-        pygame.display.flip()
 
         if np.linalg.norm(in_between) < NEXT_POINT_THRESHOlD:
             self.target_point_index += 1
@@ -123,9 +121,7 @@ class Enemy(PlayerBase):
     def check_flip(self, player, horizontal_flip: bool):
         return pygame.transform.flip(player, flip_x=horizontal_flip, flip_y=False)
 
-    def check_for_events(
-        self, screen: Surface, current_position: list[int, int]
-    ):
+    def check_for_events(self, screen: Surface, current_position: list[int, int]):
         # Create finish event
         self.finish_event.player_position = current_position
         self.finish_event.screen = screen

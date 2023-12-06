@@ -51,7 +51,6 @@ class Powerup(pygame.sprite.Sprite):
             if event.type == self.POWERUP_RESPAWN_EVENT:
                 print("Powerup respawned - TRIGGERED")
                 self.respawn_powerups()
-                pygame.display.flip()
 
         for powerup in self.powerups:
             if player_rect.colliderect(powerup):
